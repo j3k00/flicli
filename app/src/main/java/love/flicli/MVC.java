@@ -44,7 +44,7 @@ public class MVC {
     public interface ViewTask {
         void process(View view);
     }
-    
+
     public void forEachView(ViewTask task) {
         // run a Runnable in the UI thread
         new Handler(Looper.getMainLooper()).post(() -> {

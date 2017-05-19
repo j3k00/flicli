@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/whatsapp"
+        android:title="@string/whatsapp"
+        android:icon="@drawable/whatsapp"
+        android:showAsAction="always"/>
+    <item
+        android:id="@+id/telegram"
+        android:title="@string/telegram"
+        android:icon="@drawable/telegram"
+        android:showAsAction="always"/>
+    <item
+        android:id="@+id/gmail"
+        android:title="@string/gmail"
+        android:icon="@drawable/gmail"
+        android:showAsAction="always"/>
+</menu>
