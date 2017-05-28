@@ -1,7 +1,9 @@
-package love.flicli;
+package love.flicli.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import love.flicli.R;
 
 public class MainActivity extends AppCompatActivity {
     // TODO

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.tommaso.flickerapplication.view.DoubleMenu">
     <item
-        android:id="@+id/whatsapp"
-        android:title="@string/whatsapp"
-        android:icon="@drawable/whatsapp"
-        android:showAsAction="always"/>
+        android:id="@+id/menu_item_share"
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+        android:enabled="true"
+        android:icon="?attr/actionModeShareDrawable"
+        android:title="Share"
+        android:visible="true"
+        app:showAsAction="always" />
     <item
-        android:id="@+id/telegram"
-        android:title="@string/telegram"
-        android:icon="@drawable/telegram"
-        android:showAsAction="always"/>
-    <item
-        android:id="@+id/gmail"
-        android:title="@string/gmail"
-        android:icon="@drawable/gmail"
-        android:showAsAction="always"/>
+        android:id="@+id/menu_item_author"
+        android:icon="@drawable/list"
+        android:title="Author"
+        app:showAsAction="always" />
 </menu>
