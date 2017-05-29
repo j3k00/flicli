@@ -31,7 +31,7 @@ public class PhoneView extends FrameLayout implements View {
         mvc = ((FlicliApplication) getContext().getApplicationContext()).getMVC();
         mvc.register(this);
 
-        // at the beginning, show the start fragment
+        // at the beginning, call FragmentManager and add to the phone_view StartFragment
         if (getFragment() == null)
             getFragmentManager().beginTransaction()
                     .add(R.id.phone_view, new StartFragment())
