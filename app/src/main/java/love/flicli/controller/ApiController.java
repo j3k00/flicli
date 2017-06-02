@@ -2,11 +2,8 @@ package love.flicli.controller;
 import android.app.IntentService;
 import org.json.JSONObject;
 
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
-import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
@@ -14,32 +11,28 @@ import net.jcip.annotations.Immutable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Comment;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
+import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 
-import static android.R.attr.contextClickable;
-import static android.R.attr.format;
-import static android.R.attr.label;
 import static android.provider.Telephony.Carriers.SERVER;
+import static love.flicli.model.ApiModel.API_KEY;
+import static love.flicli.model.ApiModel.ENDPOINT;
 
 /**
  * Created by tommaso on 09/05/17.
  */
 
-public class FlickerService extends IntentService {
-    private final static String TAG = FlickerService.class.getName();
+public class ApiController extends IntentService {
+    private final static String TAG = ApiController.class.getName();
     private final static String ACTION_FLICKER = "Flicker";
     private final static String ACTION_RECENT = "Recent";
     private final static String ACTION_POPULAR = "Popular";
@@ -50,74 +43,40 @@ public class FlickerService extends IntentService {
     private final static String PARAM_N = "n";
     private static String search = "";
 
-    public FlickerService() {
-        super("Flicker Service");
+    private static JSONObject makeRequest(String endpoint) {
+        String response = "";
+        String line = "";
+        BufferedReader in = null;
+        JSONObject json = null;
+
+        try {
+            URL url = new URL(endpoint);
+            URLConnection conn = url.openConnection();
+            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            while ((line = in.readLine()) != null) {
+                // Log.d(TAG, "starting search of" + line);
+                response += line + "\n";
+            }
+
+            in.close();
+
+            json = new JSONObject(response);
+
+        } catch (IOException e) {
+            Log.d(TAG, "I/O error", e);
+            return null;
+        } catch (JSONException e) {
+            Log.d(TAG, e.getMessage());
+            e.printStackTrace();
+        }
+
+        return json;
     }
 
-    @Immutable
-    public class Flick {
-        private String imgUrl = "";
-        private String descriptiion = "";
-        private String id = "";
-        private String title = "";
-        private String author = "";
-        private String image_square = "";
-        private String user_id = "";
-
-        public Flick(String image, String descriptiion, String id, String author, String title, String image_square, String user_id) {
-            this.imgUrl = image;
-            this.descriptiion = descriptiion;
-            this.id = id;
-            this.author = author;
-            this.title = title;
-            this.image_square = image_square;
-            this.user_id = user_id;
-        }
-
-        public String getImgUrl() {
-            return this.imgUrl;
-        }
-
-        public String getId(){ return  this.id; }
-
-        public String getThumbNail() {
-            return this.image_square;
-        }
-
-        public String getDescriptiion() {
-            return this.descriptiion;
-        }
-
-        public String getTitle() {
-            return this.title;
-        }
-
-        public String getAuthor() {
-            return this.author;
-        }
-
-        public String getUser_id() { return this.user_id; }
-    }
-
-    @Immutable
-    public class Comments {
-        private String author = "";
-        private String comment = "";
-
-        public Comments(String author, String comment) {
-            this.author = author;
-            this.comment = comment;
-        }
-
-        public String getAuthor() { return this.author; }
-        public String getComments() { return this.comment; }
-
-    }
-
-    //devo passargli la stringa da concatenare con la ricerca
     @UiThread
     static void flicker(Context context, String n) {
-        Intent intent = new Intent(context, FlickerService.class);
+        Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_FLICKER);
         search = n;
         intent.putExtra(PARAM_N, n);
@@ -126,21 +85,21 @@ public class FlickerService extends IntentService {
 
     @UiThread
     static void recent(Context context) {
-        Intent intent = new Intent(context, FlickerService.class);
+        Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_RECENT);
         context.startService(intent);
     }
 
     @UiThread
     static void popular(Context context) {
-        Intent intent = new Intent(context, FlickerService.class);
+        Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_POPULAR);
         context.startService(intent);
     }
 
     @UiThread
     static void comment(Context context, String image) {
-        Intent intent = new Intent(context, FlickerService.class);
+        Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_COMMENT);
         search = image;
         intent.putExtra(PARAM_N, search);
@@ -149,7 +108,7 @@ public class FlickerService extends IntentService {
 
     @UiThread
     static void lastAuthorImage(Context context, String author) {
-        Intent intent = new Intent(context, FlickerService.class);
+        Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_AUTHOR);
         search = author;
         intent.putExtra(PARAM_N, search);
@@ -158,7 +117,7 @@ public class FlickerService extends IntentService {
 
     @UiThread
     static void image(Context context, String image) {
-        Intent intent = new Intent(context, FlickerService.class);
+        Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_IMAGE);
         search = image;
         intent.putExtra(PARAM_N, search);
@@ -168,11 +127,12 @@ public class FlickerService extends IntentService {
     @WorkerThread
     protected void onHandleIntent(Intent intent) {
         Flick[] result;
-        MVC mvc = ((FlickerApplication) getApplication()).getMVC();
+        MVC mvc = ((FlicliApplication) getApplication()).getMVC();
+
         switch (intent.getAction()) {
             case ACTION_FLICKER:
                 String n = (String) intent.getSerializableExtra(PARAM_N);
-                result = Flickers(n);
+                result = Flickers(n, mvc);
                 mvc.model.storeFactorization(result);
                 break;
             case ACTION_RECENT:
@@ -198,39 +158,15 @@ public class FlickerService extends IntentService {
         }
     }
 
-    // change this to the actual server that you want to query
-
     @WorkerThread
     private Flick[] Flickers(String search) {
-
-        Log.d(TAG, "starting search of" + search);
-
-        String SERVER = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=efaa708098eef9c038ad4c123041733c&text=" + search +"&extras=url_z%2Cdescription%2Ctags%2Cowner_name&per_page=50&format=json&nojsoncallback=1";
 
         LinkedList<Flick> result = new LinkedList<Flick>();
 
         try {
-            URL url = new URL(SERVER);
-            URLConnection conn = url.openConnection();
-            String answer = "";
-
-            BufferedReader in = null;
-            try {
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-                String line;
-                while ((line = in.readLine()) != null) {
-                    Log.d(TAG, "starting search of" + line);
-                    answer += line + "\n";
-                }
-            }
-            finally {
-                if (in != null)
-                    in.close();
-            }
-
             //Creazione array delle photo
             JSONObject jsonObj = new JSONObject(answer);
+
             JSONObject photos = jsonObj.getJSONObject("photos");
             JSONArray jPhoto = photos.getJSONArray("photo");
 
@@ -259,6 +195,7 @@ public class FlickerService extends IntentService {
             Log.d(TAG, e.getMessage());
             e.printStackTrace();
         }
+
         return result.toArray(new Flick[result.size()]);
     }
 

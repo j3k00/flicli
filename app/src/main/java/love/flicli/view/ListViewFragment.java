@@ -1,33 +1,27 @@
 package love.flicli.view;
 
-import android.app.Fragment;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
-import love.flicli.model.Flick;
-
-import static android.content.ContentValues.TAG;
+import love.flicli.model.FlickModel;
 
 /**
  * Created by tommaso on 29/05/17.
  */
 
-public class HistoryFragment extends ListFragment implements AbstractFragment {
+
+public class ListViewFragment extends ListFragment implements AbstractFragment {
     private MVC mvc;
 
     @Override @UiThread
@@ -63,12 +57,12 @@ public class HistoryFragment extends ListFragment implements AbstractFragment {
         setListAdapter(new HistoryAdapter());
     }
 
-    private class HistoryAdapter extends ArrayAdapter<Flick> {
-        private final Flick[] listFlick = null;//mvc.model.getFlickers();
+    private class HistoryAdapter extends ArrayAdapter<FlickModel> {
+        private final FlickModel[] listFlick = null;//mvc.model.getFlickers();
 
         private HistoryAdapter() {
             /*mvc.model.getFlickers()*/
-            super(getActivity(), R.layout.history_fragment, new Flick[10]);
+            super(getActivity(), R.layout.history_fragment, new FlickModel[10]);
         }
 
         @Override
@@ -81,7 +75,7 @@ public class HistoryFragment extends ListFragment implements AbstractFragment {
             }
 
             if (listFlick != null) {
-                Flick flick = listFlick[position];
+                FlickModel flick = listFlick[position];
 
                 /*
                 ((WebView) row.findViewById(R.id.icon)).loadUrl(flick.getThumbNail());
@@ -106,7 +100,7 @@ public class HistoryFragment extends ListFragment implements AbstractFragment {
         }
     }
 
-    private void onClickRow(Flick image) {
+    private void onClickRow(FlickModel image) {
         //mvc.controller.getImageView(getActivity(), image);
     }
 }

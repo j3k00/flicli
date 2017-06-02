@@ -12,20 +12,21 @@ import net.jcip.annotations.Immutable;
  */
 
 @Immutable
-public class Flick {
-
+public class FlickModel {
     private String image_thb = "";
     private String id = "";
     private String author = "";
     private String imageUrl = "";
     private String title = "";
+    private String comment = "";
 
-    public Flick(String image_thb, String id, String author, String imageUrl, String title){
+    public FlickModel(String image_thb, String id, String author, String imageUrl, String title, String comment){
         this.image_thb = image_thb;
         this.id = id;
         this.author = author;
         this.title = title;
         this.imageUrl = imageUrl;
+        this.comment = comment;
     }
 
     public String getImage_thb() { return this.image_thb; }
@@ -37,5 +38,7 @@ public class Flick {
     public String getImageUrl() { return this.imageUrl; }
 
     public String getId() { return this.id; }
+
+    public String getComment() { return this.comment; }
 
 }

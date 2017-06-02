@@ -63,7 +63,7 @@ public class PhoneView extends FrameLayout implements View {
     public void showHistory() {
         /*
         getFragmentManager().beginTransaction()
-                .replace(R.id.phone_view, new HistoryFragment())
+                .replace(R.id.phone_view, new ListViewFragment())
                 .addToBackStack(null)
                 .commit();
     */
