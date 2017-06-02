@@ -4,6 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.tommaso.flickerapplication.view.DoubleMenu">
+
+    <!-- c'era un problema di compatibilità con android.widget.SharedActionProvider-->
     <item
         android:id="@+id/menu_item_share"
         app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
@@ -12,6 +14,7 @@
         android:title="Share"
         android:visible="true"
         app:showAsAction="always" />
+
     <item
         android:id="@+id/menu_item_author"
         android:icon="@drawable/list"

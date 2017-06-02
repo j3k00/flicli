@@ -38,6 +38,8 @@ public class HistoryFragment extends ListFragment implements AbstractFragment {
         onModelChanged();
     }
 
+    //TODO fix contextMenu, funziona solo cliccando una determinata parte della View
+    //quando invece dovrebbe funzionare indistintamente su tutta la riga
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
