@@ -88,7 +88,7 @@ public class StartFragment extends Fragment implements AbstractFragment {
         try {
             if (s.compareTo("") == 0)
                 throw new MalformedParameterizedTypeException();
-            //mvc.controller.flicker(getActivity(), s);
+                mvc.controller.flicker(getActivity(), s);
         }
         catch (MalformedParameterizedTypeException e) {
             errorText.setText("Inserisci una stringa su cui fare ricerca");

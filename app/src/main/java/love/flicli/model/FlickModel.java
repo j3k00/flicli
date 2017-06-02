@@ -18,15 +18,13 @@ public class FlickModel {
     private String author = "";
     private String imageUrl = "";
     private String title = "";
-    private String comment = "";
 
-    public FlickModel(String image_thb, String id, String author, String imageUrl, String title, String comment){
+    public FlickModel(String image_thb, String id, String author, String imageUrl, String title){
         this.image_thb = image_thb;
         this.id = id;
         this.author = author;
         this.title = title;
         this.imageUrl = imageUrl;
-        this.comment = comment;
     }
 
     public String getImage_thb() { return this.image_thb; }
@@ -39,6 +37,6 @@ public class FlickModel {
 
     public String getId() { return this.id; }
 
-    public String getComment() { return this.comment; }
+    //public String getComment() { return this.comment; }
 
 }

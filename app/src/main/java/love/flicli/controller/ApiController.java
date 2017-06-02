@@ -44,7 +44,17 @@ public class ApiController extends IntentService {
     private final static String PARAM_SEARCHABLE = "param";
     private static String search = "";
 
-    private static JSONObject makeRequest(String endpoint) {
+    /**
+     * Creates an IntentService.  Invoked by your subclass's constructor.
+     *
+     * @param name Used to name the worker thread, important only for debugging.
+     */
+    public ApiController() {
+        super("ApiController");
+    }
+
+    @WorkerThread
+    private JSONObject makeRequest(String endpoint) {
         String response = "";
         String line = "";
         BufferedReader in = null;
@@ -56,7 +66,7 @@ public class ApiController extends IntentService {
             in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
             while ((line = in.readLine()) != null) {
-                // Log.d(TAG, "starting search of" + line);
+                Log.d(TAG, "STARTING SEARCH OF" + line);
                 response += line + "\n";
             }
 
@@ -82,7 +92,7 @@ public class ApiController extends IntentService {
         intent.putExtra(PARAM_SEARCHABLE, param);
         context.startService(intent);
     }
-
+/*
     @UiThread
     static void getRecentFlick(Context context) {
         Intent intent = new Intent(context, ApiController.class);
@@ -113,7 +123,7 @@ public class ApiController extends IntentService {
         search = author;
         intent.putExtra(PARAM_SEARCHABLE, search);
         context.startService(intent);
-    }
+    }*/
 
     @WorkerThread
     protected void onHandleIntent(Intent intent) {
@@ -124,9 +134,9 @@ public class ApiController extends IntentService {
         switch (intent.getAction()) {
             case ACTION_FLICKER:
                 String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
-                mvc.model.storeFactorization(makeRequest(apiModel.photos_search(param));
+                mvc.model.storeFactorization(Flickers(param, apiModel));
                 break;
-
+/*
             case ACTION_RECENT:
                 result = Recent();
                 mvc.model.storeFactorization(result);
@@ -147,23 +157,18 @@ public class ApiController extends IntentService {
                 String author = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
                 result = author(author);
                 mvc.model.storeFactorization(result);
-
+*/
         }
     }
 
-    private LinkedList<FlickModel> function updateFlickr() {
-        LinkedList<FlickModel> result = new LinkedList<FlickModel>();
-        return result;
-    }
-
     @WorkerThread
-    private LinkedList<FlickModel> Flickers(String search) {
+    private LinkedList<FlickModel> Flickers(String search, ApiModel apiModel) {
 
         LinkedList<FlickModel> result = new LinkedList<FlickModel>();
 
         try {
             //Creazione array delle photo
-            JSONObject jsonObj = new JSONObject(answer);
+            JSONObject jsonObj = makeRequest(apiModel.photos_search(search));
 
             JSONObject photos = jsonObj.getJSONObject("photos");
             JSONArray jPhoto = photos.getJSONArray("photo");
@@ -182,13 +187,9 @@ public class ApiController extends IntentService {
                 // il filtro author dimezza il numero di immagini per richiesta
                 String author = "";//photo.getString("ownername");
 
-                FlickModel f = new FlickModel(image, description, id, author, title, image_square, user_id);
+                FlickModel f = new FlickModel(image, description, id, author, title);
                 result.add(f);
             }
-        }
-        catch (IOException e) {
-            Log.d(TAG, "I/O error", e);
-            return null;
         } catch (JSONException e) {
             Log.d(TAG, e.getMessage());
             e.printStackTrace();
@@ -196,7 +197,7 @@ public class ApiController extends IntentService {
 
         return result;
     }
-
+/*
     @WorkerThread
     private FlickModel[] Recent() {
         String SERVER = "https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=efaa708098eef9c038ad4c123041733c&extras=url_z%2Cdescription%2Ctags%2Cowner_name&per_page=50&format=json&nojsoncallback=1";
@@ -479,5 +480,5 @@ public class ApiController extends IntentService {
             e.printStackTrace();
         }
         return result.toArray(new Flick[result.size()]);
-    }
+    }*/
 }

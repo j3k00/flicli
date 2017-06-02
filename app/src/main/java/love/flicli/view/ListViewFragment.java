@@ -4,16 +4,23 @@ import android.app.ListFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.LinkedList;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
+import love.flicli.controller.ApiController;
 import love.flicli.model.FlickModel;
 
 /**
@@ -23,7 +30,7 @@ import love.flicli.model.FlickModel;
 
 public class ListViewFragment extends ListFragment implements AbstractFragment {
     private MVC mvc;
-
+    private final static String TAG = ListViewFragment.class.getName();
     @Override @UiThread
 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -58,11 +65,11 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     }
 
     private class HistoryAdapter extends ArrayAdapter<FlickModel> {
-        private final FlickModel[] listFlick = null;//mvc.model.getFlickers();
+        private final LinkedList<FlickModel> listFlick = mvc.model.getFlickers();
 
         private HistoryAdapter() {
             /*mvc.model.getFlickers()*/
-            super(getActivity(), R.layout.history_fragment, new FlickModel[10]);
+            super(getActivity(), R.layout.history_fragment, mvc.model.getFlickers());
         }
 
         @Override
@@ -75,14 +82,14 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
             }
 
             if (listFlick != null) {
-                FlickModel flick = listFlick[position];
+                FlickModel flick = listFlick.get(position);
 
-                /*
-                ((WebView) row.findViewById(R.id.icon)).loadUrl(flick.getThumbNail());
+
+                ((WebView) row.findViewById(R.id.icon)).loadUrl(flick.getImageUrl());
                 Log.d(TAG, "flick.getThumbNail()");
                 ((TextView) row.findViewById(R.id.description)).setText(flick.getTitle());
-                ((TextView) row.findViewById(R.id.url)).setText(flick.getImgUrl());
-                row.setOnClickListener(__ -> onClickRow(flick));
+                ((TextView) row.findViewById(R.id.url)).setText(flick.getId());
+                /*row.setOnClickListener(__ -> onClickRow(flick));
 
 
                 row.setOnLongClickListener(new View.OnLongClickListener() {

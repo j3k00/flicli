@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.UiThread;
 
 import love.flicli.MVC;
+import love.flicli.view.View;
 
 /**
  * Created by tommaso on 18/05/17.
@@ -23,7 +24,8 @@ public class Controller {
         ApiController.searchFlick(context, n);
         showHistory();
     }
-    @UiThread
+
+ /*   @UiThread
     public void recent(Context context) {
         //passiamo al servizio il contensto
         ApiController.getRecentFlick(context);
@@ -46,13 +48,13 @@ public class Controller {
         showHistory();
     }
 
+
+    @UiThread
+    public void showImage() { mvc.forEachView(View::showImage); }
+*/
+
     @UiThread
     public void showHistory() {
         mvc.forEachView(View::showHistory);
     }
-
-
-    @UiThread
-    public void showImage() { mvc.forEachView(View::showImage); }
-
 }
