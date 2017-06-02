@@ -22,6 +22,7 @@ import java.util.Map;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
+import love.flicli.model.ApiModel;
 import love.flicli.model.FlickModel;
 
 import static android.provider.Telephony.Carriers.SERVER;
@@ -118,32 +119,41 @@ public class ApiController extends IntentService {
     protected void onHandleIntent(Intent intent) {
         LinkedList<FlickModel> result;
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
+        ApiModel apiModel = ((FlicliApplication) getApplication()).getApiModel();
 
         switch (intent.getAction()) {
             case ACTION_FLICKER:
-                String n = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
-                result = Flickers(n, mvc);
-                mvc.model.storeFactorization(result);
+                String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
+                mvc.model.storeFactorization(makeRequest(apiModel.photos_search(param));
                 break;
+
             case ACTION_RECENT:
                 result = Recent();
                 mvc.model.storeFactorization(result);
                 break;
+
             case ACTION_POPULAR:
                 result = Popular();
                 mvc.model.storeFactorization(result);
                 break;
+
             case ACTION_COMMENT:
                 String image = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
                 Comments[] comments = Comment(image);
                 mvc.model.storeComments(comments);
                 break;
+
             case ACTION_AUTHOR:
                 String author = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
                 result = author(author);
                 mvc.model.storeFactorization(result);
 
         }
+    }
+
+    private LinkedList<FlickModel> function updateFlickr() {
+        LinkedList<FlickModel> result = new LinkedList<FlickModel>();
+        return result;
     }
 
     @WorkerThread
@@ -188,9 +198,9 @@ public class ApiController extends IntentService {
     }
 
     @WorkerThread
-    private Flick[] Recent() {
+    private FlickModel[] Recent() {
         String SERVER = "https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=efaa708098eef9c038ad4c123041733c&extras=url_z%2Cdescription%2Ctags%2Cowner_name&per_page=50&format=json&nojsoncallback=1";
-        LinkedList<Flick> result = new LinkedList<Flick>();
+        LinkedList<FlickModel> result = new LinkedList<Flick>();
 
         try {
             URL url = new URL(SERVER);
