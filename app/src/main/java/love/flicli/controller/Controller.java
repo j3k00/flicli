@@ -20,37 +20,29 @@ public class Controller {
     @UiThread
     public void flicker(Context context, String n) {
         //passiamo all servizio la stringa della ricerca più il contensto
-        FlickerService.flicker(context, n);
+        ApiController.searchFlick(context, n);
         showHistory();
     }
     @UiThread
     public void recent(Context context) {
         //passiamo al servizio il contensto
-        FlickerService.recent(context);
+        ApiController.getRecentFlick(context);
         showHistory();
     }
 
     @UiThread
     public void popular(Context context) {
         //passiamo al servizio il contensto
-        FlickerService.popular(context);
+        ApiController.getPopularFlick(context);
         showHistory();
     }
     @UiThread
     public void comment(Context context, String image) {
-        FlickerService.comment(context, image);
+        ApiController.getCommentFlick(context, image);
     }
 
-
-    @UiThread
-    public void getImageView(Context context, FlickerService.Flick image) {
-        mvc.model.storeLastFlick(image);
-        comment(context, image.getId());
-        showImage();
-    }
-
-    public void showAuthorLastImage(Context context, String author) {
-        FlickerService.lastAuthorImage(context, author);
+    public void lastAuthorImage(Context context, String author) {
+        ApiController.getFlickByAuthor(context, author);
         showHistory();
     }
 
