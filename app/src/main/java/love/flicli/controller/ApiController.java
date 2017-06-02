@@ -22,6 +22,8 @@ import java.util.Map;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
+import love.flicli.model.ApiModel;
+import love.flicli.model.FlickModel;
 
 import static android.provider.Telephony.Carriers.SERVER;
 import static love.flicli.model.ApiModel.API_KEY;
@@ -33,14 +35,13 @@ import static love.flicli.model.ApiModel.ENDPOINT;
 
 public class ApiController extends IntentService {
     private final static String TAG = ApiController.class.getName();
-    private final static String ACTION_FLICKER = "Flicker";
-    private final static String ACTION_RECENT = "Recent";
-    private final static String ACTION_POPULAR = "Popular";
-    private final static String ACTION_COMMENT = "Comment";
-    private final static String ACTION_IMAGE = "Image";
-    private final static String ACTION_AUTHOR = "Author";
+    private final static String ACTION_FLICKER = "searchFlick";
+    private final static String ACTION_RECENT = "getRecentFlick";
+    private final static String ACTION_POPULAR = "getPopularFlick";
+    private final static String ACTION_COMMENT = "getCommentFlick";
+    private final static String ACTION_AUTHOR = "getFlickByAuthor";
 
-    private final static String PARAM_N = "n";
+    private final static String PARAM_SEARCHABLE = "param";
     private static String search = "";
 
     private static JSONObject makeRequest(String endpoint) {
@@ -75,93 +76,90 @@ public class ApiController extends IntentService {
     }
 
     @UiThread
-    static void flicker(Context context, String n) {
+    static void searchFlick(Context context, String param) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_FLICKER);
-        search = n;
-        intent.putExtra(PARAM_N, n);
+        intent.putExtra(PARAM_SEARCHABLE, param);
         context.startService(intent);
     }
 
     @UiThread
-    static void recent(Context context) {
+    static void getRecentFlick(Context context) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_RECENT);
         context.startService(intent);
     }
 
     @UiThread
-    static void popular(Context context) {
+    static void getPopularFlick(Context context) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_POPULAR);
         context.startService(intent);
     }
 
     @UiThread
-    static void comment(Context context, String image) {
+    static void getCommentFlick(Context context, String image) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_COMMENT);
         search = image;
-        intent.putExtra(PARAM_N, search);
+        intent.putExtra(PARAM_SEARCHABLE, search);
         context.startService(intent);
     }
 
     @UiThread
-    static void lastAuthorImage(Context context, String author) {
+    static void getFlickByAuthor(Context context, String author) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_AUTHOR);
         search = author;
-        intent.putExtra(PARAM_N, search);
-        context.startService(intent);
-    }
-
-    @UiThread
-    static void image(Context context, String image) {
-        Intent intent = new Intent(context, ApiController.class);
-        intent.setAction(ACTION_IMAGE);
-        search = image;
-        intent.putExtra(PARAM_N, search);
+        intent.putExtra(PARAM_SEARCHABLE, search);
         context.startService(intent);
     }
 
     @WorkerThread
     protected void onHandleIntent(Intent intent) {
-        Flick[] result;
+        LinkedList<FlickModel> result;
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
+        ApiModel apiModel = ((FlicliApplication) getApplication()).getApiModel();
 
         switch (intent.getAction()) {
             case ACTION_FLICKER:
-                String n = (String) intent.getSerializableExtra(PARAM_N);
-                result = Flickers(n, mvc);
-                mvc.model.storeFactorization(result);
+                String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
+                mvc.model.storeFactorization(makeRequest(apiModel.photos_search(param));
                 break;
+
             case ACTION_RECENT:
                 result = Recent();
                 mvc.model.storeFactorization(result);
                 break;
+
             case ACTION_POPULAR:
                 result = Popular();
                 mvc.model.storeFactorization(result);
                 break;
+
             case ACTION_COMMENT:
-                String image = (String) intent.getSerializableExtra(PARAM_N);
+                String image = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
                 Comments[] comments = Comment(image);
                 mvc.model.storeComments(comments);
                 break;
-            case ACTION_IMAGE:
-                break;
+
             case ACTION_AUTHOR:
-                String author = (String) intent.getSerializableExtra(PARAM_N);
+                String author = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
                 result = author(author);
                 mvc.model.storeFactorization(result);
 
         }
     }
 
-    @WorkerThread
-    private Flick[] Flickers(String search) {
+    private LinkedList<FlickModel> function updateFlickr() {
+        LinkedList<FlickModel> result = new LinkedList<FlickModel>();
+        return result;
+    }
 
-        LinkedList<Flick> result = new LinkedList<Flick>();
+    @WorkerThread
+    private LinkedList<FlickModel> Flickers(String search) {
+
+        LinkedList<FlickModel> result = new LinkedList<FlickModel>();
 
         try {
             //Creazione array delle photo
@@ -184,7 +182,7 @@ public class ApiController extends IntentService {
                 // il filtro author dimezza il numero di immagini per richiesta
                 String author = "";//photo.getString("ownername");
 
-                Flick f = new Flick(image, description, id, author, title, image_square, user_id);
+                FlickModel f = new FlickModel(image, description, id, author, title, image_square, user_id);
                 result.add(f);
             }
         }
@@ -196,13 +194,13 @@ public class ApiController extends IntentService {
             e.printStackTrace();
         }
 
-        return result.toArray(new Flick[result.size()]);
+        return result;
     }
 
     @WorkerThread
-    private Flick[] Recent() {
+    private FlickModel[] Recent() {
         String SERVER = "https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=efaa708098eef9c038ad4c123041733c&extras=url_z%2Cdescription%2Ctags%2Cowner_name&per_page=50&format=json&nojsoncallback=1";
-        LinkedList<Flick> result = new LinkedList<Flick>();
+        LinkedList<FlickModel> result = new LinkedList<Flick>();
 
         try {
             URL url = new URL(SERVER);

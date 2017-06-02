@@ -23,6 +23,7 @@ import static android.provider.Telephony.Carriers.SERVER;
  * Created by jeko on 02/06/17.
  */
 
+// todo singleton
 @ThreadSafe
 public class ApiModel {
     public static final String API_KEY = "7d915cac1d6d251a1014bc8e00a9bf2e";
