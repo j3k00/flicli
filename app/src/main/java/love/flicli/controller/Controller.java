@@ -62,5 +62,5 @@ public class Controller {
 
     @UiThread
     public void showImage() { mvc.forEachView(View::showImage); }
-    
+
 }
