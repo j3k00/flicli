@@ -16,6 +16,9 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.ContentValues.TAG;
+import static android.provider.Telephony.Carriers.SERVER;
+
 /**
  * Created by jeko on 02/06/17.
  */
@@ -26,45 +29,14 @@ public class ApiModel {
     public static final String ENDPOINT = "https://api.flickr.com/services/rest/?";
     public static final String FORMAT = "json";
 
-    private static JSONObject makeRequest(Map<String, String> params) {
-        String response = "";
-        String line = "";
-        BufferedReader in = null;
-        JSONObject json = null;
-
-        // Generate url
-
+    private static String makeUrl(Map<String, String> params) {
         String endpoint = ENDPOINT + "api_key=" + API_KEY + "&format=" + FORMAT + "&nojsoncallback=1";
 
         for (Map.Entry<String, String> entry : params.entrySet()) {
             endpoint += "&" + entry.getKey() + "=" + entry.getValue();
         }
 
-        // Generate request
-
-        try {
-            URL url = new URL(endpoint);
-            URLConnection conn = url.openConnection();
-            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-            while ((line = in.readLine()) != null) {
-               // Log.d(TAG, "starting search of" + line);
-                response += line + "\n";
-            }
-
-            in.close();
-
-            json = new JSONObject(response);
-
-        }catch (IOException e) {
-            Log.d(TAG, "I/O error", e);
-            return null;
-        } catch (JSONException e) {
-            Log.d(TAG, e.getMessage());
-            e.printStackTrace();
-        }
-
-        return json;
+        return endpoint;
     }
 
     //https://api.flickr.com/services/rest/?
@@ -73,18 +45,20 @@ public class ApiModel {
     // &text=" + search +"
     // &extras=url_z%2Cdescription%2Ctags%2Cowner_name
     // &per_page=50
+    // &format=json
     // &nojsoncallback=1
-    public JSONObject photos_search(String search) {
+    public String photos_search(String search) {
         String method = "flickr.photos.search";
         String extras = "url_z%2Cdescription%2Ctags%2Cowner_name";
-        String per_page = "50";
+        String per_page = "url_z%2Cdescription%2Ctags%2Cowner_name";
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("method", method);
         params.put("text", search);
         params.put("extras", extras);
-        params.put("per_page", per_page);
+        params.put("per_page", extras);
+        // add more params here
 
-        return makeRequest(params);
+        return makeUrl(params);
     }
 }
