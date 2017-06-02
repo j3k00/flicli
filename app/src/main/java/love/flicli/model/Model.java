@@ -17,6 +17,9 @@ import love.flicli.MVC;
 @ThreadSafe
 public class Model {
     private MVC mvc;
+    public static final String API = "7d915cac1d6d251a1014bc8e00a9bf2e";
+    // I really need that info?
+    public static final String SECRET_KEY = "10fde0314d4d1aef";
 
     public void setMVC(MVC mvc) {
         this.mvc = mvc;
