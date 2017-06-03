@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.UiThread;
 
 import love.flicli.MVC;
+import love.flicli.model.FlickModel;
 import love.flicli.view.View;
 
 /**
@@ -23,6 +24,10 @@ public class Controller {
         //passiamo all servizio la stringa della ricerca più il contensto
         ApiController.searchFlick(context, n);
         showHistory();
+    }
+
+    public void getImageDetail(Context context, FlickModel flickModel) {
+        showImage();
     }
 
  /*   @UiThread
@@ -48,10 +53,10 @@ public class Controller {
         showHistory();
     }
 
+*/
 
     @UiThread
     public void showImage() { mvc.forEachView(View::showImage); }
-*/
 
     @UiThread
     public void showHistory() {

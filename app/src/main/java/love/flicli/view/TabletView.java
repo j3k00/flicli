@@ -5,6 +5,8 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+
+import love.flicli.model.FlickModel;
 import love.flicli.view.View;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;

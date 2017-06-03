@@ -84,14 +84,13 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
             if (listFlick != null) {
                 FlickModel flick = listFlick.get(position);
 
-
-                ((WebView) row.findViewById(R.id.icon)).loadUrl(flick.getImageUrl());
-                Log.d(TAG, "flick.getThumbNail()");
+                ((WebView) row.findViewById(R.id.icon)).loadUrl(flick.getImage_thb());
                 ((TextView) row.findViewById(R.id.description)).setText(flick.getTitle());
                 ((TextView) row.findViewById(R.id.url)).setText(flick.getId());
-                /*row.setOnClickListener(__ -> onClickRow(flick));
 
+                row.setOnClickListener(__ -> onClickRow(flick));
 
+                /*
                 row.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -108,6 +107,6 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     }
 
     private void onClickRow(FlickModel image) {
-        //mvc.controller.getImageView(getActivity(), image);
+        mvc.controller.getImageDetail(getActivity(), image);
     }
 }

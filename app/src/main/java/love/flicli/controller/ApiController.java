@@ -181,13 +181,13 @@ public class ApiController extends IntentService {
                 String description = (photo.isNull("description")) ? "" :photo.getString("description");
                 String image = (photo.isNull("url_z")) ? "" : photo.getString("url_z");
                 String title = (photo.isNull("title")) ? "" : photo.getString("title");
-                String image_square = image.replace("_z", "_s");//getThumb(id);
+                String image_square = image.replace("_z", "_s");
                 String user_id = (photo.isNull("owner")) ? "" : photo.getString("owner");
 
-                // il filtro author dimezza il numero di immagini per richiesta
                 String author = "";//photo.getString("ownername");
 
-                FlickModel f = new FlickModel(image, description, id, author, title);
+                //image square è l'immagine in formato 75x75 ppx per la visualizzazione in formato lista
+                FlickModel f = new FlickModel(image_square, id, author, image, title);
                 result.add(f);
             }
         } catch (JSONException e) {
