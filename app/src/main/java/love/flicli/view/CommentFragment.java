@@ -75,7 +75,9 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
         cal.setTime(d);
         Calendar currentDate = Calendar.getInstance();
 
-        if (cal.get(Calendar.YEAR) < currentDate.get(Calendar.YEAR)) {
+        if (date == 0)
+            return "";
+        else if (cal.get(Calendar.YEAR) < currentDate.get(Calendar.YEAR)) {
             //ANNO CORRENTE > ANNO DEL COMMENTO
 
             String diff = currentDate.get(Calendar.YEAR) - cal.get(Calendar.YEAR) + "";

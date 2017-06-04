@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
+import love.flicli.model.FlickModel;
 
 /**
  * Created by tommaso on 03/06/17.
@@ -26,7 +27,12 @@ import love.flicli.R;
 public class DetailImageFragment extends Fragment implements AbstractFragment {
     private MVC mvc;
     ShareActionProvider mShareActionProvider = null;
+    private FlickModel flickModel;
 
+
+    public DetailImageFragment() {
+        
+    }
     @Override @UiThread
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
