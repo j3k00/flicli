@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
-import net.jcip.annotations.Immutable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,16 +17,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
-import java.util.Map;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
-import love.flicli.model.ApiModel;
+import love.flicli.FlcikerAPI;
 import love.flicli.model.FlickModel;
-
-import static android.provider.Telephony.Carriers.SERVER;
-import static love.flicli.model.ApiModel.API_KEY;
-import static love.flicli.model.ApiModel.ENDPOINT;
 
 /**
  * Created by tommaso on 09/05/17.
@@ -129,12 +123,12 @@ public class ApiController extends IntentService {
     protected void onHandleIntent(Intent intent) {
         LinkedList<FlickModel> result;
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
-        ApiModel apiModel = ((FlicliApplication) getApplication()).getApiModel();
+        FlcikerAPI flcikerAPI = ((FlicliApplication) getApplication()).getFlcikerAPI();
 
         switch (intent.getAction()) {
             case ACTION_FLICKER:
                 String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
-                mvc.model.storeFactorization(Flickers(param, apiModel));
+                mvc.model.storeFactorization(Flickers(param, flcikerAPI));
                 break;
 /*
             case ACTION_RECENT:
@@ -162,13 +156,13 @@ public class ApiController extends IntentService {
     }
 
     @WorkerThread
-    private LinkedList<FlickModel> Flickers(String search, ApiModel apiModel) {
+    private LinkedList<FlickModel> Flickers(String search, FlcikerAPI flcikerAPI) {
 
         LinkedList<FlickModel> result = new LinkedList<FlickModel>();
 
         try {
             //Creazione array delle photo
-            JSONObject jsonObj = makeRequest(apiModel.photos_search(search));
+            JSONObject jsonObj = makeRequest(flcikerAPI.photos_search(search));
 
             JSONObject photos = jsonObj.getJSONObject("photos");
             JSONArray jPhoto = photos.getJSONArray("photo");

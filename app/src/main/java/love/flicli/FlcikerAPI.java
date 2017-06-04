@@ -1,4 +1,4 @@
-package love.flicli.model;
+package love.flicli;
 
 import android.util.Log;
 
@@ -27,7 +27,7 @@ import static android.provider.Telephony.Carriers.SERVER;
 
 // todo singleton
 @ThreadSafe
-public class ApiModel {
+public class FlcikerAPI {
     public static final String API_KEY = "7d915cac1d6d251a1014bc8e00a9bf2e";
     // I really need that info?
     public static final String SECRET_KEY = "10fde0314d4d1aef";

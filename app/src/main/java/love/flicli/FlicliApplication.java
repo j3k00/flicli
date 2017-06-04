@@ -1,6 +1,5 @@
 package love.flicli;
 import love.flicli.controller.Controller;
-import love.flicli.model.ApiModel;
 import love.flicli.model.Model;
 import android.app.Application;
 
@@ -10,20 +9,20 @@ import android.app.Application;
 
 public class FlicliApplication extends Application {
     private MVC mvc;
-    private ApiModel apiModel;
+    private FlcikerAPI flcikerAPI;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mvc = new MVC(new Model(), new Controller());
-        apiModel = new ApiModel();
+        flcikerAPI = new FlcikerAPI();
     }
 
     public MVC getMVC() {
         return mvc;
     }
 
-    public ApiModel getApiModel() {
-        return apiModel;
+    public FlcikerAPI getFlcikerAPI() {
+        return flcikerAPI;
     }
 }
