@@ -27,6 +27,7 @@ public class Controller {
     }
 
     public void getImageDetail(Context context, FlickModel flickModel) {
+        mvc.model.storeDetailFlicker(flickModel);
         showImage();
     }
 

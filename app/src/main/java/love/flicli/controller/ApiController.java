@@ -4,6 +4,8 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
@@ -13,6 +15,7 @@ import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -40,9 +43,12 @@ public class ApiController extends IntentService {
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
      */
+
+
+    //TODO
+    //interestigess.getList
+
     public ApiController() {
         super("ApiController");
     }
@@ -179,7 +185,25 @@ public class ApiController extends IntentService {
                 String user_id = (photo.isNull("owner")) ? "" : photo.getString("owner");
 
                 String author = "";//photo.getString("ownername");
+                
+                String imageURL = URL[0];
 
+                Bitmap bitmap = null;
+                try {
+                    // Download Image from URL
+                    InputStream input = new java.net.URL(imageURL).openStream();
+                    // Decode Bitmap
+                    bitmap = BitmapFactory.decodeStream(input);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return bitmap;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap result) {
+                // Set the bitmap into ImageView
+                image.setImageBitmap(result);
                 //image square è l'immagine in formato 75x75 ppx per la visualizzazione in formato lista
                 FlickModel f = new FlickModel(image_square, id, author, image, title);
                 result.add(f);
