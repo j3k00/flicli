@@ -1,6 +1,7 @@
 package love.flicli.view;
 
 import android.app.Fragment;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.view.View;
+import android.widget.ImageView;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
@@ -26,7 +28,7 @@ import static android.R.attr.x;
 public class ImageViewFragment extends Fragment implements AbstractFragment {
     private final static String TAG = ImageViewFragment.class.getName();
     private MVC mvc;
-    WebView webView = null;
+    ImageView imageView = null;
     private FlickModel flickModel;
 
     @Override @UiThread
@@ -38,7 +40,7 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
     @Nullable @Override @UiThread
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.image_fragment, container, false);
-        webView = (WebView) view.findViewById(R.id.imageContent);
+        imageView = (ImageView) view.findViewById(R.id.imageContent);
 
         return view;
     }
@@ -53,6 +55,8 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
     @Override
     public void onModelChanged() {
         flickModel = mvc.model.getDetailFlicker();
-        webView.loadUrl(flickModel.getImageUrl().replace("_z", "_h"));
-        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);    }
+
+        //TODO ALTRA CHIAMATA ASINCRONA PER SCARICARE L'IMMAGINE IN ALTA DEFINIZIONE
+        imageView.setImageBitmap(flickModel.getImageSquare());
+    }
 }
