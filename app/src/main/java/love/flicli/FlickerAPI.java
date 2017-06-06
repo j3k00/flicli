@@ -81,4 +81,22 @@ public class FlickerAPI {
 
         return makeUrl(params);
     }
+
+    //"https://api.flickr.com/services/rest/?
+    // method=flickr.photos.getPopular&
+    // api_key=efaa708098eef9c038ad4c123041733c&
+    // format=json&
+    // nojsoncallback=1";
+    public String photos_getPopular() {
+        String method = "flickr.photos.getPopular";
+        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s";
+        String per_page = "50";
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("method", method);
+        params.put("extras", extras);
+        params.put("per_page", per_page);
+
+        return makeUrl(params);
+    }
 }
