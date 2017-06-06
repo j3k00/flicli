@@ -374,11 +374,9 @@ public class FlickModel {
         return (param != null) ? param : "";
     }
 
+    public void setBitmap_url_s(Bitmap bitmap_url_s) { this.bitmap_url_s = bitmap_url_s; }
+
     public Bitmap getBitmap_url_s() {
         return this.bitmap_url_s;
-    }
-
-    public void generateBitmap_url_s() throws IOException {
-        this.bitmap_url_s  = BitmapFactory.decodeStream(new URL(this.getUrl_s()).openStream());
     }
 }

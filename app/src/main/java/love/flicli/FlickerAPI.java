@@ -49,7 +49,7 @@ public class FlickerAPI {
     // &nojsoncallback=1
     public String photos_search(String search) {
         String method = "flickr.photos.search";
-        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s";
+        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq";
         String per_page = "50";
 
         Map<String, String> params = new HashMap<String, String>();
@@ -71,7 +71,7 @@ public class FlickerAPI {
     // &nojsoncallback=1"
     public String photos_getRecent() {
         String method = "flickr.photos.getRecent";
-        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s";
+        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq";
         String per_page = "50";
 
         Map<String, String> params = new HashMap<String, String>();

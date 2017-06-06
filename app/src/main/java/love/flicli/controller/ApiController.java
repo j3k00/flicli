@@ -131,7 +131,7 @@ public class ApiController extends IntentService {
                 case ACTION_FLICKER:
                     String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
 
-                    jPhoto = makeRequest(flickerAPI.photos_search(search)).getJSONObject("photos").getJSONArray("photo");
+                    jPhoto = makeRequest(flickerAPI.photos_search(param)).getJSONObject("photos").getJSONArray("photo");
                     mvc.model.storeFactorization(_generateFlickers(jPhoto));
 
                     break;
@@ -181,7 +181,15 @@ public class ApiController extends IntentService {
             flick.setTitle(photo.getString("title"));
             flick.setOwner(photo.getString("owner"));
             flick.setOwner_name(photo.getString("ownername"));
-            flick.generateBitmap_url_s();
+            flick.setUrl_s(photo.getString("url_sq"));
+            flick.setUrl_m(photo.getString("url_s"));
+
+            try {
+                flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_s()).openStream()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                flick.setBitmap_url_s(null);
+            }
 
             result.add(flick);
         }

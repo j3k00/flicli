@@ -1,6 +1,7 @@
 package love.flicli.view;
 
 import android.app.ListFragment;
+import android.content.res.Resources;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -86,7 +87,11 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
             if (listFlick != null) {
                 FlickModel flick = listFlick.get(position);
 
-                ((ImageView) row.findViewById(R.id.icon)).setImageBitmap(flick.getImageSquare());
+                if (flick.getBitmap_url_s() == null) {
+                    ((ImageView) row.findViewById(R.id.icon)).setImageResource(R.drawable.image);
+                } else
+                    ((ImageView) row.findViewById(R.id.icon)).setImageBitmap(flick.getBitmap_url_s());
+
                 ((TextView) row.findViewById(R.id.description)).setText(flick.getTitle());
                 ((TextView) row.findViewById(R.id.url)).setText(flick.getId());
 
