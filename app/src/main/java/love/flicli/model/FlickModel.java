@@ -1,5 +1,9 @@
 package love.flicli.model;
 
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.widget.ImageView;
+
 import net.jcip.annotations.Immutable;
 
 import static android.os.Build.VERSION_CODES.M;
@@ -52,6 +56,7 @@ public class FlickModel {
     public String url_c;
     public String url_l;
     public String url_o;
+    public Bitmap image_square;
 
     public FlickModel(String id){
         this.id = id;
@@ -88,6 +93,7 @@ public class FlickModel {
         ispublic = 0;
         isfriend = 0;
         isfamily = 0;
+        image_square = null;
     }
 
     public String getId() {
@@ -165,6 +171,10 @@ public class FlickModel {
     public void setDescription(String description) {
         this.description = _setAttribute(description);
     }
+
+    public Bitmap getImageSquare() { return this.image_square; }
+
+    public void setImage_square(Bitmap image_square) { this.image_square = image_square; }
 
     public String getLicense() {
         return license;

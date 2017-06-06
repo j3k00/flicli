@@ -1,6 +1,7 @@
 package love.flicli.view;
 
 import android.app.ListFragment;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,7 +86,7 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
             if (listFlick != null) {
                 FlickModel flick = listFlick.get(position);
 
-                ((WebView) row.findViewById(R.id.icon)).loadUrl(flick.getImage_thb());
+                ((ImageView) row.findViewById(R.id.icon)).setImageBitmap(flick.getImageSquare());
                 ((TextView) row.findViewById(R.id.description)).setText(flick.getTitle());
                 ((TextView) row.findViewById(R.id.url)).setText(flick.getId());
 

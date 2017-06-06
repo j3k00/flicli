@@ -18,6 +18,7 @@ public class Model {
 
     @GuardedBy("Itself")
     private LinkedList<FlickModel> flickers;
+    private FlickModel detailFlicker;
 
     public void setMVC(MVC mvc) {
         this.mvc = mvc;
@@ -34,6 +35,15 @@ public class Model {
         else
             return new LinkedList<FlickModel>();
     }
+
+    public void storeDetailFlicker(FlickModel flickModel) {
+        this.detailFlicker = flickModel;
+    }
+
+    public FlickModel getDetailFlicker()  {
+        return this.detailFlicker;
+    }
+
 //
 //    public void storeComments(FlickerService.Comments[] c) {
 //        comments = c.clone();
