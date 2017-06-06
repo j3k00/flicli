@@ -123,6 +123,8 @@ public class ApiController extends IntentService {
 
         FlickerAPI flickerAPI = ((FlicliApplication) getApplication()).getFlickerAPI();
 
+        MVC mvc = ((FlicliApplication) getApplication()).getMVC();
+
         JSONArray jPhoto = null;
 
         try {

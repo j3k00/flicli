@@ -47,6 +47,14 @@ public class Model {
         return this.detailFlicker;
     }
 
+    public void storeFlickDinamically(FlickModel flickModel) {
+        flickers.add(flickModel);
+        mvc.forEachView(View::onModelChanged);
+    }
+
+    public void freeFlickers() {
+        this.flickers = new LinkedList<FlickModel>();
+    }
 //
 //    public void storeComments(FlickerService.Comments[] c) {
 //        comments = c.clone();
