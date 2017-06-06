@@ -133,13 +133,13 @@ public class ApiController extends IntentService {
                     String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
 
                     jPhoto = makeRequest(flickerAPI.photos_search(param)).getJSONObject("photos").getJSONArray("photo");
-                    mvc.model.storeFactorization(_generateFlickers(jPhoto));
+                    //mvc.model.storeFactorization(_generateFlickers(jPhoto));
+                    _generateFlickers(jPhoto, mvc);
                     break;
 
                 case ACTION_RECENT:
                     jPhoto = makeRequest(flickerAPI.photos_getRecent()).getJSONObject("photos").getJSONArray("photo");
-                    mvc.model.storeFactorization(_generateFlickers(jPhoto));
-
+                    _generateFlickers(jPhoto, mvc);
                     break;
     /*
                 case ACTION_POPULAR:
@@ -169,8 +169,10 @@ public class ApiController extends IntentService {
     }
 
     @WorkerThread
-    private  LinkedList<FlickModel> _generateFlickers(JSONArray elements) throws JSONException, IOException {
+    //LinkedList<FlickModel>
+    private  void  _generateFlickers(JSONArray elements, MVC mvc) throws JSONException, IOException {
         LinkedList<FlickModel> result = new LinkedList<FlickModel>();
+        mvc.model.freeFlickers();
 
         for (int i = 0; i < elements.length(); i++) {
             JSONObject photo = elements.getJSONObject(i);
@@ -191,11 +193,11 @@ public class ApiController extends IntentService {
                 flick.setBitmap_url_s(null);
             }
 
+            mvc.model.storeFlickDinamically(flick);
             result.add(flick);
         }
-
-        return result;
     }
+
     /*
     @WorkerThread
     private Flick[] Popular() {
