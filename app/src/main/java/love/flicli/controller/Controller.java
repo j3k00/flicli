@@ -31,13 +31,13 @@ public class Controller {
         showImage();
     }
 
- /*   @UiThread
+   @UiThread
     public void recent(Context context) {
         //passiamo al servizio il contensto
         ApiController.getRecentFlick(context);
         showHistory();
     }
-
+ /*
     @UiThread
     public void popular(Context context) {
         //passiamo al servizio il contensto

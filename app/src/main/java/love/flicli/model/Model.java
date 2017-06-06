@@ -22,23 +22,26 @@ public class Model {
 
     public void setMVC(MVC mvc) {
         this.mvc = mvc;
+        flickers = new LinkedList<FlickModel>();
     }
 
-    public void storeFactorization(LinkedList<FlickModel> flickers) {
-        this.flickers = flickers;
+    public void storeFactorization(FlickModel flicker) {
+        this.flickers.add(flicker);
         mvc.forEachView(View::onModelChanged);
     }
 
     public LinkedList<FlickModel> getFlickers() {
-        if (flickers != null)
-            return flickers;
-        else
-            return new LinkedList<FlickModel>();
+        return this.flickers;
     }
 
     public void storeDetailFlicker(FlickModel flickModel) {
         this.detailFlicker = flickModel;
     }
+
+    /*public void storeFlickerDinamically(FlickModel flickModel) {
+        this.flickers.add(flickModel);
+        mvc.forEachView(View::onModelChanged);
+    }*/
 
     public FlickModel getDetailFlicker()  {
         return this.detailFlicker;
