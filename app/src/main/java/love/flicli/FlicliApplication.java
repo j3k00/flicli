@@ -9,20 +9,20 @@ import android.app.Application;
 
 public class FlicliApplication extends Application {
     private MVC mvc;
-    private FlcikerAPI flcikerAPI;
+    private FlickerAPI flickerAPI;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mvc = new MVC(new Model(), new Controller());
-        flcikerAPI = new FlcikerAPI();
+        flickerAPI = new FlickerAPI();
     }
 
     public MVC getMVC() {
         return mvc;
     }
 
-    public FlcikerAPI getFlcikerAPI() {
-        return flcikerAPI;
+    public FlickerAPI getFlickerAPI() {
+        return flickerAPI;
     }
 }

@@ -20,8 +20,10 @@ import java.util.LinkedList;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
-import love.flicli.FlcikerAPI;
+import love.flicli.FlickerAPI;
 import love.flicli.model.FlickModel;
+
+import static android.provider.Telephony.Carriers.SERVER;
 
 /**
  * Created by tommaso on 09/05/17.
@@ -116,124 +118,71 @@ public class ApiController extends IntentService {
 
     @WorkerThread
     protected void onHandleIntent(Intent intent) {
-        LinkedList<FlickModel> result;
+
+        FlickerAPI flickerAPI = ((FlicliApplication) getApplication()).getFlickerAPI();
+
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
-        switch (intent.getAction()) {
-            case ACTION_FLICKER:
-                String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
-                mvc.model.storeFactorization(searchFlick(param));
-                break;
-/*
-            case ACTION_RECENT:
-                result = Recent();
-                mvc.model.storeFactorization(result);
-                break;
-
-            case ACTION_POPULAR:
-                result = Popular();
-                mvc.model.storeFactorization(result);
-                break;
-
-            case ACTION_COMMENT:
-                String image = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
-                Comments[] comments = Comment(image);
-                mvc.model.storeComments(comments);
-                break;
-
-            case ACTION_AUTHOR:
-                String author = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
-                result = author(author);
-                mvc.model.storeFactorization(result);
-*/
-        }
-    }
-
-    @WorkerThread
-    private LinkedList<FlickModel> searchFlick(String search) {
-        FlcikerAPI flcikerAPI = ((FlicliApplication) getApplication()).getFlcikerAPI();
-        LinkedList<FlickModel> result = new LinkedList<FlickModel>();
+        JSONArray jPhoto = null;
 
         try {
-            //Creazione array delle photo
-            JSONObject jsonObj = makeRequest(flcikerAPI.photos_search(search));
-            JSONArray jPhoto = jsonObj.getJSONObject("photos").getJSONArray("photo");
+            switch (intent.getAction()) {
+                case ACTION_FLICKER:
+                    String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
 
-            for (int i = 0; i < jPhoto.length(); i++) {
-                JSONObject photo = jPhoto.getJSONObject(i);
+                    jPhoto = makeRequest(flickerAPI.photos_search(search)).getJSONObject("photos").getJSONArray("photo");
+                    mvc.model.storeFactorization(_generateFlickers(jPhoto));
 
-                FlickModel f = new FlickModel(photo.getString("id"));
-                f.setDescription(photo.getString("description"));
-                f.setUrl_z(photo.getString("url_z"));
-                f.setTitle(photo.getString("title"));
-                f.setOwner(photo.getString("owner"));
+                    break;
 
-                result.add(f);
+               case ACTION_RECENT:
+                   jPhoto = makeRequest(flickerAPI.photos_getRecent()).getJSONObject("photos").getJSONArray("photo");
+                   mvc.model.storeFactorization(_generateFlickers(jPhoto));
+
+                   break;
+    /*
+                case ACTION_POPULAR:
+                    result = Popular();
+                    mvc.model.storeFactorization(result);
+                    break;
+
+                case ACTION_COMMENT:
+                    String image = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
+                    Comments[] comments = Comment(image);
+                    mvc.model.storeComments(comments);
+                    break;
+
+                case ACTION_AUTHOR:
+                    String author = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
+                    result = author(author);
+                    mvc.model.storeFactorization(result);*/
             }
         } catch (JSONException e) {
             Log.d(TAG, e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private  LinkedList<FlickModel> _generateFlickers(JSONArray elements) throws JSONException {
+        LinkedList<FlickModel> result = new LinkedList<FlickModel>();
+
+        for (int i = 0; i < elements.length(); i++) {
+            JSONObject photo = elements.getJSONObject(i);
+
+            FlickModel flick = new FlickModel(photo.getString("id"));
+            flick.setDescription(photo.getString("description"));
+            flick.setUrl_z(photo.getString("url_z"));
+            flick.setTitle(photo.getString("title"));
+            flick.setOwner(photo.getString("owner"));
+            flick.setOwner_name(photo.getString("ownername"));
+
+            result.add(flick);
         }
 
         return result;
     }
-/*
-    @WorkerThread
-    private FlickModel[] Recent() {
-        String SERVER = "https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=efaa708098eef9c038ad4c123041733c&extras=url_z%2Cdescription%2Ctags%2Cowner_name&per_page=50&format=json&nojsoncallback=1";
-        LinkedList<FlickModel> result = new LinkedList<Flick>();
 
-        try {
-            URL url = new URL(SERVER);
-            URLConnection conn = url.openConnection();
-            String answer = "";
-
-            BufferedReader in = null;
-            try {
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-                String line;
-                while ((line = in.readLine()) != null) {
-                    Log.d(TAG, "starting search of" + line);
-                    answer += line + "\n";
-                }
-            }
-            finally {
-                if (in != null)
-                    in.close();
-            }
-
-            //Creazione array delle photo
-            JSONObject jsonObj = new JSONObject(answer);
-            JSONObject photos = jsonObj.getJSONObject("photos");
-            JSONArray jPhoto = photos.getJSONArray("photo");
-
-
-            for (int i = 0; i < jPhoto.length(); i++) {
-                Log.d(TAG, String.valueOf(i));
-                JSONObject photo = jPhoto.getJSONObject(i);
-                String id = (photo.isNull("id")) ? "" : photo.getString("id");
-                String description = (photo.isNull("description")) ? "" :photo.getString("description");
-                String image = (photo.isNull("url_z")) ? "" : photo.getString("url_z");
-                String title = (photo.isNull("title")) ? "" : photo.getString("title");
-                String author = (photo.isNull("ownername")) ? "" : photo.getString("ownername");
-                String image_square = image.replace("_z", "_s");//getThumb(id);
-                String user_id = (photo.isNull("owner")) ? "" : photo.getString("owner");
-
-                Flick f = new Flick(image, description, id, author, title, image_square, user_id);
-                result.add(f);
-            }
-        }
-        catch (IOException e) {
-            Log.d(TAG, "I/O error", e);
-            return null;
-        } catch (JSONException e) {
-            Log.d(TAG, e.getMessage());
-            e.printStackTrace();
-        }
-        return result.toArray(new Flick[result.size()]);
-    }
-    @WorkerThread
+    /*   @WorkerThread
     private Flick[] Popular() {
         LinkedList<Flick> result = new LinkedList<Flick>();
 
