@@ -51,7 +51,7 @@ public class StartFragment extends Fragment implements AbstractFragment {
 
         sendButton.setOnClickListener(__ -> flicker(text.getText().toString()));
         //popularButton.setOnClickListener(__ -> flickerPopularImage());
-        //recentButton.setOnClickListener(__ -> flickerRecentImage());
+        recentButton.setOnClickListener(__ -> flickerRecentImage());
         return view;
     }
 
@@ -97,10 +97,10 @@ public class StartFragment extends Fragment implements AbstractFragment {
 
     /*
     @UiThread private void flickerPopularImage() { mvc.controller.popular(getActivity()); }
+    */
 
     @UiThread private  void flickerRecentImage() {
         mvc.controller.recent(getActivity());
     }
-    */
 }
 
