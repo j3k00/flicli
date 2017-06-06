@@ -4,6 +4,8 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
@@ -13,14 +15,15 @@ import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
 
+import love.flicli.FlickerAPI;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
-import love.flicli.FlcikerAPI;
 import love.flicli.model.FlickModel;
 
 /**
@@ -133,11 +136,11 @@ public class ApiController extends IntentService {
 
                     break;
 
-               case ACTION_RECENT:
-                   jPhoto = makeRequest(flickerAPI.photos_getRecent()).getJSONObject("photos").getJSONArray("photo");
-                   mvc.model.storeFactorization(_generateFlickers(jPhoto));
+                case ACTION_RECENT:
+                    jPhoto = makeRequest(flickerAPI.photos_getRecent()).getJSONObject("photos").getJSONArray("photo");
+                    mvc.model.storeFactorization(_generateFlickers(jPhoto));
 
-                   break;
+                    break;
     /*
                 case ACTION_POPULAR:
                     result = Popular();
@@ -155,6 +158,7 @@ public class ApiController extends IntentService {
                 result = author(author);
                 mvc.model.storeFactorization(result);
 */
+            }
         } catch (JSONException e) {
             Log.d(TAG, e.getMessage());
             e.printStackTrace();
@@ -165,7 +169,7 @@ public class ApiController extends IntentService {
     }
 
 
-    private  LinkedList<FlickModel> _generateFlickers(JSONArray elements) throws JSONException {
+    private  LinkedList<FlickModel> _generateFlickers(JSONArray elements) throws JSONException, IOException {
         LinkedList<FlickModel> result = new LinkedList<FlickModel>();
 
         for (int i = 0; i < elements.length(); i++) {
@@ -177,17 +181,7 @@ public class ApiController extends IntentService {
             flick.setTitle(photo.getString("title"));
             flick.setOwner(photo.getString("owner"));
             flick.setOwner_name(photo.getString("ownername"));
-
-            //SALVO L'IMMAGINE IN FORMATO BITMAP, E' UN PO LENTO PER FORZA DI COSA OVVIAMENTE
-            Bitmap bitmap = null;
-            Log.d(TAG, "-------------------" + f.getUrl_z() + "---------------");
-
-            //TODO VALORIZZARE TUTTI I CAMPI
-            InputStream input = new URL(f.getUrl_z().replace("_z", "_s")).openStream();
-            bitmap = BitmapFactory.decodeStream(input);
-
-            f.setImage_square(bitmap);
-            result.add(f);
+            flick.generateBitmap_url_s();
 
             result.add(flick);
         }
