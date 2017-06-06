@@ -181,11 +181,11 @@ public class ApiController extends IntentService {
             flick.setTitle(photo.getString("title"));
             flick.setOwner(photo.getString("owner"));
             flick.setOwner_name(photo.getString("ownername"));
-            flick.setUrl_s(photo.getString("url_sq"));
+            flick.setUrl_sq(photo.getString("url_sq"));
             flick.setUrl_m(photo.getString("url_s"));
 
             try {
-                flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_s()).openStream()));
+                flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
             } catch (IOException e) {
                 e.printStackTrace();
                 flick.setBitmap_url_s(null);
