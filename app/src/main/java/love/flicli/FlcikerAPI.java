@@ -4,22 +4,12 @@ import android.util.Log;
 
 import net.jcip.annotations.ThreadSafe;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
 import love.flicli.controller.ApiController;
 
 import static android.content.ContentValues.TAG;
-import static android.provider.Telephony.Carriers.SERVER;
 
 /**
  * Created by jeko on 02/06/17.

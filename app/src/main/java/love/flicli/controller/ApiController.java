@@ -38,11 +38,6 @@ public class ApiController extends IntentService {
     private final static String PARAM_SEARCHABLE = "param";
     private static String search = "";
 
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
-     */
     public ApiController() {
         super("ApiController");
     }
@@ -123,12 +118,11 @@ public class ApiController extends IntentService {
     protected void onHandleIntent(Intent intent) {
         LinkedList<FlickModel> result;
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
-        FlcikerAPI flcikerAPI = ((FlicliApplication) getApplication()).getFlcikerAPI();
 
         switch (intent.getAction()) {
             case ACTION_FLICKER:
                 String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
-                mvc.model.storeFactorization(Flickers(param, flcikerAPI));
+                mvc.model.storeFactorization(searchFlick(param));
                 break;
 /*
             case ACTION_RECENT:
@@ -156,32 +150,24 @@ public class ApiController extends IntentService {
     }
 
     @WorkerThread
-    private LinkedList<FlickModel> Flickers(String search, FlcikerAPI flcikerAPI) {
-
+    private LinkedList<FlickModel> searchFlick(String search) {
+        FlcikerAPI flcikerAPI = ((FlicliApplication) getApplication()).getFlcikerAPI();
         LinkedList<FlickModel> result = new LinkedList<FlickModel>();
 
         try {
             //Creazione array delle photo
             JSONObject jsonObj = makeRequest(flcikerAPI.photos_search(search));
-
-            JSONObject photos = jsonObj.getJSONObject("photos");
-            JSONArray jPhoto = photos.getJSONArray("photo");
-
+            JSONArray jPhoto = jsonObj.getJSONObject("photos").getJSONArray("photo");
 
             for (int i = 0; i < jPhoto.length(); i++) {
-
                 JSONObject photo = jPhoto.getJSONObject(i);
-                String id = (photo.isNull("id")) ? "" : photo.getString("id");
-                String description = (photo.isNull("description")) ? "" :photo.getString("description");
-                String image = (photo.isNull("url_z")) ? "" : photo.getString("url_z");
-                String title = (photo.isNull("title")) ? "" : photo.getString("title");
-                String image_square = image.replace("_z", "_s");
-                String user_id = (photo.isNull("owner")) ? "" : photo.getString("owner");
 
-                String author = "";//photo.getString("ownername");
+                FlickModel f = new FlickModel(photo.getString("id"));
+                f.setDescription(photo.getString("description"));
+                f.setUrl_z(photo.getString("url_z"));
+                f.setTitle(photo.getString("title"));
+                f.setOwner(photo.getString("owner"));
 
-                //image square è l'immagine in formato 75x75 ppx per la visualizzazione in formato lista
-                FlickModel f = new FlickModel(image_square, id, author, image, title);
                 result.add(f);
             }
         } catch (JSONException e) {
