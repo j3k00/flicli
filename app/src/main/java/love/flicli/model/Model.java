@@ -40,6 +40,13 @@ public class Model {
         this.detailFlicker = flickModel;
     }
 
+    public void storeFlickerDinamically(FlickModel flickModel) {
+        this.flickers.add(flickModel);
+        mvc.forEachView(View::onModelChanged);
+    }
+
+    public void freeFlickers() { this.flickers = new LinkedList<FlickModel>(); }
+
     public FlickModel getDetailFlicker()  {
         return this.detailFlicker;
     }

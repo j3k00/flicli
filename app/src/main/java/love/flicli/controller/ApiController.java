@@ -25,6 +25,7 @@ import love.flicli.FlickerAPI;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.model.FlickModel;
+import love.flicli.model.Model;
 
 /**
  * Created by tommaso on 09/05/17.
@@ -132,13 +133,13 @@ public class ApiController extends IntentService {
                     String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
 
                     jPhoto = makeRequest(flickerAPI.photos_search(param)).getJSONObject("photos").getJSONArray("photo");
-                    mvc.model.storeFactorization(_generateFlickers(jPhoto));
-
+                    //mvc.model.storeFactorization(_generateFlickers(jPhoto));
+                    _generateFlickers(mvc, jPhoto);
                     break;
 
                 case ACTION_RECENT:
                     jPhoto = makeRequest(flickerAPI.photos_getRecent()).getJSONObject("photos").getJSONArray("photo");
-                    mvc.model.storeFactorization(_generateFlickers(jPhoto));
+                    mvc.model.storeFactorization(_generateFlickers(mvc, jPhoto));
 
                     break;
     /*
@@ -169,8 +170,9 @@ public class ApiController extends IntentService {
     }
 
 
-    private  LinkedList<FlickModel> _generateFlickers(JSONArray elements) throws JSONException, IOException {
+    private  LinkedList<FlickModel> _generateFlickers(MVC mvc, JSONArray elements) throws JSONException, IOException {
         LinkedList<FlickModel> result = new LinkedList<FlickModel>();
+        mvc.model.freeFlickers();
 
         for (int i = 0; i < elements.length(); i++) {
             JSONObject photo = elements.getJSONObject(i);
@@ -191,7 +193,8 @@ public class ApiController extends IntentService {
                 flick.setBitmap_url_s(null);
             }
 
-            result.add(flick);
+            mvc.model.storeFlickerDinamically(flick);
+            //result.add(flick);
         }
 
         return result;
