@@ -34,8 +34,10 @@ import love.flicli.model.FlickModel;
 public class ListViewFragment extends ListFragment implements AbstractFragment {
     private MVC mvc;
     private final static String TAG = ListViewFragment.class.getName();
-    @Override @UiThread
 
+    private HistoryAdapter list;
+
+    @Override @UiThread
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mvc = ((FlicliApplication) getActivity().getApplication()).getMVC();
@@ -64,14 +66,17 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
 
     @Override @UiThread
     public void onModelChanged() {
-        setListAdapter(new HistoryAdapter());
+        if (list == null) {
+            list = new HistoryAdapter();
+            setListAdapter(list);
+        } else
+            list.notifyDataSetChanged();
     }
 
     private class HistoryAdapter extends ArrayAdapter<FlickModel> {
         private final LinkedList<FlickModel> listFlick = mvc.model.getFlickers();
 
         private HistoryAdapter() {
-            /*mvc.model.getFlickers()*/
             super(getActivity(), R.layout.history_fragment, mvc.model.getFlickers());
         }
 
