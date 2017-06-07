@@ -53,7 +53,7 @@ public class Model {
     }
 
     public void freeFlickers() {
-        this.flickers = new LinkedList<FlickModel>();
+        this.flickers.clear();
     }
 //
 //    public void storeComments(FlickerService.Comments[] c) {

@@ -93,14 +93,14 @@ public class ApiController extends IntentService {
         context.startService(intent);
     }
 
-  /*  @UiThread
+   @UiThread
     static void getPopularFlick(Context context) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_POPULAR);
         context.startService(intent);
     }
 
-    @UiThread
+  /*   @UiThread
     static void getCommentFlick(Context context, String image) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_COMMENT);
@@ -124,6 +124,7 @@ public class ApiController extends IntentService {
         FlickerAPI flickerAPI = ((FlicliApplication) getApplication()).getFlickerAPI();
 
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
+        mvc.model.freeFlickers();
 
         JSONArray jPhoto = null;
 
@@ -170,10 +171,8 @@ public class ApiController extends IntentService {
         }
     }
 
-    @WorkerThread
     private  void _generateFlickers(JSONArray elements) throws JSONException, IOException {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
-
 
         for (int i = 0; i < elements.length(); i++) {
             JSONObject photo = elements.getJSONObject(i);

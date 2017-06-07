@@ -37,14 +37,14 @@ public class Controller {
         ApiController.getRecentFlick(context);
         showHistory();
     }
- /*
+
     @UiThread
     public void popular(Context context) {
         //passiamo al servizio il contensto
         ApiController.getPopularFlick(context);
         showHistory();
     }
-    @UiThread
+  /*   @UiThread
     public void comment(Context context, String image) {
         ApiController.getCommentFlick(context, image);
     }
