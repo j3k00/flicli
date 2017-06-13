@@ -87,9 +87,12 @@ public class FlickerAPI {
     // api_key=efaa708098eef9c038ad4c123041733c&
     // format=json&
     // nojsoncallback=1";
+
+    // https://www.flickr.com/services/api/flickr.interestingness.getList.html
+    // https://api.flickr.com/services/rest/?method=flickr.interestingness.getList&api_key=2a877a945a0b58aecf11c2e9003bf1a6&format=rest&api_sig=1b6fd7f0f9925a5cf17a35e1f4d9df13
     public String photos_getPopular() {
-        String method = "flickr.photos.getPopular";
-        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s";
+        String method = "flickr.interestingness.getList";
+        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq";
         String per_page = "50";
 
         Map<String, String> params = new HashMap<String, String>();
