@@ -50,7 +50,7 @@ public class StartFragment extends Fragment implements AbstractFragment {
         recentButton = (Button) view.findViewById(R.id.recentImage);
 
         sendButton.setOnClickListener(__ -> flicker(text.getText().toString()));
-        //popularButton.setOnClickListener(__ -> flickerPopularImage());
+        popularButton.setOnClickListener(__ -> flickerPopularImage());
         recentButton.setOnClickListener(__ -> flickerRecentImage());
         return view;
     }
@@ -72,7 +72,7 @@ public class StartFragment extends Fragment implements AbstractFragment {
     @Override @UiThread
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_item) {
-            //mvc.controller.showHistory();
+            mvc.controller.showHistory();
             return true;
         }
         else
@@ -95,9 +95,7 @@ public class StartFragment extends Fragment implements AbstractFragment {
         }
     }
 
-    /*
     @UiThread private void flickerPopularImage() { mvc.controller.popular(getActivity()); }
-    */
 
     @UiThread private  void flickerRecentImage() {
         mvc.controller.recent(getActivity());
