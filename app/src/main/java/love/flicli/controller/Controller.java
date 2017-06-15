@@ -26,10 +26,10 @@ public class Controller {
         showHistory();
     }
 
-    public void getImageDetail(Context context, FlickModel flickModel) {
+    /*public void getImageDetail(Context context, FlickModel flickModel) {
         mvc.model.storeDetailFlicker(flickModel);
         showImage();
-    }
+    }*/
 
    @UiThread
     public void recent(Context context) {

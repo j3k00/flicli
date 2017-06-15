@@ -1,20 +1,9 @@
 package love.flicli.model;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.util.Log;
-import android.widget.ImageView;
 
 import net.jcip.annotations.Immutable;
-
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-
-import static android.content.ContentValues.TAG;
-import static android.os.Build.VERSION_CODES.M;
-
 /**
  * Created by tommaso on 19/05/17.
  */
@@ -385,5 +374,14 @@ public class FlickModel {
 
     public void setComments(ArrayList<Comment> comments) { this.comments = comments; }
 
-    public ArrayList<Comment> getComments(ArrayList<Comment> comments) { return this.comments; }
+    public void addComments(Comment comment) { this.comments.add(comment); }
+
+    public ArrayList<Comment> getComments(ArrayList<Comment> comments) {
+        if (this.comments.isEmpty()) {
+            return Comment.emptyComment();
+        } else {
+            return this.comments;
+        }
+    }
+
 }

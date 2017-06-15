@@ -1,14 +1,19 @@
 package love.flicli.model;
 
+import net.jcip.annotations.Immutable;
+
+import java.util.ArrayList;
+
 /**
  * Created by jeko on 15/06/17.
  */
 
+@Immutable
 public class Comment {
     // Default attribues
     private String id;
     private String author;
-    private String  author_is_deleted;
+    private String author_is_deleted;
     private String authorname;
     private String iconserver;
     private String iconfarm;
@@ -118,5 +123,12 @@ public class Comment {
 
     public void set_content(String _content) {
         this._content = _content;
+    }
+
+    public static ArrayList<Comment> emptyComment() {
+        Comment comment = new Comment("0");
+        comment.set_content("No Comments");
+
+        return new ArrayList<Comment>() {{ add(comment); }};
     }
 }

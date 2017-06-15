@@ -2,6 +2,9 @@ package love.flicli.model;
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import love.flicli.MVC;
@@ -18,34 +21,49 @@ public class Model {
 
     @GuardedBy("Itself")
     private LinkedList<FlickModel> flickers;
-    private FlickModel detailFlicker;
+    //private FlickModel detailFlicker;
 
     public void setMVC(MVC mvc) {
         this.mvc = mvc;
         flickers = new LinkedList<FlickModel>();
     }
 
-    public void storeFactorization(FlickModel flicker) {
-        this.flickers.add(flicker);
+    public void storeFactorization(FlickModel flick) {
+        for (FlickModel currentFlick: this.flickers) {
+            if (currentFlick.getId() == flick.getId()) {
+                return;
+            }
+        }
+
+        this.flickers.add(flick);
+
         mvc.forEachView(View::onModelChanged);
+    }
+
+    public void storeComments(ArrayList<Comment> comments, String photo_id) {
+        for (FlickModel flick :  mvc.model.getFlickers()) {
+            if (flick.getId() == photo_id) {
+                flick.setComments(comments);
+            }
+        }
     }
 
     public LinkedList<FlickModel> getFlickers() {
         return this.flickers;
     }
 
-    public void storeDetailFlicker(FlickModel flickModel) {
+    /*public void storeDetailFlicker(FlickModel flickModel) {
         this.detailFlicker = flickModel;
-    }
+    }*/
 
     /*public void storeFlickerDinamically(FlickModel flickModel) {
         this.flickers.add(flickModel);
         mvc.forEachView(View::onModelChanged);
     }*/
 
-    public FlickModel getDetailFlicker()  {
+    /*public FlickModel getDetailFlicker()  {
         return this.detailFlicker;
-    }
+    }*/
 
     public void storeFlickDinamically(FlickModel flickModel) {
         flickers.add(flickModel);

@@ -19,13 +19,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import love.flicli.FlickerAPI;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
+import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
-import love.flicli.model.Model;
 
 /**
  * Created by tommaso on 09/05/17.
@@ -40,6 +40,7 @@ public class ApiController extends IntentService {
     private final static String ACTION_AUTHOR = "getFlickByAuthor";
 
     private final static String PARAM_SEARCHABLE = "param";
+    private final static String PARAM_PHOTOID = "photo_id";
     private static String search = "";
 
     public ApiController() {
@@ -100,16 +101,16 @@ public class ApiController extends IntentService {
         context.startService(intent);
     }
 
-  /*   @UiThread
-    static void getCommentFlick(Context context, String image) {
+   @UiThread
+    static void getCommentFlick(Context context, String photo_id) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_COMMENT);
-        search = image;
-        intent.putExtra(PARAM_SEARCHABLE, search);
+        photo_id = photo_id;
+        intent.putExtra(PARAM_PHOTOID, photo_id);
         context.startService(intent);
     }
 
-    @UiThread
+   /*   @UiThread
     static void getFlickByAuthor(Context context, String author) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_AUTHOR);
@@ -124,13 +125,16 @@ public class ApiController extends IntentService {
         FlickerAPI flickerAPI = ((FlicliApplication) getApplication()).getFlickerAPI();
 
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
-        mvc.model.freeFlickers();
 
         JSONArray jPhoto = null;
+        JSONArray jComment = null;
 
         try {
             switch (intent.getAction()) {
                 case ACTION_FLICKER:
+                    // Empty list of Flickers
+                    mvc.model.freeFlickers();
+
                     String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
 
                     jPhoto = makeRequest(flickerAPI.photos_search(param)).getJSONObject("photos").getJSONArray("photo");
@@ -139,21 +143,29 @@ public class ApiController extends IntentService {
                     break;
 
                 case ACTION_RECENT:
+                    // Empty list of Flickers
+                    mvc.model.freeFlickers();
+
                     jPhoto = makeRequest(flickerAPI.photos_getRecent()).getJSONObject("photos").getJSONArray("photo");
                     _generateFlickers(jPhoto);
 
                     break;
 
                 case ACTION_POPULAR:
+                    // Empty list of Flickers
+                    mvc.model.freeFlickers();
+
                     jPhoto = makeRequest(flickerAPI.photos_getPopular()).getJSONObject("photos").getJSONArray("photo");
                     _generateFlickers(jPhoto);
 
                     break;
 
                 case ACTION_COMMENT:
-                    String image = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
-                    Comment[] comments = Comment(image);
-                    mvc.model.storeComment(comments);
+                    String photo_id = (String) intent.getSerializableExtra(PARAM_PHOTOID);
+
+                    jComment = makeRequest(flickerAPI.photos_getComments(photo_id)).getJSONObject("comments").getJSONArray("comment");
+                    _generateComments(jComment, photo_id);
+
                     break;
 
 /*                case ACTION_AUTHOR:
@@ -197,78 +209,30 @@ public class ApiController extends IntentService {
         }
     }
 
-    private Comments[] Comment(String image) {
-        LinkedList<Comments> result = new LinkedList<>();
+    private void _generateComments(JSONArray elements, String photo_id) throws JSONException, IOException {
+        MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
-        String SERVER = "https://api.flickr.com/services/rest/?method=flickr.photos.comments.getList&api_key=efaa708098eef9c038ad4c123041733c&photo_id=" + image + "&format=json&nojsoncallback=1";
+        ArrayList<Comment> comments = new ArrayList<Comment>();
 
-        try {
-            URL url = new URL(SERVER);
-            URLConnection conn = url.openConnection();
-            String answer = "";
+        for (int i = 0; i < elements.length(); i++) {
+            JSONObject photo = elements.getJSONObject(i);
 
-            BufferedReader in = null;
-            try {
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            Comment comment = new Comment(photo.getString("id"));
+            comment.setAuthor(photo.getString("author"));
+            comment.setAuthor_is_deleted(photo.getString("author_is_deleted"));
+            comment.setAuthorname(photo.getString("authorname"));
+            comment.setIconserver(photo.getString("iconserver"));
+            comment.setIconfarm(photo.getString("iconfarm"));
+            comment.setDatecreate(photo.getString("datecreate"));
+            comment.setPermalink(photo.getString("permalink"));
+            comment.setPath_alias(photo.getString("path_alias"));
+            comment.setRealname(photo.getString("realname"));
+            comment.set_content(photo.getString("_content"));
 
-                String line;
-                while ((line = in.readLine()) != null) {
-                    Log.d(TAG, "starting search of" + line);
-                    answer += line + "\n";
-                }
-            }
-            finally {
-                if (in != null)
-                    in.close();
-            }
-
-            JSONObject jsonObj = new JSONObject(answer);
-            JSONObject comment = jsonObj.getJSONObject("comments");
-            JSONArray jComment = null;
-            JSONObject job = null;
-            try {
-                jComment = comment.getJSONArray("comment");
-            } catch (JSONException e) {
-            }
-
-            if (jComment == null)
-                job = jsonObj.getJSONObject("comment");
-
-            String author = "";
-            String commit = "";
-
-            if (jComment != null) {
-                if (jComment != null)
-                    for (int i = 0; i < jComment.length(); i++) {
-                        JSONObject j = jComment.getJSONObject(i);
-
-                        author = (j.isNull("authorname")) ? j.getString("author") : j.getString("authorname");
-                        commit = (j.isNull("_content")) ? "" : j.getString("_content");
-
-                        Comments c = new Comments(author, commit);
-                        result.add(c);
-                    }
-            } else {
-                author = (job.isNull("authorname")) ? job.getString("author") : job.getString("authorname");
-                commit = (job.isNull("_content")) ? "" : job.getString("_content");
-
-                Comments c = new Comments(author, commit);
-                result.add(c);
-            }
-
-        }catch (IOException e) {
-            Log.d(TAG, "I/O exception");
-        } catch (JSONException e) {
-            Log.d(TAG, "JSONException");
+            comments.add(comment);
         }
 
-        if (result.size() != 0)
-            return  result.toArray(new Comments[result.size()]);
-        else {
-            Comments c = new Comments("Nessun Commento", "Nessun Comment");
-            result.add(c);
-            return result.toArray(new Comments[result.size()]);
-        }
+        mvc.model.storeComments(comments, photo_id);
     }
 
     /*public String getThumb(String id) {
