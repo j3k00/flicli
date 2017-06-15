@@ -105,7 +105,6 @@ public class ApiController extends IntentService {
     static void getCommentFlick(Context context, String photo_id) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_COMMENT);
-        photo_id = photo_id;
         intent.putExtra(PARAM_PHOTOID, photo_id);
         context.startService(intent);
     }

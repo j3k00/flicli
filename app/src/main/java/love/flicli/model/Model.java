@@ -21,7 +21,7 @@ public class Model {
 
     @GuardedBy("Itself")
     private LinkedList<FlickModel> flickers;
-    //private FlickModel detailFlicker;
+    private FlickModel flick;
 
     public void setMVC(MVC mvc) {
         this.mvc = mvc;
@@ -44,6 +44,7 @@ public class Model {
         for (FlickModel flick :  mvc.model.getFlickers()) {
             if (flick.getId() == photo_id) {
                 flick.setComments(comments);
+                this.flick = flick;
             }
         }
     }
@@ -52,27 +53,9 @@ public class Model {
         return this.flickers;
     }
 
-    /*public void storeDetailFlicker(FlickModel flickModel) {
-        this.detailFlicker = flickModel;
-    }*/
+    public FlickModel getDetailFlicker()  { return this.flick; }
 
-    /*public void storeFlickerDinamically(FlickModel flickModel) {
-        this.flickers.add(flickModel);
-        mvc.forEachView(View::onModelChanged);
-    }*/
-
-    /*public FlickModel getDetailFlicker()  {
-        return this.detailFlicker;
-    }*/
-
-    public void storeFlickDinamically(FlickModel flickModel) {
-        flickers.add(flickModel);
-        mvc.forEachView(View::onModelChanged);
-    }
-
-    public void freeFlickers() {
-        this.flickers.clear();
-    }
+    public void freeFlickers() { this.flickers.clear(); }
 //
 //    public void storeComments(FlickerService.Comments[] c) {
 //        comments = c.clone();
