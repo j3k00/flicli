@@ -149,14 +149,14 @@ public class ApiController extends IntentService {
                     _generateFlickers(jPhoto);
 
                     break;
-/*
+
                 case ACTION_COMMENT:
                     String image = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
-                    Comments[] comments = Comment(image);
-                    mvc.model.storeComments(comments);
+                    Comment[] comments = Comment(image);
+                    mvc.model.storeComment(comments);
                     break;
 
-                case ACTION_AUTHOR:
+/*                case ACTION_AUTHOR:
                     String author = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
                     result = author(author);
                     mvc.model.storeFactorization(result);
@@ -196,7 +196,7 @@ public class ApiController extends IntentService {
             mvc.model.storeFactorization(flick);
         }
     }
-/*
+
     private Comments[] Comment(String image) {
         LinkedList<Comments> result = new LinkedList<>();
 
@@ -271,7 +271,7 @@ public class ApiController extends IntentService {
         }
     }
 
-    public String getThumb(String id) {
+    /*public String getThumb(String id) {
         String SIZE = "https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=5cf3287df65ea5208bf0b2aade1f929d&photo_id=" + id + "&format=json&nojsoncallback=1";
 
         try {

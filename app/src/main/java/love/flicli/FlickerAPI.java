@@ -102,4 +102,20 @@ public class FlickerAPI {
 
         return makeUrl(params);
     }
+
+
+    //https://api.flickr.com/services/rest/?
+    // method=flickr.photos.comments.getList&
+    // api_key=efaa708098eef9c038ad4c123041733c&
+    // photo_id=" + image + "
+    // &format=json&nojsoncallback=1
+    public String photos_getComments(String photo_id) {
+        String method = "flickr.photos.comments.getList";
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("method", method);
+        params.put("photo_id", photo_id);
+
+        return makeUrl(params);
+    }
 }

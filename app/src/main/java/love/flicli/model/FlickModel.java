@@ -10,6 +10,7 @@ import net.jcip.annotations.Immutable;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 import static android.os.Build.VERSION_CODES.M;
@@ -26,43 +27,44 @@ import static android.os.Build.VERSION_CODES.M;
 @Immutable
 public class FlickModel {
     // Default attribues
-    public String id;
-    public String owner;
-    public String secret;
-    public String server;
-    public String title;
-    public int farm;
-    public int ispublic;
-    public int isfriend;
-    public int isfamily;
+    private String id;
+    private String owner;
+    private String secret;
+    private String server;
+    private String title;
+    private int farm;
+    private int ispublic;
+    private int isfriend;
+    private int isfamily;
 
     // Optional attributes
-    public String description;
-    public String license;
-    public String date_upload;
-    public String date_taken;
-    public String owner_name;
-    public String icon_server;
-    public String original_format;
-    public String last_update;
-    public String geo;
-    public String tags;
-    public String machine_tags;
-    public String o_dims;
-    public String views;
-    public String media;
-    public String path_alias;
-    public String url_sq;
-    public String url_t;
-    public String url_s;
-    public String url_q;
-    public String url_m;
-    public String url_n;
-    public String url_z;
-    public String url_c;
-    public String url_l;
-    public String url_o;
-    public Bitmap bitmap_url_s;
+    private String description;
+    private String license;
+    private String date_upload;
+    private String date_taken;
+    private String owner_name;
+    private String icon_server;
+    private String original_format;
+    private String last_update;
+    private String geo;
+    private String tags;
+    private String machine_tags;
+    private String o_dims;
+    private String views;
+    private String media;
+    private String path_alias;
+    private String url_sq;
+    private String url_t;
+    private String url_s;
+    private String url_q;
+    private String url_m;
+    private String url_n;
+    private String url_z;
+    private String url_c;
+    private String url_l;
+    private String url_o;
+    private Bitmap bitmap_url_s;
+    private ArrayList<Comment> comments;
 
     public FlickModel(String id){
         this.id = id;
@@ -100,6 +102,7 @@ public class FlickModel {
         isfriend = 0;
         isfamily = 0;
         bitmap_url_s = null;
+        comments = new ArrayList<Comment>();
     }
 
     public String getId() {
@@ -374,11 +377,13 @@ public class FlickModel {
         return (param != null) ? param : "";
     }
 
-    public void setBitmap_url_s(Bitmap bitmap_url_s) {
-        this.bitmap_url_s = bitmap_url_s;
-    }
+    public void setBitmap_url_s(Bitmap bitmap_url_s) { this.bitmap_url_s = bitmap_url_s; }
 
     public Bitmap getBitmap_url_s() {
         return this.bitmap_url_s;
     }
+
+    public void setComments(ArrayList<Comment> comments) { this.comments = comments; }
+
+    public ArrayList<Comment> getComments(ArrayList<Comment> comments) { return this.comments; }
 }
