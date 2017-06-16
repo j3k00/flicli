@@ -26,10 +26,11 @@ public class Controller {
         showHistory();
     }
 
-    /*public void getImageDetail(Context context, FlickModel flickModel) {
+    public void getImageDetail(Context context, FlickModel flickModel) {
         mvc.model.storeDetailFlicker(flickModel);
+        comment(context, flickModel.getId());
         showImage();
-    }*/
+    }
 
    @UiThread
     public void recent(Context context) {
@@ -44,11 +45,18 @@ public class Controller {
         ApiController.getPopularFlick(context);
         showHistory();
     }
-  /*   @UiThread
+
+    @UiThread
     public void comment(Context context, String image) {
         ApiController.getCommentFlick(context, image);
     }
 
+    @UiThread
+    public void favourite(Context context, String image) {
+        ApiController.getFavourities(context, image);
+    }
+
+    /*
     public void lastAuthorImage(Context context, String author) {
         ApiController.getFlickByAuthor(context, author);
         showHistory();

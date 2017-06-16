@@ -53,6 +53,7 @@ public class FlickModel {
     private String url_l;
     private String url_o;
     private Bitmap bitmap_url_s;
+    private String favourities;
     private ArrayList<Comment> comments;
 
     public FlickModel(String id){
@@ -372,11 +373,17 @@ public class FlickModel {
         return this.bitmap_url_s;
     }
 
-    public void setComments(ArrayList<Comment> comments) { this.comments = comments; }
+    public void setFavourities(String fav) { this.favourities = fav; }
+
+    public String getFavourities() { return this.favourities; }
+
+    public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments;
+    }
 
     public void addComments(Comment comment) { this.comments.add(comment); }
 
-    public ArrayList<Comment> getComments(ArrayList<Comment> comments) {
+    public ArrayList<Comment> getComments() {
         if (this.comments.isEmpty()) {
             return Comment.emptyComment();
         } else {

@@ -6,14 +6,20 @@ import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
+import android.view.View;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
+import love.flicli.model.Comment;
+
+import static android.os.Build.VERSION_CODES.M;
 
 /**
  * Created by tommaso on 03/06/17.
@@ -31,14 +37,14 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
 
     @Override @UiThread
     public void onModelChanged() {
-        /*setListAdapter(new CommentAdapter());*/
+        setListAdapter(new CommentAdapter());
     }
-/*
-    private class CommentAdapter extends ArrayAdapter<FlickerService.Comments> {
-        private final FlickerService.Comments[] messages = mvc.model.getComments();
+
+    private class CommentAdapter extends ArrayAdapter<Comment> {
+        private final ArrayList<Comment> messages = mvc.model.getDetailFlicker().getComments();
 
         private CommentAdapter() {
-            super(getActivity(), R.layout.comment_fragment, mvc.model.getComments());
+            super(getActivity(), R.layout.comment_fragment, mvc.model.getDetailFlicker().getComments());
         }
 
         @Override
@@ -51,19 +57,30 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
             }
 
             if (messages != null) {
-                FlickerService.Comments message = messages[position];
-                String date = getCalendarDate(message.getDate());
+                Comment message = messages.get(position);
+                String date = "";
+                String text = "";
+                String author = "";
 
-                ((TextView) row.findViewById(R.id.author)).setText(message.getAuthor());
+                if (message.get_content().compareTo("No Comments") == 0) {
+                    date = getCalendarDate((long) 0);
+                    author = "Nessun Commento";
+                    text = "Nessun Commento";
+                } else {
+                    date = getCalendarDate(Long.parseLong(message.getDatecreate()));
+                    author = message.getAuthorname();
+                    text = message.get_content();
+                }
+
+                ((TextView) row.findViewById(R.id.author)).setText(author);
 
                 //create date test
                 String util = "\t";
                 util = util.concat(date);
 
                 ((TextView) row.findViewById(R.id.date)).setText(util);
-                ((TextView) row.findViewById(R.id.message)).setText(message.getComments());
+                ((TextView) row.findViewById(R.id.message)).setText(text);
             }
-
             return row;
         }
     }
@@ -134,5 +151,4 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
             return difference;
         }
     }
-    */
 }

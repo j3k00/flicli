@@ -49,7 +49,7 @@ public class FlickerAPI {
     // &nojsoncallback=1
     public String photos_search(String search) {
         String method = "flickr.photos.search";
-        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq";
+        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq%2Cviews";
         String per_page = "50";
 
         Map<String, String> params = new HashMap<String, String>();
@@ -92,7 +92,7 @@ public class FlickerAPI {
     // https://api.flickr.com/services/rest/?method=flickr.interestingness.getList&api_key=2a877a945a0b58aecf11c2e9003bf1a6&format=rest&api_sig=1b6fd7f0f9925a5cf17a35e1f4d9df13
     public String photos_getPopular() {
         String method = "flickr.interestingness.getList";
-        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq";
+        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq%2Cviews";
         String per_page = "50";
 
         Map<String, String> params = new HashMap<String, String>();
@@ -111,6 +111,16 @@ public class FlickerAPI {
     // &format=json&nojsoncallback=1
     public String photos_getComments(String photo_id) {
         String method = "flickr.photos.comments.getList";
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("method", method);
+        params.put("photo_id", photo_id);
+
+        return makeUrl(params);
+    }
+
+    public String photo_getFav(String photo_id) {
+        String method = "flickr.photos.getFavorites";
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("method", method);

@@ -42,11 +42,12 @@ public class Model {
 
     public void storeComments(ArrayList<Comment> comments, String photo_id) {
         for (FlickModel flick :  mvc.model.getFlickers()) {
-            if (flick.getId() == photo_id) {
+            if (flick.getId().compareTo(photo_id) == 0) {
                 flick.setComments(comments);
                 this.flick = flick;
             }
         }
+        mvc.forEachView(View::onModelChanged);
     }
 
     public LinkedList<FlickModel> getFlickers() {
@@ -55,31 +56,7 @@ public class Model {
 
     public FlickModel getDetailFlicker()  { return this.flick; }
 
+    public void storeDetailFlicker(FlickModel flickModel) { this.flick = flickModel; }
+
     public void freeFlickers() { this.flickers.clear(); }
-//
-//    public void storeComments(FlickerService.Comments[] c) {
-//        comments = c.clone();
-//        mvc.forEachView(View::onModelChanged);
-//    }
-//
-//    public void storeLastFlick(FlickerService.Flick flick) {
-//        lastFlick = flick;
-//    }
-//
-//    public FlickerService.Comments[] getComments() {
-//        if (comments != null)
-//            return comments.clone();
-//        else
-//            return new FlickerService.Comments[0];
-//    }
-//
-//    public FlickerService.Flick getLastFlick() { return lastFlick; }
-//
-//    //return the list of the search Flick
-//    public FlickerService.Flick[] getFlickers() {
-//        if (flickers != null)
-//            return flickers.clone();
-//        else
-//            return new FlickerService.Flick[0];
-//    }
 }

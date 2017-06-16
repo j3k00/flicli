@@ -27,6 +27,8 @@ import love.flicli.MVC;
 import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
 
+import static love.flicli.R.id.comments;
+
 /**
  * Created by tommaso on 09/05/17.
  */
@@ -38,6 +40,7 @@ public class ApiController extends IntentService {
     private final static String ACTION_POPULAR = "getPopularFlick";
     private final static String ACTION_COMMENT = "getCommentFlick";
     private final static String ACTION_AUTHOR = "getFlickByAuthor";
+    private final static String ACTION_FAVOURITE = "getFavourities";
 
     private final static String PARAM_SEARCHABLE = "param";
     private final static String PARAM_PHOTOID = "photo_id";
@@ -109,6 +112,14 @@ public class ApiController extends IntentService {
         context.startService(intent);
     }
 
+    @UiThread
+    static void getFavourities(Context context, String photo_id) {
+        Intent intent = new Intent(context, ApiController.class);
+        intent.setAction(ACTION_FAVOURITE);
+        intent.putExtra(PARAM_PHOTOID, photo_id);
+        context.startService(intent);
+    }
+
    /*   @UiThread
     static void getFlickByAuthor(Context context, String author) {
         Intent intent = new Intent(context, ApiController.class);
@@ -167,6 +178,14 @@ public class ApiController extends IntentService {
 
                     break;
 
+                case ACTION_FAVOURITE:
+                    photo_id = (String) intent.getSerializableExtra(PARAM_PHOTOID);
+
+                    jComment = makeRequest(flickerAPI.photos_getComments(photo_id)).getJSONObject("photo").getJSONArray("person");
+                    _setFavourities(jComment, photo_id);
+
+                    break;
+
 /*                case ACTION_AUTHOR:
                     String author = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
                     result = author(author);
@@ -196,6 +215,7 @@ public class ApiController extends IntentService {
             flick.setOwner_name(photo.getString("ownername"));
             flick.setUrl_sq(photo.getString("url_sq"));
             flick.setUrl_m(photo.getString("url_s"));
+            flick.setViews(photo.getString("views"));
 
             try {
                 flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
@@ -232,6 +252,15 @@ public class ApiController extends IntentService {
         }
 
         mvc.model.storeComments(comments, photo_id);
+    }
+
+    private void _setFavourities(JSONArray elements, String photo_id) throws JSONException, IOException {
+        MVC mvc = ((FlicliApplication) getApplication()).getMVC();
+
+        ArrayList<Comment> favourites = new ArrayList<Comment>();
+
+        mvc.model.getDetailFlicker().setFavourities(String.valueOf(favourites.size()));
+
     }
 
     /*public String getThumb(String id) {

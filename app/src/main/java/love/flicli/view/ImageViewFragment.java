@@ -11,11 +11,16 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
+import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
 
 import static android.R.attr.data;
@@ -29,6 +34,9 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
     private final static String TAG = ImageViewFragment.class.getName();
     private MVC mvc;
     ImageView imageView = null;
+    TextView views = null;
+    TextView comments = null;
+    TextView fav = null;
     private FlickModel flickModel;
 
     @Override @UiThread
@@ -41,7 +49,9 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.image_fragment, container, false);
         imageView = (ImageView) view.findViewById(R.id.imageContent);
-
+        views = (TextView) view.findViewById(R.id.views);
+        comments = (TextView) view.findViewById(R.id.comments);
+        fav = (TextView) view.findViewById(R.id.favourite);
         return view;
     }
 
@@ -58,5 +68,19 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
 
         //TODO ALTRA CHIAMATA ASINCRONA PER SCARICARE L'IMMAGINE IN ALTA DEFINIZIONE
         imageView.setImageBitmap(flickModel.getBitmap_url_s());
+        views.setText(mvc.model.getDetailFlicker().getViews());
+
+        ArrayList<Comment> comment = mvc.model.getDetailFlicker().getComments();
+        String value = "";
+        if (comment.size() == 1) {
+            Comment comment1 = comment.get(0);
+            if (comment1.get_content().compareTo("No Comments") == 0)
+                value = "0";
+            value = "1";
+        }else
+            value = String.valueOf(mvc.model.getDetailFlicker().getComments().size());
+
+        comments.setText(value);
+        fav.setText(flickModel.getFavourities());
     }
 }
