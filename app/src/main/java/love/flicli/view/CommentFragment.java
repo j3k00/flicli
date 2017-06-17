@@ -76,11 +76,6 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
                     text = message.get_content();
                 }
 
-                if (date.contains("-")) {
-                    String ciaoppp = message.getDatecreate();
-                    String ciao = getCalendarDate(Long.parseLong(message.getDatecreate()));
-                }
-
                 ((TextView) row.findViewById(R.id.author)).setText(author);
 
                 //create date test
@@ -148,9 +143,6 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
                     return difference;
                 } else {
                     //STESSA ORA RITORNO LA DIFFERENZA DEI MINUTI
-                    Log.d(TAG, "-------------------------------" + currentDate.toString());
-                    Log.d(TAG, "-------------------------------" + cal.toString());
-                    Log.d(TAG, String.valueOf(currentDate.get(Calendar.MINUTE)));
                     int diff = currentDate.get(Calendar.MINUTE) - cal.get(Calendar.MINUTE);
                     String difference = diff + "";
                     difference = difference.concat(" minutes ago");
