@@ -4,6 +4,7 @@ import android.app.ListFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -17,8 +18,10 @@ import android.view.View;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
+import love.flicli.controller.Controller;
 import love.flicli.model.Comment;
 
+import static android.content.ContentValues.TAG;
 import static android.os.Build.VERSION_CODES.M;
 
 /**
@@ -26,6 +29,7 @@ import static android.os.Build.VERSION_CODES.M;
  */
 
 public class CommentFragment extends ListFragment implements AbstractFragment  {
+    private final static String TAG = CommentFragment.class.getName();
     private MVC mvc;
 
     @Override @UiThread
@@ -72,6 +76,11 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
                     text = message.get_content();
                 }
 
+                if (date.contains("-")) {
+                    String ciaoppp = message.getDatecreate();
+                    String ciao = getCalendarDate(Long.parseLong(message.getDatecreate()));
+                }
+
                 ((TextView) row.findViewById(R.id.author)).setText(author);
 
                 //create date test
@@ -90,12 +99,16 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
         String itemDateStr = new SimpleDateFormat("dd-MMM HH:mm").format(d);
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
+        long time= System.currentTimeMillis();
+
         Calendar currentDate = Calendar.getInstance();
+        d = new java.util.Date(time);
+        currentDate.setTime(d);
 
         if (date == 0)
             return "";
         else if (cal.get(Calendar.YEAR) < currentDate.get(Calendar.YEAR)) {
-            //ANNO CORRENTE > ANNO DEL COMMENTO
+            //ANNO DEL COMMENTO < DELL'ANNO CORRENTE
 
             String diff = currentDate.get(Calendar.YEAR) - cal.get(Calendar.YEAR) + "";
             if ((currentDate.get(Calendar.YEAR) - cal.get(Calendar.YEAR)) > 1)
@@ -107,7 +120,8 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
             //STESSO ANNO DELL'ANNO CORRENTE E STESSO MESE
 
             if (currentDate.get(Calendar.DAY_OF_MONTH) > cal.get(Calendar.DAY_OF_MONTH)){
-                // SE IL MESE CORRENTE E' UGUALE CONFRONTO I GIORNI
+                // SE IL MESE CORRENTE E' UGUALE CONFRONTO I GIORNI, SE IL GIORNO CORRENTE E MAGGIORE DI QUELLO
+                //DEL COMMENTO ALLORA RITORNO LA DIFFERENZA DEI GIORNI
 
                 int diff = currentDate.get(Calendar.DAY_OF_MONTH) - cal.get(Calendar.DAY_OF_MONTH);
                 String difference = diff + "";
@@ -122,8 +136,8 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
                 //STESSO GIORNO DEL GIORNO CORRENTE
 
                 //CONFRONTO L'ORA DI CARICAMENTO DEL COMMENTO
-                if (currentDate.get(Calendar.HOUR) > cal.get(Calendar.HOUR)) {
-                    int diff = currentDate.get(Calendar.HOUR) - cal.get(Calendar.HOUR);
+                if (currentDate.get(Calendar.HOUR_OF_DAY) > cal.get(Calendar.HOUR_OF_DAY)) {
+                    int diff = currentDate.get(Calendar.HOUR_OF_DAY) - cal.get(Calendar.HOUR_OF_DAY);
                     String difference = diff + "";
 
                     if (diff == 1)
@@ -134,6 +148,9 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
                     return difference;
                 } else {
                     //STESSA ORA RITORNO LA DIFFERENZA DEI MINUTI
+                    Log.d(TAG, "-------------------------------" + currentDate.toString());
+                    Log.d(TAG, "-------------------------------" + cal.toString());
+                    Log.d(TAG, String.valueOf(currentDate.get(Calendar.MINUTE)));
                     int diff = currentDate.get(Calendar.MINUTE) - cal.get(Calendar.MINUTE);
                     String difference = diff + "";
                     difference = difference.concat(" minutes ago");
