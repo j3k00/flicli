@@ -50,6 +50,15 @@ public class Model {
         mvc.forEachView(View::onModelChanged);
     }
 
+    public void setFavourities(String photo_id, int favs) {
+        for (FlickModel flick :  mvc.model.getFlickers()) {
+            if (flick.getId().compareTo(photo_id) == 0) {
+                this.flick.setFavourities(String.valueOf(favs));
+            }
+        }
+        mvc.forEachView(View::onModelChanged);
+    }
+
     public LinkedList<FlickModel> getFlickers() {
         return this.flickers;
     }

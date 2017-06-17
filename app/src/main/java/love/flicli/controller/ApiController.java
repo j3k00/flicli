@@ -181,7 +181,7 @@ public class ApiController extends IntentService {
                 case ACTION_FAVOURITE:
                     photo_id = (String) intent.getSerializableExtra(PARAM_PHOTOID);
 
-                    jComment = makeRequest(flickerAPI.photos_getComments(photo_id)).getJSONObject("photo").getJSONArray("person");
+                    jComment = makeRequest(flickerAPI.photo_getFav(photo_id)).getJSONObject("photo").getJSONArray("person");
                     _setFavourities(jComment, photo_id);
 
                     break;
@@ -257,107 +257,7 @@ public class ApiController extends IntentService {
     private void _setFavourities(JSONArray elements, String photo_id) throws JSONException, IOException {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
-        ArrayList<Comment> favourites = new ArrayList<Comment>();
-
-        mvc.model.getDetailFlicker().setFavourities(String.valueOf(favourites.size()));
+        mvc.model.setFavourities(photo_id, elements.length());
 
     }
-
-    /*public String getThumb(String id) {
-        String SIZE = "https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=5cf3287df65ea5208bf0b2aade1f929d&photo_id=" + id + "&format=json&nojsoncallback=1";
-
-        try {
-            URL url = new URL(SIZE);
-            URLConnection conn = url.openConnection();
-            String answer = "";
-
-            BufferedReader in = null;
-            try {
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-                String line;
-                while ((line = in.readLine()) != null) {
-                    Log.d(TAG, "starting search of" + line);
-                    answer += line + "\n";
-                }
-            }
-            finally {
-                if (in != null)
-                    in.close();
-            }
-
-            JSONObject jsonObj = new JSONObject(answer);
-            JSONObject sizes = jsonObj.getJSONObject("sizes");
-            JSONArray jobject = sizes.getJSONArray("size");
-
-            for (int i = 0; i < jobject.length(); i++) {
-                JSONObject j = jobject.getJSONObject(i);
-                if (j.getString("label").compareTo("Square") == 0) {
-                    return j.getString("source");
-                }
-            }
-
-        } catch (IOException e) {
-            Log.d(TAG, "I/O Error");
-        } catch (JSONException e) {
-            Log.d(TAG, "JSNOError");
-        }
-        return "";
-    }
-
-
-    public Flick[] author(String author) {
-        String SERVER = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=ea7e30b03f88bdde3c16dd1f33f91049&user_id=" + author + "&text=-&extras=url_z%2Cdescription%2Ctags%2Cowner_name&per_page=50&format=json&nojsoncallback=1";
-        LinkedList<Flick> result = new LinkedList<Flick>();
-
-        try {
-            URL url = new URL(SERVER);
-            URLConnection conn = url.openConnection();
-            String answer = "";
-
-            BufferedReader in = null;
-            try {
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-                String line;
-                while ((line = in.readLine()) != null) {
-                    Log.d(TAG, "starting search of" + line);
-                    answer += line + "\n";
-                }
-            }
-            finally {
-                if (in != null)
-                    in.close();
-            }
-
-            //Creazione array delle photo
-            JSONObject jsonObj = new JSONObject(answer);
-            JSONObject photos = jsonObj.getJSONObject("photos");
-            JSONArray jPhoto = photos.getJSONArray("photo");
-
-
-            for (int i = 0; i < jPhoto.length(); i++) {
-                Log.d(TAG, String.valueOf(i));
-                JSONObject photo = jPhoto.getJSONObject(i);
-                String id = (photo.isNull("id")) ? "" : photo.getString("id");
-                String description = (photo.isNull("description")) ? "" :photo.getString("description");
-                String image = (photo.isNull("url_z")) ? "" : photo.getString("url_z");
-                String title = (photo.isNull("title")) ? "" : photo.getString("title");
-                String autho = (photo.isNull("ownername")) ? "" : photo.getString("ownername");
-                String image_square = image.replace("_z", "_s");//getThumb(id);
-                String user_id = (photo.isNull("owner")) ? "" : photo.getString("owner");
-
-                Flick f = new Flick(image, description, id, autho, title, image_square, user_id);
-                result.add(f);
-            }
-        }
-        catch (IOException e) {
-            Log.d(TAG, "I/O error", e);
-            return null;
-        } catch (JSONException e) {
-            Log.d(TAG, e.getMessage());
-            e.printStackTrace();
-        }
-        return result.toArray(new Flick[result.size()]);
-    }*/
 }

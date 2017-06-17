@@ -29,6 +29,7 @@ public class Controller {
     public void getImageDetail(Context context, FlickModel flickModel) {
         mvc.model.storeDetailFlicker(flickModel);
         comment(context, flickModel.getId());
+        favourite(context, flickModel.getId());
         showImage();
     }
 
