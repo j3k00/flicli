@@ -53,6 +53,7 @@ public class FlickModel {
     private String url_l;
     private String url_o;
     private Bitmap bitmap_url_s;
+    private Bitmap bitmap_url_h;
     private String favourities;
     private ArrayList<Comment> comments;
 
@@ -92,6 +93,7 @@ public class FlickModel {
         isfriend = 0;
         isfamily = 0;
         bitmap_url_s = null;
+        bitmap_url_h = null;
         comments = new ArrayList<Comment>();
     }
 
@@ -390,5 +392,8 @@ public class FlickModel {
             return this.comments;
         }
     }
+
+    public void setBitmap_url_h(Bitmap image) { this.bitmap_url_h = image; }
+    public  Bitmap getBitmap_url_h() { return this.bitmap_url_h;}
 
 }

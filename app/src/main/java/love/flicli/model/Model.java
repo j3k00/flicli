@@ -1,4 +1,6 @@
 package love.flicli.model;
+import android.graphics.Bitmap;
+
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
@@ -54,6 +56,15 @@ public class Model {
         for (FlickModel flick :  mvc.model.getFlickers()) {
             if (flick.getId().compareTo(photo_id) == 0) {
                 this.flick.setFavourities(String.valueOf(favs));
+            }
+        }
+        mvc.forEachView(View::onModelChanged);
+    }
+
+    public void setBitMap_h(String id, Bitmap bitmap_z) {
+        for (FlickModel flick :  mvc.model.getFlickers()) {
+            if (flick.getId().compareTo(id) == 0) {
+                this.flick.setBitmap_url_h(bitmap_z);
             }
         }
         mvc.forEachView(View::onModelChanged);

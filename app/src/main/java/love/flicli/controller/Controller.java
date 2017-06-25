@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.UiThread;
 
 import love.flicli.MVC;
+import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
 import love.flicli.view.View;
 
@@ -29,6 +30,7 @@ public class Controller {
     public void getImageDetail(Context context, FlickModel flickModel) {
         mvc.model.storeDetailFlicker(flickModel);
         comment(context, flickModel.getId());
+        downloadImage(context, flickModel.getUrl_z());
         favourite(context, flickModel.getId());
         showImage();
     }
@@ -55,6 +57,10 @@ public class Controller {
     @UiThread
     public void favourite(Context context, String image) {
         ApiController.getFavourities(context, image);
+    }
+
+    public void downloadImage(Context context, String image) {
+        ApiController.downloadImage(context, image);
     }
 
     /*

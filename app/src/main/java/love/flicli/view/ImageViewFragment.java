@@ -67,7 +67,7 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
         flickModel = mvc.model.getDetailFlicker();
 
         //TODO ALTRA CHIAMATA ASINCRONA PER SCARICARE L'IMMAGINE IN ALTA DEFINIZIONE
-        imageView.setImageBitmap(flickModel.getBitmap_url_s());
+        imageView.setImageBitmap(flickModel.getBitmap_url_h());
         views.setText(mvc.model.getDetailFlicker().getViews());
 
         ArrayList<Comment> comment = mvc.model.getDetailFlicker().getComments();

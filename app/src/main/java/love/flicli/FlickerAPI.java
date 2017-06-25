@@ -49,7 +49,7 @@ public class FlickerAPI {
     // &nojsoncallback=1
     public String photos_search(String search) {
         String method = "flickr.photos.search";
-        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq%2Cviews";
+        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq%2Cviews%2Curl_o";
         String per_page = "50";
 
         Map<String, String> params = new HashMap<String, String>();
@@ -71,7 +71,7 @@ public class FlickerAPI {
     // &nojsoncallback=1"
     public String photos_getRecent() {
         String method = "flickr.photos.getRecent";
-        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq";
+        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq%2Curl_o";
         String per_page = "50";
 
         Map<String, String> params = new HashMap<String, String>();
@@ -92,7 +92,7 @@ public class FlickerAPI {
     // https://api.flickr.com/services/rest/?method=flickr.interestingness.getList&api_key=2a877a945a0b58aecf11c2e9003bf1a6&format=rest&api_sig=1b6fd7f0f9925a5cf17a35e1f4d9df13
     public String photos_getPopular() {
         String method = "flickr.interestingness.getList";
-        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq%2Cviews";
+        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq%2Cviews%2Curl_o";
         String per_page = "50";
 
         Map<String, String> params = new HashMap<String, String>();

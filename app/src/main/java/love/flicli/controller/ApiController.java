@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -27,7 +28,9 @@ import love.flicli.MVC;
 import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
 
+import static love.flicli.R.id.cancel_action;
 import static love.flicli.R.id.comments;
+import static love.flicli.R.id.image;
 
 /**
  * Created by tommaso on 09/05/17.
@@ -41,6 +44,7 @@ public class ApiController extends IntentService {
     private final static String ACTION_COMMENT = "getCommentFlick";
     private final static String ACTION_AUTHOR = "getFlickByAuthor";
     private final static String ACTION_FAVOURITE = "getFavourities";
+    private final static String ACTION_DOWNLOAD = "donwloadImage";
 
     private final static String PARAM_SEARCHABLE = "param";
     private final static String PARAM_PHOTOID = "photo_id";
@@ -120,6 +124,14 @@ public class ApiController extends IntentService {
         context.startService(intent);
     }
 
+    @UiThread
+    static void downloadImage(Context context, String urlImage) {
+        Intent intent = new Intent(context, ApiController.class);
+        intent.setAction(ACTION_DOWNLOAD);
+        intent.putExtra(PARAM_PHOTOID, urlImage);
+        context.startService(intent);
+    }
+
    /*   @UiThread
     static void getFlickByAuthor(Context context, String author) {
         Intent intent = new Intent(context, ApiController.class);
@@ -186,6 +198,12 @@ public class ApiController extends IntentService {
 
                     break;
 
+                case ACTION_DOWNLOAD:
+                    photo_id = (String) intent.getSerializableExtra(PARAM_PHOTOID);
+                    _downloadHighDefinitionImage(photo_id);
+
+                    break;
+
 /*                case ACTION_AUTHOR:
                     String author = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
                     result = author(author);
@@ -216,6 +234,7 @@ public class ApiController extends IntentService {
             flick.setUrl_sq(photo.getString("url_sq"));
             flick.setUrl_m(photo.getString("url_s"));
             flick.setViews(photo.getString("views"));
+            //flick.setUrl_o(photo.getString("url_o"));
 
             try {
                 flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
@@ -258,6 +277,19 @@ public class ApiController extends IntentService {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
         mvc.model.setFavourities(photo_id, elements.length());
+
+    }
+
+    private void _downloadHighDefinitionImage(String image) {
+        MVC mvc = ((FlicliApplication) getApplication()).getMVC();
+        image = image.replace("_z", "_h");
+        Bitmap bitmap_z = null;
+        try {
+             bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mvc.model.setBitMap_h(mvc.model.getDetailFlicker().getId(), bitmap_z);
 
     }
 }

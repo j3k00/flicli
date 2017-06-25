@@ -3,22 +3,41 @@ package love.flicli.view;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
 import love.flicli.model.FlickModel;
+
+import static android.R.attr.bitmap;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static android.support.v4.content.FileProvider.getUriForFile;
+import static java.io.File.createTempFile;
 
 /**
  * Created by tommaso on 03/06/17.
@@ -28,6 +47,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     private MVC mvc;
     ShareActionProvider mShareActionProvider = null;
     private FlickModel flickModel;
+    private final static String TAG = DetailImageFragment.class.getName();
 
 
     public DetailImageFragment() {
@@ -71,8 +91,26 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         if (myShareActionProvider!= null) {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
-            //shareIntent.putExtra(Intent.EXTRA_TEXT, mvc.model.getLastFlick().getImgUrl());
-            shareIntent.setType("text/plain");
+            shareIntent.setType("image/jpeg");
+
+            PackageManager pm = ((FlicliApplication) getActivity().getApplication()).getPackageManager();
+
+            try {
+                Bitmap bmp = mvc.model.getDetailFlicker().getBitmap_url_s();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                String path = MediaStore.Images.Media.insertImage(getActivity().getApplication().getContentResolver(), bmp, "Title", null);
+                Uri imageUri = Uri.parse(path);
+
+                @SuppressWarnings("unused")
+                PackageInfo info = pm.getPackageInfo("love.flicli", PackageManager.GET_META_DATA);
+                shareIntent.putExtra(android.content.Intent.EXTRA_STREAM, imageUri);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+            //shareIntent.putExtra(Intent.EXTRA_STREAM, f.getPath());
             myShareActionProvider.setShareIntent(shareIntent);
         }
     }
