@@ -45,7 +45,6 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         super.onActivityCreated(savedInstanceState);
         mvc = ((FlicliApplication) getActivity().getApplication()).getMVC();
         onModelChanged();
-
     }
 
     //TODO fix contextMenu, funziona solo cliccando una determinata parte della View
