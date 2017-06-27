@@ -277,18 +277,14 @@ public class ApiController extends IntentService {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
         mvc.model.setFavourities(photo_id, elements.length());
-
     }
 
-    private void _downloadHighDefinitionImage(String image) {
+    private void _downloadHighDefinitionImage(String image) throws IOException {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
         image = image.replace("_z", "_h");
         Bitmap bitmap_z = null;
-        try {
-             bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
+
         mvc.model.setBitMap_h(mvc.model.getDetailFlicker().getId(), bitmap_z);
 
     }

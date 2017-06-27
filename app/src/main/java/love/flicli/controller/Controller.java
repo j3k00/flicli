@@ -29,8 +29,6 @@ public class Controller {
 
     public void getImageDetail(Context context, FlickModel flickModel) {
         mvc.model.storeDetailFlicker(flickModel);
-        comment(context, flickModel.getId());
-        downloadImage(context, flickModel.getUrl_z());
         favourite(context, flickModel.getId());
         showImage();
     }

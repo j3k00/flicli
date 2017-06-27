@@ -1,17 +1,12 @@
 package love.flicli.view;
 
 import android.app.Fragment;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
-import android.support.v7.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,9 +17,6 @@ import love.flicli.MVC;
 import love.flicli.R;
 import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
-
-import static android.R.attr.data;
-import static android.R.attr.x;
 
 /**
  * Created by tommaso on 03/06/17.
@@ -67,7 +59,7 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
         flickModel = mvc.model.getDetailFlicker();
 
         //TODO ALTRA CHIAMATA ASINCRONA PER SCARICARE L'IMMAGINE IN ALTA DEFINIZIONE
-        imageView.setImageBitmap(flickModel.getBitmap_url_h());
+        imageView.setImageBitmap(flickModel.getBitmap_url_hd());
         views.setText(mvc.model.getDetailFlicker().getViews());
 
         ArrayList<Comment> comment = mvc.model.getDetailFlicker().getComments();
