@@ -13,8 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ import love.flicli.model.FlickModel;
 
 
 public class ListViewFragment extends ListFragment implements AbstractFragment {
+
     private MVC mvc;
     private final static String TAG = ListViewFragment.class.getName();
 
@@ -42,6 +45,7 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         super.onActivityCreated(savedInstanceState);
         mvc = ((FlicliApplication) getActivity().getApplication()).getMVC();
         onModelChanged();
+
     }
 
     //TODO fix contextMenu, funziona solo cliccando una determinata parte della View
@@ -73,8 +77,11 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
             list.notifyDataSetChanged();
     }
 
+
     private class HistoryAdapter extends ArrayAdapter<FlickModel> {
         private final LinkedList<FlickModel> listFlick = mvc.model.getFlickers();
+
+
 
         private HistoryAdapter() {
             super(getActivity(), R.layout.history_fragment, mvc.model.getFlickers());
@@ -102,17 +109,13 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
 
                 row.setOnClickListener(__ -> onClickRow(flick));
 
-                /*
-                row.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        registerForContextMenu(v);
-                        Toast.makeText(getActivity(), "LONG PRESS", Toast.LENGTH_LONG).show();
-                        //previene l'handle del Click
-                        return true;
-                    }
+                row.setOnLongClickListener(v -> {
+                    registerForContextMenu(v);
+                    Toast.makeText(getActivity(), "LONG PRESS", Toast.LENGTH_LONG).show();
+
+                    //previene l'handle del Click
+                    return true;
                 });
-                */
             }
             return row;
         }

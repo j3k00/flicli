@@ -95,22 +95,22 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
 
             PackageManager pm = ((FlicliApplication) getActivity().getApplication()).getPackageManager();
 
+            File f = new File(Environment.getDataDirectory() + File.separator + "temp.jpeg");
+
             try {
+
                 Bitmap bmp = mvc.model.getDetailFlicker().getBitmap_url_s();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                String path = MediaStore.Images.Media.insertImage(getActivity().getApplication().getContentResolver(), bmp, "Title", null);
-                Uri imageUri = Uri.parse(path);
+                f.createNewFile();
+                new FileOutputStream(f).write(stream.toByteArray());
 
-                @SuppressWarnings("unused")
-                PackageInfo info = pm.getPackageInfo("love.flicli", PackageManager.GET_META_DATA);
-                shareIntent.putExtra(android.content.Intent.EXTRA_STREAM, imageUri);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
+            } catch (IOException e) {
+                e.getMessage();
             }
 
 
-            //shareIntent.putExtra(Intent.EXTRA_STREAM, f.getPath());
+            shareIntent.putExtra(Intent.EXTRA_STREAM, f.getPath());
             myShareActionProvider.setShareIntent(shareIntent);
         }
     }
