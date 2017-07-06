@@ -113,7 +113,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
             File newFile = new File(imagePath, "default_image.jpg");
 
             try {
-                Bitmap bmp = mvc.model.getDetailFlicker().getBitmap_url_s();
+                Bitmap bmp = mvc.model.getDetailFlicker().getBitmap_url_hd();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 imagePath.mkdir();
