@@ -75,6 +75,12 @@ public class Model {
         return this.flickers;
     }
 
+    public FlickModel getFlick(int pos) {
+        if (this.flickers != null)
+           return this.flickers.get(pos);
+        return null;
+    }
+
     public FlickModel getDetailFlicker()  { return this.flick; }
 
     public void storeDetailFlicker(FlickModel flickModel) { this.flick = flickModel; }

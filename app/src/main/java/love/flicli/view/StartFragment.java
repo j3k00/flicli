@@ -1,6 +1,9 @@
 package love.flicli.view;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -49,9 +52,11 @@ public class StartFragment extends Fragment implements AbstractFragment {
         popularButton = (Button) view.findViewById(R.id.populImage);
         recentButton = (Button) view.findViewById(R.id.recentImage);
 
-        sendButton.setOnClickListener(__ -> flicker(text.getText().toString()));
-        popularButton.setOnClickListener(__ -> flickerPopularImage());
-        recentButton.setOnClickListener(__ -> flickerRecentImage());
+        if (isConnected(getActivity().getApplication())) {
+            sendButton.setOnClickListener(__ -> flicker(text.getText().toString()));
+            popularButton.setOnClickListener(__ -> flickerPopularImage());
+            recentButton.setOnClickListener(__ -> flickerRecentImage());
+        }
         return view;
     }
 
@@ -99,6 +104,17 @@ public class StartFragment extends Fragment implements AbstractFragment {
 
     @UiThread private  void flickerRecentImage() {
         mvc.controller.recent(getActivity());
+    }
+
+
+    public static boolean isConnected(Context context){
+
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo connection = manager.getActiveNetworkInfo();
+        if (connection != null && connection.isConnectedOrConnecting()){
+            return true;
+        }
+        return false;
     }
 }
 

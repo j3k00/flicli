@@ -1,31 +1,35 @@
 package love.flicli.view;
 
 import android.app.ListFragment;
-import android.content.res.Resources;
-import android.media.Image;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
-import android.util.Log;
+import android.support.annotation.WorkerThread;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import net.jcip.annotations.ThreadSafe;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
-
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
-import love.flicli.controller.ApiController;
+import love.flicli.Util;
 import love.flicli.model.FlickModel;
 
 /**
@@ -44,23 +48,43 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mvc = ((FlicliApplication) getActivity().getApplication()).getMVC();
+        setHasOptionsMenu(true);
+
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FlickModel f = mvc.model.getFlick(position);
+                onClickRow(f);
+            }
+        });
+
+        registerForContextMenu(this.getListView());
+
         onModelChanged();
     }
 
-    //TODO fix contextMenu, funziona solo cliccando una determinata parte della View
-    //quando invece dovrebbe funzionare indistintamente su tutta la riga
-    @Override
+   @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Context Menu");
-        menu.add(0, v.getId(), 0, "Action 1");
-        menu.add(0, v.getId(), 0, "Action 2");
+        menu.add(0, v.getId(), 0, "Condividi");
+        menu.add(0, v.getId(), 0, "Ultime foto autore");
+        registerForContextMenu(getListView());
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if(item.getTitle()=="Action 1"){
-        } else if(item.getTitle()=="Action 2"){
+
+        if(item.getTitle()=="Condividi"){
+
+            //provo a farlo asincrono
+            //ritorna le informazioni della chiamata
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+            FlickModel model = mvc.model.getFlick(info.position);
+            new DownloadImage().execute(model.getUrl_z());
+
+        } else if(item.getTitle()=="Ultime foto autore"){
+
         } else {
             return false;
         }
@@ -80,8 +104,6 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     private class HistoryAdapter extends ArrayAdapter<FlickModel> {
         private final LinkedList<FlickModel> listFlick = mvc.model.getFlickers();
 
-
-
         private HistoryAdapter() {
             super(getActivity(), R.layout.history_fragment, mvc.model.getFlickers());
         }
@@ -97,7 +119,6 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
 
             if (listFlick != null) {
                 FlickModel flick = listFlick.get(position);
-
                 if (flick.getBitmap_url_s() == null) {
                     ((ImageView) row.findViewById(R.id.icon)).setImageResource(R.drawable.image);
                 } else
@@ -105,16 +126,6 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
 
                 ((TextView) row.findViewById(R.id.description)).setText(flick.getTitle());
                 ((TextView) row.findViewById(R.id.url)).setText(flick.getId());
-
-                row.setOnClickListener(__ -> onClickRow(flick));
-
-                row.setOnLongClickListener(v -> {
-                    registerForContextMenu(v);
-                    Toast.makeText(getActivity(), "LONG PRESS", Toast.LENGTH_LONG).show();
-
-                    //previene l'handle del Click
-                    return true;
-                });
             }
             return row;
         }
@@ -122,5 +133,41 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
 
     private void onClickRow(FlickModel image) {
         mvc.controller.getImageDetail(getActivity(), image);
+    }
+
+    //implementato download dell'immagine in backGroud, con conseguente chiamata dell'
+    @ThreadSafe
+    class DownloadImage extends AsyncTask<String, Void, Bitmap> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @WorkerThread @Override
+        protected Bitmap doInBackground(String... urls) {
+            Bitmap bitmap_z = null;
+            try {
+                String image = urls[0].replace("_z", "_h");
+                bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
+            } catch (IOException e) {
+                return null;
+            }
+            return bitmap_z;
+        }
+
+        @UiThread
+        protected void onPostExecute(Bitmap image) {
+            startActivityListView(image);
+        }
+    }
+
+    public void startActivityListView(Bitmap image) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        Uri r = Util.getImageUri(getActivity().getApplication(), image);
+        intent.putExtra(Intent.EXTRA_STREAM, r);
+        startActivity(Intent.createChooser(intent, "..."));
     }
 }

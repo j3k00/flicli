@@ -286,6 +286,5 @@ public class ApiController extends IntentService {
         bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
 
         mvc.model.setBitMap_h(mvc.model.getDetailFlicker().getId(), bitmap_z);
-
     }
 }
