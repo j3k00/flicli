@@ -7,6 +7,7 @@ import android.support.annotation.UiThread;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,8 +69,9 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
             Comment comment1 = comment.get(0);
             if (comment1.get_content().compareTo("No Comments") == 0)
                 value = "0";
-            value = "1";
-        }else
+            else
+                value = "1";
+        } else
             value = String.valueOf(mvc.model.getDetailFlicker().getComments().size());
 
         comments.setText(value);

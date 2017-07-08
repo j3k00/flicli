@@ -3,7 +3,21 @@ package love.flicli.model;
 import android.graphics.Bitmap;
 
 import net.jcip.annotations.Immutable;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
+import java.util.Objects;
+
+import static android.R.attr.mode;
+import static android.R.attr.name;
+import static android.R.attr.thickness;
+import static android.R.attr.value;
+
 /**
  * Created by tommaso on 19/05/17.
  */
@@ -397,4 +411,9 @@ public class FlickModel {
 
     public  Bitmap getBitmap_url_hd() { return this.bitmap_url_hd;}
 
+
+    public void reflectJson(String name, JSONObject obj, String variable) throws NoSuchFieldException, IllegalAccessException, JSONException {
+        Field field = this.getClass().getDeclaredField(variable);
+        field.set(this, (obj.isNull(name)) ? "" : obj.getString(name));
+    }
 }

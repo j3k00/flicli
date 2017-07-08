@@ -50,6 +50,7 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         mvc = ((FlicliApplication) getActivity().getApplication()).getMVC();
         setHasOptionsMenu(true);
 
+        //OnclickListener,  attacca alle liste della tabella la funzione che apre il dettaglio dell'immagine
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -59,11 +60,11 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         });
 
         registerForContextMenu(this.getListView());
-
         onModelChanged();
     }
 
-   @Override
+    //creazione del contextMenu
+    @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Context Menu");
@@ -75,14 +76,13 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
+        //Botttone di condivisione
         if(item.getTitle()=="Condividi"){
-
-            //provo a farlo asincrono
-            //ritorna le informazioni della chiamata
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
             FlickModel model = mvc.model.getFlick(info.position);
             new DownloadImage().execute(model.getUrl_z());
 
+        //bottone che visualizza le ultime foto dell'autore
         } else if(item.getTitle()=="Ultime foto autore"){
 
         } else {
@@ -135,7 +135,8 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         mvc.controller.getImageDetail(getActivity(), image);
     }
 
-    //implementato download dell'immagine in backGroud, con conseguente chiamata dell'
+    //implementato download dell'immagine in backGroud, con conseguente
+    // chiamata della funzione che apre il
     @ThreadSafe
     class DownloadImage extends AsyncTask<String, Void, Bitmap> {
 
@@ -144,6 +145,8 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
             super.onPreExecute();
         }
 
+        //eseguito in backGround per scarica l'immagine una volta cliccato il bottone di
+        //condivisione del context menu
         @WorkerThread @Override
         protected Bitmap doInBackground(String... urls) {
             Bitmap bitmap_z = null;
@@ -162,6 +165,7 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         }
     }
 
+    //funzione che gestisce la condivisione con l'applicazione
     public void startActivityListView(Bitmap image) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);

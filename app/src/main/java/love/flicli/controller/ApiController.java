@@ -31,6 +31,7 @@ import love.flicli.model.FlickModel;
 import static love.flicli.R.id.cancel_action;
 import static love.flicli.R.id.comments;
 import static love.flicli.R.id.image;
+import static love.flicli.R.id.populImage;
 
 /**
  * Created by tommaso on 09/05/17.
@@ -101,14 +102,14 @@ public class ApiController extends IntentService {
         context.startService(intent);
     }
 
-   @UiThread
+    @UiThread
     static void getPopularFlick(Context context) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_POPULAR);
         context.startService(intent);
     }
 
-   @UiThread
+    @UiThread
     static void getCommentFlick(Context context, String photo_id) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_COMMENT);
@@ -169,8 +170,8 @@ public class ApiController extends IntentService {
                     mvc.model.freeFlickers();
 
                     jPhoto = makeRequest(flickerAPI.photos_getRecent()).getJSONObject("photos").getJSONArray("photo");
-                    _generateFlickers(jPhoto);
-
+                    //_generateFlickers(jPhoto);
+                    _generateFlickersReflection(jPhoto);
                     break;
 
                 case ACTION_POPULAR:
@@ -219,7 +220,7 @@ public class ApiController extends IntentService {
         }
     }
 
-    private  void _generateFlickers(JSONArray elements) throws JSONException, IOException {
+    private void _generateFlickers(JSONArray elements) throws JSONException, IOException {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
         for (int i = 0; i < elements.length(); i++) {
@@ -227,7 +228,7 @@ public class ApiController extends IntentService {
 
             FlickModel flick = new FlickModel(photo.getString("id"));
             flick.setDescription(photo.getString("description"));
-            flick.setUrl_z(photo.getString("url_z"));
+            flick.setUrl_z((photo.isNull("url_z") ? "" : photo.getString("url_z")));
             flick.setTitle(photo.getString("title"));
             flick.setOwner(photo.getString("owner"));
             flick.setOwner_name(photo.getString("ownername"));
@@ -286,5 +287,41 @@ public class ApiController extends IntentService {
         bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
 
         mvc.model.setBitMap_h(mvc.model.getDetailFlicker().getId(), bitmap_z);
+    }
+
+    private void _generateFlickersReflection(JSONArray elements) throws JSONException, IOException {
+        MVC mvc = ((FlicliApplication) getApplication()).getMVC();
+
+        for (int i = 0; i < elements.length(); i++) {
+            JSONObject photo = elements.getJSONObject(i);
+
+            FlickModel flick = new FlickModel(photo.getString("id"));
+            try {
+
+                //reflection nome del campo nel JSON , JSON e nome della variabile
+                flick.reflectJson("description", photo, "description");
+                flick.reflectJson("url_z", photo, "url_z");
+                flick.reflectJson("title", photo, "title");
+                flick.reflectJson("owner", photo, "owner");
+                flick.reflectJson("ownername", photo, "owner_name");
+                flick.reflectJson("url_sq", photo, "url_sq");
+                flick.reflectJson("url_s", photo, "url_s");
+                flick.reflectJson("views", photo, "views");
+                flick.reflectJson("url_o", photo, "url_o");
+
+            } catch (IllegalAccessException e) {
+                e.getMessage();
+            } catch (NoSuchFieldException e) {
+                e.getMessage();
+            }
+
+            try {
+                flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                flick.setBitmap_url_s(null);
+            }
+            mvc.model.storeFactorization(flick);
+        }
     }
 }
