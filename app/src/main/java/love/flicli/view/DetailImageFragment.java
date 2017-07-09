@@ -3,6 +3,7 @@ package love.flicli.view;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
@@ -25,6 +27,8 @@ import love.flicli.MVC;
 import love.flicli.R;
 import love.flicli.Util;
 import love.flicli.model.FlickModel;
+
+import static android.R.attr.fragment;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
 /**
@@ -43,6 +47,15 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     ShareActionProvider mShareActionProvider = null;
     private FlickModel flickModel;
     private final static String TAG = DetailImageFragment.class.getName();
+
+    private AbstractFragment getCommentFragment() {
+        return (AbstractFragment) getChildFragmentManager().findFragmentById(R.id.comment_fragment);
+    }
+
+    private AbstractFragment getViewFragment() {
+        return (AbstractFragment) getChildFragmentManager().findFragmentById(R.id.view_fragment);
+    }
+
 
     @Override @UiThread
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,16 +110,21 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
 
     @Override @UiThread
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (item.getItemId() == R.id.menu_item_author) {
             showAuthorLastImage(mvc.model.getDetailFlicker().getOwner());
         }
         return false;
     }
 
-
     @Override
     public void onModelChanged() {
+
+        //TODO mofigicare con
+        /*
+         * getCommentFragment().onModelChange();
+         * getViewFragment().onModelChange();
+         */
+
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.view_fragment, new ImageViewFragment());
         ft.replace(R.id.comment_fragment, new CommentFragment());

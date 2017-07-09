@@ -34,6 +34,7 @@ public class StartFragment extends Fragment implements AbstractFragment {
     private Button sendButton;
     private Button recentButton;
     private Button popularButton;
+    private TextView noConnection;
 
     // view state
 
@@ -51,11 +52,15 @@ public class StartFragment extends Fragment implements AbstractFragment {
         sendButton = (Button) view.findViewById(R.id.sendButton);
         popularButton = (Button) view.findViewById(R.id.populImage);
         recentButton = (Button) view.findViewById(R.id.recentImage);
+        noConnection = (TextView) view.findViewById(R.id.noConnection);
 
         if (isConnected(getActivity().getApplication())) {
             sendButton.setOnClickListener(__ -> flicker(text.getText().toString()));
             popularButton.setOnClickListener(__ -> flickerPopularImage());
             recentButton.setOnClickListener(__ -> flickerRecentImage());
+            noConnection.setText("");
+        } else {
+            noConnection.setText("Connessione non disponibile");
         }
         return view;
     }
@@ -108,6 +113,7 @@ public class StartFragment extends Fragment implements AbstractFragment {
 
 
     public static boolean isConnected(Context context){
+
 
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo connection = manager.getActiveNetworkInfo();

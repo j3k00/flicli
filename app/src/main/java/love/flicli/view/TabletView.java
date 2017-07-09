@@ -57,7 +57,6 @@ public class TabletView extends LinearLayout implements View {
                 .replace(R.id.changedFragment, new ListViewFragment())
                 .addToBackStack(null)
                 .commit();
-        // nothing to do, this widget always shows history
     }
 
     public void showImage() {
