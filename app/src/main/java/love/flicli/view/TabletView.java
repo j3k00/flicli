@@ -28,8 +28,8 @@ public class TabletView extends LinearLayout implements View {
         return (AbstractFragment) getFragmentManager().findFragmentById(R.id.search_fragment);
     }
 
-    private AbstractFragment getHistoryFragment() {
-        return (AbstractFragment) getFragmentManager().findFragmentById(R.id.history_fragment);
+    private AbstractFragment getChangeFragment() {
+        return (AbstractFragment) getFragmentManager().findFragmentById(R.id.changedFragment);
     }
 
     @Override
@@ -48,19 +48,24 @@ public class TabletView extends LinearLayout implements View {
     @Override
     public void onModelChanged() {
         getSearchFragment().onModelChanged();
-        getHistoryFragment().onModelChanged();
+        getChangeFragment().onModelChanged();
     }
 
     @Override
     public void showHistory() {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.changedFragment, new ListViewFragment())
+                .addToBackStack(null)
+                .commit();
         // nothing to do, this widget always shows history
     }
 
-    public void showImage() {}
-    /**
-     * These two constructors must exist to let the view be recreated at
-     * configuration change or inflated from XML.
-     */
+    public void showImage() {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.changedFragment, new DetailImageFragment())
+                .addToBackStack(null)
+                .commit();
+    }
 
     public TabletView(Context context) {
         super(context);

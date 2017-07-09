@@ -18,12 +18,11 @@
             android:layout_height="match_parent"
             android:layout_weight="2" />
 
-        <fragment
-            android:id="@+id/history_fragment"
+        <FrameLayout
+            android:id="@+id/changedFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:name="love.flicli.view.ListViewFragment" />
+            android:layout_weight="2"/>
     </love.flicli.view.TabletView>
 
 </FrameLayout>
