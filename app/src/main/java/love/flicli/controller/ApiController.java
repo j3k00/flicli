@@ -49,6 +49,7 @@ public class ApiController extends IntentService {
 
     private final static String PARAM_SEARCHABLE = "param";
     private final static String PARAM_PHOTOID = "photo_id";
+    private final static String PARAM_AUTHOR = "athor_id";
     private static String search = "";
 
     public ApiController() {
@@ -133,14 +134,14 @@ public class ApiController extends IntentService {
         context.startService(intent);
     }
 
-   /*   @UiThread
+    @UiThread
     static void getFlickByAuthor(Context context, String author) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_AUTHOR);
         search = author;
-        intent.putExtra(PARAM_SEARCHABLE, search);
+        intent.putExtra(PARAM_AUTHOR, search);
         context.startService(intent);
-    }*/
+    }
 
     @WorkerThread
     protected void onHandleIntent(Intent intent) {
@@ -205,11 +206,14 @@ public class ApiController extends IntentService {
 
                     break;
 
-/*                case ACTION_AUTHOR:
-                    String author = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
-                    result = author(author);
-                    mvc.model.storeFactorization(result);
-*/
+                case ACTION_AUTHOR:
+                    mvc.model.freeFlickers();
+
+                    String author = (String) intent.getSerializableExtra(PARAM_AUTHOR);
+                    jPhoto = makeRequest(flickerAPI.photo_getAuthor(author)).getJSONObject("photos").getJSONArray("photo");
+                    _generateFlickers(jPhoto);
+
+                    break;
             }
         } catch (JSONException e) {
             Log.d(TAG, e.getMessage());
@@ -297,7 +301,6 @@ public class ApiController extends IntentService {
 
             FlickModel flick = new FlickModel(photo.getString("id"));
             try {
-
                 //reflection nome del campo nel JSON , JSON e nome della variabile
                 flick.reflectJson("description", photo, "description");
                 flick.reflectJson("url_z", photo, "url_z");

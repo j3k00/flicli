@@ -63,12 +63,10 @@ public class Controller {
         ApiController.downloadImage(context, image);
     }
 
-    /*
     public void lastAuthorImage(Context context, String author) {
         ApiController.getFlickByAuthor(context, author);
         showHistory();
     }
-    */
 
     @UiThread
     public void showImage() { mvc.forEachView(View::showImage); }

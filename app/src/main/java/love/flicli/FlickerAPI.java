@@ -128,4 +128,18 @@ public class FlickerAPI {
 
         return makeUrl(params);
     }
+
+    public String photo_getAuthor(String author) {
+        String method = "flickr.people.getPublicPhotos";
+        String extras = "url_z%2Cdescription%2Ctags%2Cowner_name%2Curl_s%2Curl_sq%2Cviews%2Curl_o";
+        String per_page = "50";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("method", method);
+        params.put("per_page", per_page);
+        params.put("user_id", author);
+        params.put("extras", extras);
+
+        return makeUrl(params);
+    }
 }

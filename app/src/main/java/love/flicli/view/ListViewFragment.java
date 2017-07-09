@@ -84,6 +84,9 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
 
         //bottone che visualizza le ultime foto dell'autore
         } else if(item.getTitle()=="Ultime foto autore"){
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+            FlickModel model = mvc.model.getFlick(info.position);
+            mvc.controller.lastAuthorImage(getActivity().getApplication(), model.getOwner());
 
         } else {
             return false;

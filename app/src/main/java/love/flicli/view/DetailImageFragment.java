@@ -99,7 +99,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.menu_item_author) {
-            //showAuthorLastImage(mvc.model.getLastFlick().getUser_id());
+            showAuthorLastImage(mvc.model.getDetailFlicker().getOwner());
         }
         return false;
     }
@@ -129,6 +129,6 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     }
 
     public void showAuthorLastImage(String author) {
-        //mvc.controller.showAuthorLastImage(getActivity(), author);
+        mvc.controller.lastAuthorImage(getActivity(), author);
     }
 }
