@@ -17,7 +17,7 @@
 
     <item
         android:id="@+id/menu_item_author"
-        android:icon="@drawable/list"
+        android:icon="@android:drawable/ic_dialog_dialer"
         android:title="Author"
         app:showAsAction="always" />
 </menu>
