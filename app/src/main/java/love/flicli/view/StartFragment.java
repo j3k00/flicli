@@ -36,8 +36,6 @@ public class StartFragment extends Fragment implements AbstractFragment {
     private Button popularButton;
     private TextView noConnection;
 
-    // view state
-
     @Override @UiThread
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +52,7 @@ public class StartFragment extends Fragment implements AbstractFragment {
         recentButton = (Button) view.findViewById(R.id.recentImage);
         noConnection = (TextView) view.findViewById(R.id.noConnection);
 
+        //controlla se la connessione è presente, altrimenti disabilito le oprezioni
         if (isConnected(getActivity().getApplication())) {
             sendButton.setOnClickListener(__ -> flicker(text.getText().toString()));
             popularButton.setOnClickListener(__ -> flickerPopularImage());

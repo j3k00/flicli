@@ -1,5 +1,4 @@
 package love.flicli.view;
-
 import android.app.ListFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,11 +18,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import net.jcip.annotations.ThreadSafe;
-
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import love.flicli.FlicliApplication;
@@ -134,6 +130,7 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         }
     }
 
+    @UiThread
     private void onClickRow(FlickModel image) {
         mvc.controller.getImageDetail(getActivity(), image);
     }
@@ -168,6 +165,7 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         }
     }
 
+    @UiThread
     //funzione che gestisce la condivisione con l'applicazione
     public void startActivityListView(Bitmap image) {
         Intent intent = new Intent();

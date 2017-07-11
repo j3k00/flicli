@@ -1,16 +1,12 @@
 package love.flicli.view;
-
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
-
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
-import love.flicli.model.FlickModel;
 
 /**
  * Created by tommaso on 28/05/17.

@@ -1,5 +1,4 @@
 package love.flicli.view;
-
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,12 +6,9 @@ import android.support.annotation.UiThread;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;

@@ -4,7 +4,6 @@ import android.app.ListFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,11 +17,7 @@ import android.view.View;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
-import love.flicli.controller.Controller;
 import love.flicli.model.Comment;
-
-import static android.content.ContentValues.TAG;
-import static android.os.Build.VERSION_CODES.M;
 
 /**
  * Created by tommaso on 03/06/17.
@@ -89,6 +84,7 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
         }
     }
 
+    @UiThread
     private String getCalendarDate(Long date) {
         java.util.Date d = new java.util.Date(date*1000L);
         String itemDateStr = new SimpleDateFormat("dd-MMM HH:mm").format(d);

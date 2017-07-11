@@ -1,5 +1,4 @@
 package love.flicli.view;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
@@ -21,14 +19,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
 import love.flicli.Util;
 import love.flicli.model.FlickModel;
-
-import static android.R.attr.fragment;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
 /**
@@ -47,15 +44,15 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     ShareActionProvider mShareActionProvider = null;
     private FlickModel flickModel;
     private final static String TAG = DetailImageFragment.class.getName();
+    private CommentFragment commentFragment;
+    private ImageViewFragment imageViewFragment;
 
-    private AbstractFragment getCommentFragment() {
-        return (AbstractFragment) getChildFragmentManager().findFragmentById(R.id.comment_fragment);
+    @Override @UiThread
+    public void onStart() {
+        super.onStart();
+        commentFragment = (CommentFragment) getChildFragmentManager().findFragmentById(R.id.comment_fragment);
+        imageViewFragment = (ImageViewFragment) getChildFragmentManager().findFragmentById(R.id.view_fragment);
     }
-
-    private AbstractFragment getViewFragment() {
-        return (AbstractFragment) getChildFragmentManager().findFragmentById(R.id.view_fragment);
-    }
-
 
     @Override @UiThread
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +61,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         verifyStoragePermissions(getActivity());
     }
 
-    @Override
+    @Override @UiThread
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.detail_image_fragment, container, false);
 
@@ -102,6 +99,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         }
     }
 
+    @UiThread
     private void setShareIntent(Intent shareIntent) {
         if (mShareActionProvider != null) {
             mShareActionProvider.setShareIntent(shareIntent);
@@ -116,22 +114,26 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         return false;
     }
 
-    @Override
+    @Override @UiThread
     public void onModelChanged() {
 
-        //TODO mofigicare con
-        /*
-         * getCommentFragment().onModelChange();
-         * getViewFragment().onModelChange();
-         */
+        //Ho dovuto implementare in questa maniere perchè il getChildFragment siccome mActivity è null ritornava sempre
+        //null nel richiamare i frammenti figli con getChildFragmentManager.findby....
 
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        //codice vecchio, riscriveva sempre i due frammenti da capo
+        /*FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.view_fragment, new ImageViewFragment());
         ft.replace(R.id.comment_fragment, new CommentFragment());
         ft.addToBackStack(null);
-        ft.commit();
+        ft.commit();*/
+
+        if (commentFragment != null && imageViewFragment != null) {
+            commentFragment.onModelChanged();
+            imageViewFragment.onModelChanged();
+        }
     }
 
+    @UiThread
     public static void verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -146,6 +148,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         }
     }
 
+    @UiThread
     public void showAuthorLastImage(String author) {
         mvc.controller.lastAuthorImage(getActivity(), author);
     }
