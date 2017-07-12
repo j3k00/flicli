@@ -2,7 +2,6 @@ package love.flicli.view;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,7 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ProgressBar;
+
+import java.io.File;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
@@ -27,6 +28,7 @@ import love.flicli.R;
 import love.flicli.Util;
 import love.flicli.model.FlickModel;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static android.support.v4.content.FileProvider.getUriForFile;
 
 /**
  * Created by tommaso on 03/06/17.
@@ -46,6 +48,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     private final static String TAG = DetailImageFragment.class.getName();
     private CommentFragment commentFragment;
     private ImageViewFragment imageViewFragment;
+    private File tempFile = null;
 
     @Override @UiThread
     public void onStart() {
@@ -53,6 +56,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         commentFragment = (CommentFragment) getChildFragmentManager().findFragmentById(R.id.comment_fragment);
         imageViewFragment = (ImageViewFragment) getChildFragmentManager().findFragmentById(R.id.view_fragment);
     }
+
 
     @Override @UiThread
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,7 +96,9 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.setType("image/jpeg");
-            Uri contentUri = Util.getImageUri(getActivity().getApplication(), mvc.model.getDetailFlicker().getBitmap_url_hd());
+            tempFile = Util.getImageUri(getActivity().getApplication(), mvc.model.getDetailFlicker().getBitmap_url_hd());
+            Uri contentUri = getUriForFile(getActivity().getApplication(), "love.flicli.fileprovider", tempFile);
+
             shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
             shareIntent.setFlags(FLAG_GRANT_READ_URI_PERMISSION);
             myShareActionProvider.setShareIntent(shareIntent);
@@ -114,11 +120,19 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         return false;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //Delete the temporary file for share image with other application
+        if (tempFile != null)
+            tempFile.delete();
+    }
+
     @Override @UiThread
     public void onModelChanged() {
 
         //Ho dovuto implementare in questa maniere perchè il getChildFragment siccome mActivity è null ritornava sempre
-        //null nel richiamare i frammenti figli con getChildFragmentManager.findby....
+        //null nel richiamare i frammenti figli con il metodo findby....
 
         //codice vecchio, riscriveva sempre i due frammenti da capo
         /*FragmentTransaction ft = getChildFragmentManager().beginTransaction();

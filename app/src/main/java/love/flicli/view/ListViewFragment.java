@@ -19,6 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import net.jcip.annotations.ThreadSafe;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
@@ -27,6 +29,8 @@ import love.flicli.MVC;
 import love.flicli.R;
 import love.flicli.Util;
 import love.flicli.model.FlickModel;
+
+import static android.support.v4.content.FileProvider.getUriForFile;
 
 /**
  * Created by tommaso on 29/05/17.
@@ -39,6 +43,7 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     private final static String TAG = ListViewFragment.class.getName();
 
     private HistoryAdapter list;
+    private File tempFile;
 
     @Override @UiThread
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -57,6 +62,14 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
 
         registerForContextMenu(this.getListView());
         onModelChanged();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //Delete the temporary file for share image with other application
+        if (tempFile != null)
+            tempFile.delete();
     }
 
     //creazione del contextMenu
@@ -171,7 +184,8 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("image/*");
-        Uri r = Util.getImageUri(getActivity().getApplication(), image);
+        tempFile = Util.getImageUri(getActivity().getApplication(), image);
+        Uri r = getUriForFile(getActivity().getApplication(), "love.flicli.fileprovider", tempFile);
         intent.putExtra(Intent.EXTRA_STREAM, r);
         startActivity(Intent.createChooser(intent, "..."));
     }

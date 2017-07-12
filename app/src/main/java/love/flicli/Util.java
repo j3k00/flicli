@@ -29,7 +29,7 @@ import static android.support.v4.content.FileProvider.getUriForFile;
 
 public class Util {
 
-    public static Uri getImageUri(Context contex, Bitmap image) {
+    public static File getImageUri(Context contex, Bitmap image) {
         File imagePath = new File(contex.getFilesDir(), "images");
 
         if (!imagePath.exists())
@@ -48,8 +48,6 @@ public class Util {
             e.getMessage();
         }
 
-        Uri contentUri = getUriForFile(contex, "love.flicli.fileprovider", newFile);
-
-        return contentUri;
+        return newFile;
     }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import java.util.ArrayList;
 import love.flicli.FlicliApplication;
@@ -26,6 +27,7 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
     TextView views = null;
     TextView comments = null;
     TextView fav = null;
+    ProgressBar progress = null;
     private FlickModel flickModel;
 
     @Override @UiThread
@@ -41,6 +43,8 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
         views = (TextView) view.findViewById(R.id.views);
         comments = (TextView) view.findViewById(R.id.comments);
         fav = (TextView) view.findViewById(R.id.favourite);
+        progress = (ProgressBar) view.findViewById(R.id.indeterminateBar);
+        progress.setVisibility(View.VISIBLE);
         return view;
     }
 
@@ -55,7 +59,12 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
     public void onModelChanged() {
         flickModel = mvc.model.getDetailFlicker();
 
+        //Hide progress bar
+        if (flickModel.getBitmap_url_hd() != null)
+            progress.setVisibility(View.INVISIBLE);
+
         imageView.setImageBitmap(flickModel.getBitmap_url_hd());
+
         views.setText(mvc.model.getDetailFlicker().getViews());
 
         ArrayList<Comment> comment = mvc.model.getDetailFlicker().getComments();
