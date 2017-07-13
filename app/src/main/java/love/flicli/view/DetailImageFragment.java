@@ -18,6 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import java.io.File;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
@@ -25,6 +27,7 @@ import love.flicli.R;
 import love.flicli.Util;
 import love.flicli.model.FlickModel;
 
+import static android.R.attr.duration;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.support.v4.content.FileProvider.getUriForFile;
 
@@ -111,7 +114,12 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         } else if (item.getItemId() == R.id.version) {
             mvc.controller.showVersion();
         } else if (item.getItemId() == R.id.menu_item_share) {
-            actionShare();
+            if (mvc.model.getDetailFlicker().getBitmap_url_hd() != null)
+                actionShare();
+            else {
+                Toast toast = Toast.makeText(getActivity().getApplication(), "Immage non pronta aspettare il caricamento", Toast.LENGTH_LONG);
+                toast.show();
+            }
         }
         return false;
     }
