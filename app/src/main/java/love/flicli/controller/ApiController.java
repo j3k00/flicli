@@ -48,9 +48,7 @@ public class ApiController extends IntentService {
     private final static String ACTION_FAVOURITE = "getFavourities";
     private final static String ACTION_DOWNLOAD = "donwloadImage";
 
-    private final static String PARAM_SEARCHABLE = "param";
-    private final static String PARAM_PHOTOID = "photo_id";
-    private final static String PARAM_AUTHOR = "athor_id";
+    private final static String PARAM = "param";
     private static String search = "";
 
     public ApiController() {
@@ -93,7 +91,7 @@ public class ApiController extends IntentService {
     static void searchFlick(Context context, String param) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_FLICKER);
-        intent.putExtra(PARAM_SEARCHABLE, param);
+        intent.putExtra(PARAM, param);
         context.startService(intent);
     }
 
@@ -115,7 +113,7 @@ public class ApiController extends IntentService {
     static void getCommentFlick(Context context, String photo_id) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_COMMENT);
-        intent.putExtra(PARAM_PHOTOID, photo_id);
+        intent.putExtra(PARAM, photo_id);
         context.startService(intent);
     }
 
@@ -123,7 +121,7 @@ public class ApiController extends IntentService {
     static void getFavourities(Context context, String photo_id) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_FAVOURITE);
-        intent.putExtra(PARAM_PHOTOID, photo_id);
+        intent.putExtra(PARAM, photo_id);
         context.startService(intent);
     }
 
@@ -131,7 +129,7 @@ public class ApiController extends IntentService {
     static void downloadImage(Context context, String urlImage) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_DOWNLOAD);
-        intent.putExtra(PARAM_PHOTOID, urlImage);
+        intent.putExtra(PARAM, urlImage);
         context.startService(intent);
     }
 
@@ -140,13 +138,13 @@ public class ApiController extends IntentService {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_AUTHOR);
         search = author;
-        intent.putExtra(PARAM_AUTHOR, search);
+        intent.putExtra(PARAM, search);
         context.startService(intent);
     }
 
     @WorkerThread
     protected void onHandleIntent(Intent intent) {
-
+        String param = "";
         FlickerAPI flickerAPI = ((FlicliApplication) getApplication()).getFlickerAPI();
 
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
@@ -160,7 +158,7 @@ public class ApiController extends IntentService {
                     // Empty list of Flickers
                     mvc.model.freeFlickers();
 
-                    String param = (String) intent.getSerializableExtra(PARAM_SEARCHABLE);
+                    param = (String) intent.getSerializableExtra(PARAM);
 
                     jPhoto = makeRequest(flickerAPI.photos_search(param)).getJSONObject("photos").getJSONArray("photo");
                     _generateFlickers(jPhoto);
@@ -186,31 +184,31 @@ public class ApiController extends IntentService {
                     break;
 
                 case ACTION_COMMENT:
-                    String photo_id = (String) intent.getSerializableExtra(PARAM_PHOTOID);
+                    param = (String) intent.getSerializableExtra(PARAM);
 
-                    jComment = makeRequest(flickerAPI.photos_getComments(photo_id)).getJSONObject("comments").getJSONArray("comment");
-                    _generateComments(jComment, photo_id);
+                    jComment = makeRequest(flickerAPI.photos_getComments(param)).getJSONObject("comments").getJSONArray("comment");
+                    _generateComments(jComment, param);
 
                     break;
 
                 case ACTION_FAVOURITE:
-                    photo_id = (String) intent.getSerializableExtra(PARAM_PHOTOID);
+                    param = (String) intent.getSerializableExtra(PARAM);
 
-                    jComment = makeRequest(flickerAPI.photo_getFav(photo_id)).getJSONObject("photo").getJSONArray("person");
-                    _setFavourities(jComment, photo_id);
+                    jComment = makeRequest(flickerAPI.photo_getFav(param)).getJSONObject("photo").getJSONArray("person");
+                    _setFavourities(jComment, param);
 
                     break;
 
                 case ACTION_DOWNLOAD:
-                    photo_id = (String) intent.getSerializableExtra(PARAM_PHOTOID);
-                    _downloadHighDefinitionImage(photo_id);
+                    param = (String) intent.getSerializableExtra(PARAM);
+                    _downloadHighDefinitionImage(param);
 
                     break;
 
                 case ACTION_AUTHOR:
                     mvc.model.freeFlickers();
 
-                    String author = (String) intent.getSerializableExtra(PARAM_AUTHOR);
+                    String author = (String) intent.getSerializableExtra(PARAM);
                     jPhoto = makeRequest(flickerAPI.photo_getAuthor(author)).getJSONObject("photos").getJSONArray("photo");
                     _generateFlickers(jPhoto);
 
