@@ -18,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import java.io.File;
 
@@ -119,6 +118,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         }
         return false;
     }
+
 
     @Override
     public void onDestroy() {

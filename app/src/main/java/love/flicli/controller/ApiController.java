@@ -318,12 +318,8 @@ public class ApiController extends IntentService {
                 e.getMessage();
             }
 
-            try {
-                flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                flick.setBitmap_url_s(null);
-            }
+            flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
+
             mvc.model.storeFactorization(flick);
         }
     }
