@@ -103,12 +103,11 @@ public class ApiController extends IntentService {
 
 
     @UiThread
-    static void getDetailFlick(Context context, FlickModel flick) {
+    static void getDetailFlick(Context context, String param) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_DETAIL);
 
-        intent.putExtra(PARAM_ID, flick.getId());
-        intent.putExtra(PARAM_URL, flick.getUrl_z());
+        intent.putExtra(PARAM_ID, param);
 
         context.startService(intent);
     }
@@ -131,6 +130,7 @@ public class ApiController extends IntentService {
 
         JSONArray jPhoto = null;
         JSONArray jComment = null;
+        JSONArray jFavourities = null;
 
         try {
             switch (intent.getAction()) {
@@ -166,14 +166,12 @@ public class ApiController extends IntentService {
                 case ACTION_DETAIL:
                     param = (String) intent.getSerializableExtra(PARAM_ID);
 
+                    FlickModel flick = mvc.model.getFlick(param);
+
                     jComment = makeRequest(flickerAPI.photos_getComments(param)).getJSONObject("comments").getJSONArray("comment");
-                    _generateComments(jComment, param);
+                    jFavourities = makeRequest(flickerAPI.photo_getFav(param)).getJSONObject("photo").getJSONArray("person");
 
-                    jComment = makeRequest(flickerAPI.photo_getFav(param)).getJSONObject("photo").getJSONArray("person");
-                    _setFavourities(jComment, param);
-
-                    param = (String) intent.getSerializableExtra(PARAM_URL);
-                    _downloadHighDefinitionImage(param);
+                    _generateFlickDetail(flick, jComment, jFavourities);
 
                     break;
 
@@ -219,13 +217,14 @@ public class ApiController extends IntentService {
         }
     }
 
-    private void _generateComments(JSONArray elements, String photo_id) throws JSONException, IOException {
+    private void _generateFlickDetail(FlickModel flick, JSONArray jComment, JSONArray jFavourities) throws IOException, JSONException {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
+        // Comments
         ArrayList<Comment> comments = new ArrayList<Comment>();
 
-        for (int i = 0; i < elements.length(); i++) {
-            JSONObject jsonComments = elements.getJSONObject(i);
+        for (int i = 0; i < jComment.length(); i++) {
+            JSONObject jsonComments = jComment.getJSONObject(i);
             Iterator<String> keys= jsonComments.keys();
 
             Comment comment = new Comment(jsonComments.getString(keys.next()));
@@ -241,21 +240,11 @@ public class ApiController extends IntentService {
             comments.add(comment);
         }
 
-        mvc.model.storeComments(comments, photo_id);
-    }
-
-    private void _setFavourities(JSONArray elements, String photo_id) throws JSONException, IOException {
-        MVC mvc = ((FlicliApplication) getApplication()).getMVC();
-
-        mvc.model.setFavourities(photo_id, elements.length());
-    }
-
-    private void _downloadHighDefinitionImage(String image) throws IOException {
-        MVC mvc = ((FlicliApplication) getApplication()).getMVC();
-        image = image.replace("_z", "_h");
+        // Photos
+        String image = flick.getUrl_z().replace("_z", "_h");
         Bitmap bitmap_z = null;
         bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
 
-        mvc.model.setBitMap_h(mvc.model.getDetailFlicker().getId(), bitmap_z);
+        mvc.model.storeDetail(flick.getId(), jFavourities.length(), comments, bitmap_z);
     }
 }

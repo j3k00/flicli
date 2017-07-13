@@ -56,7 +56,7 @@ public class Controller {
 
     @UiThread
     public void detailFlick(Context context, FlickModel flick) {
-        getDetailFlick(context, flick);
+        getDetailFlick(context, flick.getId());
     }
 
     public void lastAuthorImage(Context context, String author) {
