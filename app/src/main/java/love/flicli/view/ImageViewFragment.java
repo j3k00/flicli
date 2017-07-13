@@ -69,7 +69,7 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
 
         viewTextView.setText(mvc.model.getDetailFlicker().getViews());
 
-        commentTextView.setText(String.valueOf(mvc.model.getDetailFlicker().getComments().size()-1));
+        commentTextView.setText(String.valueOf(mvc.model.getDetailFlicker().getComments().size()));
         favTextView.setText(flickModel.getFavourities());
     }
 }

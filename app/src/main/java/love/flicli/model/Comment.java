@@ -2,6 +2,9 @@ package love.flicli.model;
 
 import net.jcip.annotations.Immutable;
 
+import org.json.JSONException;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 /**
@@ -125,10 +128,12 @@ public class Comment {
         this._content = _content;
     }
 
-    public static ArrayList<Comment> emptyComment() {
-        Comment comment = new Comment("0");
-        comment.set_content("No Comments");
+    private String _setAttribute(String param) {
+        return (param != null) ? param : "";
+    }
 
-        return new ArrayList<Comment>() {{ add(comment); }};
+    public void reflectJson(String name, String value) throws NoSuchFieldException, IllegalAccessException, JSONException {
+        Field field = this.getClass().getDeclaredField(name);
+        field.set(this, _setAttribute(value));
     }
 }

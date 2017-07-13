@@ -29,6 +29,7 @@ import love.flicli.MVC;
 import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
 
+import static love.flicli.R.drawable.comment;
 import static love.flicli.R.id.cancel_action;
 import static love.flicli.R.id.comments;
 import static love.flicli.R.id.image;
@@ -253,19 +254,18 @@ public class ApiController extends IntentService {
         ArrayList<Comment> comments = new ArrayList<Comment>();
 
         for (int i = 0; i < elements.length(); i++) {
-            JSONObject photo = elements.getJSONObject(i);
+            JSONObject jsonComments = elements.getJSONObject(i);
+            Iterator<String> keys= jsonComments.keys();
 
-            Comment comment = new Comment(photo.getString("id"));
-            comment.setAuthor(photo.getString("author"));
-            comment.setAuthor_is_deleted(photo.getString("author_is_deleted"));
-            comment.setAuthorname(photo.getString("authorname"));
-            comment.setIconserver(photo.getString("iconserver"));
-            comment.setIconfarm(photo.getString("iconfarm"));
-            comment.setDatecreate(photo.getString("datecreate"));
-            comment.setPermalink(photo.getString("permalink"));
-            comment.setPath_alias(photo.getString("path_alias"));
-            comment.setRealname(photo.getString("realname"));
-            comment.set_content(photo.getString("_content"));
+            Comment comment = new Comment(jsonComments.getString(keys.next()));
+
+            while (keys.hasNext()) {
+                String keyValue = keys.next();
+
+                try {
+                    comment.reflectJson(keyValue, jsonComments.getString(keyValue));
+                } catch (Exception e) {}
+            }
 
             comments.add(comment);
         }

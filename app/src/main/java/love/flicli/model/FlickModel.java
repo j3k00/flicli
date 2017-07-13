@@ -397,11 +397,7 @@ public class FlickModel {
     public void addComments(Comment comment) { this.comments.add(comment); }
 
     public ArrayList<Comment> getComments() {
-        if (this.comments.isEmpty()) {
-            return Comment.emptyComment();
-        } else {
-            return this.comments;
-        }
+        return this.comments;
     }
 
     public void setBitmap_url_h(Bitmap image) { this.bitmap_url_h = image; }
