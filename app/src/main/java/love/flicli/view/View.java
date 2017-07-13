@@ -17,4 +17,7 @@ public interface View {
 
     @UiThread
     void showImage();
+
+    @UiThread
+    void showAuthor();
 }

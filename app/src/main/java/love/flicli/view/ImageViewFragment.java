@@ -16,6 +16,8 @@ import love.flicli.R;
 import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
 
+import static android.R.attr.value;
+
 /**
  * Created by tommaso on 03/06/17.
  */
@@ -24,9 +26,9 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
     private final static String TAG = ImageViewFragment.class.getName();
     private MVC mvc;
     ImageView imageView = null;
-    TextView views = null;
-    TextView comments = null;
-    TextView fav = null;
+    TextView viewTextView = null;
+    TextView commentTextView = null;
+    TextView favTextView = null;
     ProgressBar progress = null;
     private FlickModel flickModel;
 
@@ -40,9 +42,9 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.image_fragment, container, false);
         imageView = (ImageView) view.findViewById(R.id.imageContent);
-        views = (TextView) view.findViewById(R.id.views);
-        comments = (TextView) view.findViewById(R.id.comments);
-        fav = (TextView) view.findViewById(R.id.favourite);
+        viewTextView = (TextView) view.findViewById(R.id.views);
+        commentTextView = (TextView) view.findViewById(R.id.comments);
+        favTextView = (TextView) view.findViewById(R.id.favourite);
         progress = (ProgressBar) view.findViewById(R.id.indeterminateBar);
         progress.setVisibility(View.VISIBLE);
         return view;
@@ -57,6 +59,7 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
 
     @Override
     public void onModelChanged() {
+        String value = "";
         flickModel = mvc.model.getDetailFlicker();
 
         //Hide progress bar
@@ -65,20 +68,9 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
 
         imageView.setImageBitmap(flickModel.getBitmap_url_hd());
 
-        views.setText(mvc.model.getDetailFlicker().getViews());
+        viewTextView.setText(mvc.model.getDetailFlicker().getViews());
 
-        ArrayList<Comment> comment = mvc.model.getDetailFlicker().getComments();
-        String value = "";
-        if (comment.size() == 1) {
-            Comment comment1 = comment.get(0);
-            if (comment1.get_content().compareTo("No Comments") == 0)
-                value = "0";
-            else
-                value = "1";
-        } else
-            value = String.valueOf(mvc.model.getDetailFlicker().getComments().size());
-
-        comments.setText(value);
-        fav.setText((flickModel.getFavourities() == null) ? "0" : flickModel.getFavourities());
+        commentTextView.setText(String.valueOf(mvc.model.getDetailFlicker().getComments().size()-1));
+        favTextView.setText(flickModel.getFavourities());
     }
 }

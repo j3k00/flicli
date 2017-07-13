@@ -62,6 +62,14 @@ public class TabletView extends LinearLayout implements View {
                 .commit();
     }
 
+    @Override
+    public void showAuthor() {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.changedFragment, new AuthorFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
     public TabletView(Context context) {
         super(context);
     }

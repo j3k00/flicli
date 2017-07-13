@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -64,7 +66,7 @@ public class Model {
     public void setBitMap_h(String id, Bitmap bitmap_z) {
         for (FlickModel flick :  mvc.model.getFlickers()) {
             if (flick.getId().compareTo(id) == 0) {
-                this.flick.setBitmap_url_hd(bitmap_z);
+                this.flick.setBitmap_url_h(bitmap_z);
             }
         }
 

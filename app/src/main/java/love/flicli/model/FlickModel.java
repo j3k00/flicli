@@ -67,7 +67,7 @@ public class FlickModel {
     private String url_l;
     private String url_o;
     private Bitmap bitmap_url_s;
-    private Bitmap bitmap_url_hd;
+    private Bitmap bitmap_url_h;
     private String favourities;
     private ArrayList<Comment> comments;
 
@@ -102,12 +102,13 @@ public class FlickModel {
         url_c = "";
         url_l = "";
         url_o = "";
+        favourities = "0";
         farm = 0;
         ispublic = 0;
         isfriend = 0;
         isfamily = 0;
         bitmap_url_s = null;
-        bitmap_url_hd = null;
+        bitmap_url_h = null;
         comments = new ArrayList<Comment>();
     }
 
@@ -379,17 +380,13 @@ public class FlickModel {
         this.url_o = _setAttribute(url_o);
     }
 
-    private String _setAttribute(String param) {
-        return (param != null) ? param : "";
-    }
-
     public void setBitmap_url_s(Bitmap bitmap_url_s) { this.bitmap_url_s = bitmap_url_s; }
 
     public Bitmap getBitmap_url_s() {
         return this.bitmap_url_s;
     }
 
-    public void setFavourities(String fav) { this.favourities = fav; }
+    public void setFavourities(String fav) { this.favourities = _setAttribute(fav); }
 
     public String getFavourities() { return this.favourities; }
 
@@ -407,10 +404,13 @@ public class FlickModel {
         }
     }
 
-    public void setBitmap_url_hd(Bitmap image) { this.bitmap_url_hd = image; }
+    public void setBitmap_url_h(Bitmap image) { this.bitmap_url_h = image; }
 
-    public  Bitmap getBitmap_url_hd() { return this.bitmap_url_hd;}
+    public  Bitmap getBitmap_url_hd() { return this.bitmap_url_h;}
 
+    private String _setAttribute(String param) {
+        return (param != null) ? param : "";
+    }
 
     public void reflectJson(String name, JSONObject obj, String variable) throws NoSuchFieldException, IllegalAccessException, JSONException {
         Field field = this.getClass().getDeclaredField(variable);
