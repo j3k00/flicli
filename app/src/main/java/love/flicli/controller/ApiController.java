@@ -159,10 +159,12 @@ public class ApiController extends IntentService {
                     break;
 
                 case ACTION_DETAIL:
-                    jComment = makeRequest(flickerAPI.photos_getComments(param)).getJSONObject("comments").getJSONArray("comment");
-                    jFavourities = makeRequest(flickerAPI.photo_getFav(param)).getJSONObject("photo").getJSONArray("person");
+                    FlickModel flick = mvc.model.getDetailFlicker();
 
-                    _generateFlickDetail(jComment, jFavourities);
+                    jComment = makeRequest(flickerAPI.photos_getComments(flick.getId())).getJSONObject("comments").getJSONArray("comment");
+                    jFavourities = makeRequest(flickerAPI.photo_getFav(flick.getId())).getJSONObject("photo").getJSONArray("person");
+
+                    _generateFlickDetail(flick, jComment, jFavourities);
 
                     break;
 
@@ -208,9 +210,8 @@ public class ApiController extends IntentService {
         }
     }
 
-    private void _generateFlickDetail(JSONArray jComment, JSONArray jFavourities) throws IOException, JSONException {
+    private void _generateFlickDetail(FlickModel flick, JSONArray jComment, JSONArray jFavourities) throws IOException, JSONException {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
-        FlickModel flick = mvc.model.getDetailFlicker();
 
         // Comments
         ArrayList<Comment> comments = new ArrayList<Comment>();
