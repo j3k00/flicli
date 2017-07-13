@@ -38,10 +38,8 @@ public class ApiController extends IntentService {
     private final static String ACTION_POPULAR = "getPopularFlick";
     private final static String ACTION_DETAIL = "getDetailFlick";
     private final static String ACTION_AUTHOR = "getFlickByAuthor";
-    private final static String ACTION_DOWNLOAD = "donwloadImage";
 
     private final static String PARAM_ID = "paramId";
-    private final static String PARAM_URL = "paramUrl";
     private static String search = "";
 
     public ApiController() {
@@ -103,12 +101,9 @@ public class ApiController extends IntentService {
 
 
     @UiThread
-    static void getDetailFlick(Context context, String param) {
+    static void getDetailFlick(Context context) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_DETAIL);
-
-        intent.putExtra(PARAM_ID, param);
-
         context.startService(intent);
     }
 
@@ -164,14 +159,10 @@ public class ApiController extends IntentService {
                     break;
 
                 case ACTION_DETAIL:
-                    param = (String) intent.getSerializableExtra(PARAM_ID);
-
-                    FlickModel flick = mvc.model.getFlick(param);
-
                     jComment = makeRequest(flickerAPI.photos_getComments(param)).getJSONObject("comments").getJSONArray("comment");
                     jFavourities = makeRequest(flickerAPI.photo_getFav(param)).getJSONObject("photo").getJSONArray("person");
 
-                    _generateFlickDetail(flick, jComment, jFavourities);
+                    _generateFlickDetail(jComment, jFavourities);
 
                     break;
 
@@ -217,8 +208,9 @@ public class ApiController extends IntentService {
         }
     }
 
-    private void _generateFlickDetail(FlickModel flick, JSONArray jComment, JSONArray jFavourities) throws IOException, JSONException {
+    private void _generateFlickDetail(JSONArray jComment, JSONArray jFavourities) throws IOException, JSONException {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
+        FlickModel flick = mvc.model.getDetailFlicker();
 
         // Comments
         ArrayList<Comment> comments = new ArrayList<Comment>();
@@ -242,8 +234,7 @@ public class ApiController extends IntentService {
 
         // Photos
         String image = flick.getUrl_z().replace("_z", "_h");
-        Bitmap bitmap_z = null;
-        bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
+        Bitmap bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
 
         mvc.model.storeDetail(flick.getId(), jFavourities.length(), comments, bitmap_z);
     }

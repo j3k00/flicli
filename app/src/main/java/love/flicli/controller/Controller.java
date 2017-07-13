@@ -29,9 +29,10 @@ public class Controller {
         showHistory();
     }
 
+    @UiThread
     public void getImageDetail(Context context, FlickModel flickModel) {
-        mvc.model.storeDetailFlicker(flickModel);
-        detailFlick(context, flickModel);
+        mvc.model.setDetailFlicker(flickModel);
+        ApiController.getDetailFlick(context);
         showImage();
     }
 
@@ -52,11 +53,6 @@ public class Controller {
     @UiThread
     public void showVersion() {
         version();
-    }
-
-    @UiThread
-    public void detailFlick(Context context, FlickModel flick) {
-        getDetailFlick(context, flick.getId());
     }
 
     public void lastAuthorImage(Context context, String author) {

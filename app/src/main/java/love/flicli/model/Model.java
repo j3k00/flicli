@@ -63,19 +63,9 @@ public class Model {
 
     public FlickModel getDetailFlicker()  { return this.flick; }
 
-    public void storeDetailFlicker(FlickModel flickModel) { this.flick = flickModel; }
+    public void setDetailFlicker(FlickModel flickModel) { this.flick = flickModel; }
 
     public void freeFlickers() { this.flickers.clear(); }
-
-    public FlickModel getFlick(String photo_id) {
-        for (FlickModel flick :  mvc.model.getFlickers()) {
-            if (flick.getId().compareTo(photo_id) == 0) {
-                return flick;
-            }
-        }
-
-        return null;
-    }
 
     public FlickModel getFlick(int pos) {
         if (this.flickers != null)
