@@ -160,8 +160,14 @@ public class ApiController extends IntentService {
 
                 case ACTION_DETAIL:
                     FlickModel flick = mvc.model.getDetailFlicker();
+                    JSONObject j = makeRequest(flickerAPI.photos_getComments(flick.getId()));
+                    try {
+                        jComment = j.getJSONObject("comments").getJSONArray("comment");
+                    } catch (JSONException e) {
+                        e.getMessage();
+                        jComment = j.getJSONArray("comments");
+                    }
 
-                    jComment = makeRequest(flickerAPI.photos_getComments(flick.getId())).getJSONObject("comments").getJSONArray("comment");
                     jFavourities = makeRequest(flickerAPI.photo_getFav(flick.getId())).getJSONObject("photo").getJSONArray("person");
 
                     _generateFlickDetail(flick, jComment, jFavourities);

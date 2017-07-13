@@ -42,6 +42,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
 
     private Menu menu;
     private MVC mvc;
+    private ShareActionProvider myShareActionProvider;
     ShareActionProvider mShareActionProvider = null;
     private FlickModel flickModel;
     private final static String TAG = DetailImageFragment.class.getName();
@@ -91,7 +92,11 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.share_menu, menu);
+
         this.menu = menu;
+        MenuItem shareItem = menu.findItem(R.id.menu_item_share);
+        myShareActionProvider= (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+
     }
 
     @UiThread
@@ -164,9 +169,6 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     }
 
     public void actionShare() {
-        MenuItem shareItem = menu.findItem(R.id.menu_item_share);
-        ShareActionProvider myShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
-
         if (myShareActionProvider != null) {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
