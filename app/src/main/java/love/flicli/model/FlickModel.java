@@ -412,8 +412,8 @@ public class FlickModel {
         return (param != null) ? param : "";
     }
 
-    public void reflectJson(String name, JSONObject obj, String variable) throws NoSuchFieldException, IllegalAccessException, JSONException {
-        Field field = this.getClass().getDeclaredField(variable);
-        field.set(this, (obj.isNull(name)) ? "" : obj.getString(name));
+    public void reflectJson(String name, String value) throws NoSuchFieldException, IllegalAccessException, JSONException {
+        Field field = this.getClass().getDeclaredField(name);
+        field.set(this, value);
     }
 }

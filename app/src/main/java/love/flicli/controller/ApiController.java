@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import love.flicli.FlickerAPI;
 import love.flicli.FlicliApplication;
@@ -172,7 +173,7 @@ public class ApiController extends IntentService {
 
                     jPhoto = makeRequest(flickerAPI.photos_getRecent()).getJSONObject("photos").getJSONArray("photo");
                     //_generateFlickers(jPhoto);
-                    _generateFlickersReflection(jPhoto);
+                    _generateFlickers(jPhoto);
                     break;
 
                 case ACTION_POPULAR:
@@ -229,24 +230,20 @@ public class ApiController extends IntentService {
 
         for (int i = 0; i < elements.length(); i++) {
             JSONObject photo = elements.getJSONObject(i);
+            Iterator<String> keys= photo.keys();
 
-            FlickModel flick = new FlickModel(photo.getString("id"));
-            flick.setDescription(photo.getString("description"));
-            flick.setUrl_z((photo.isNull("url_z") ? "" : photo.getString("url_z")));
-            flick.setTitle(photo.getString("title"));
-            flick.setOwner(photo.getString("owner"));
-            flick.setOwner_name(photo.getString("ownername"));
-            flick.setUrl_sq(photo.getString("url_sq"));
-            flick.setUrl_m(photo.getString("url_s"));
-            flick.setViews(photo.getString("views"));
-            //flick.setUrl_o(photo.getString("url_o"));
+            // Generate new object based on first param, that is id of flickr
+            FlickModel flick = new FlickModel(photo.getString(keys.next()));
 
-            try {
-                flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                flick.setBitmap_url_s(null);
+            while (keys.hasNext()) {
+                String keyValue = keys.next();
+
+                try {
+                    flick.reflectJson(keyValue, photo.getString(keyValue));
+                } catch (Exception e) {}
             }
+
+            flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
 
             mvc.model.storeFactorization(flick);
         }
@@ -291,36 +288,5 @@ public class ApiController extends IntentService {
         bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
 
         mvc.model.setBitMap_h(mvc.model.getDetailFlicker().getId(), bitmap_z);
-    }
-
-    private void _generateFlickersReflection(JSONArray elements) throws JSONException, IOException {
-        MVC mvc = ((FlicliApplication) getApplication()).getMVC();
-
-        for (int i = 0; i < elements.length(); i++) {
-            JSONObject photo = elements.getJSONObject(i);
-
-            FlickModel flick = new FlickModel(photo.getString("id"));
-            try {
-                //reflection nome del campo nel JSON , JSON e nome della variabile
-                flick.reflectJson("description", photo, "description");
-                flick.reflectJson("url_z", photo, "url_z");
-                flick.reflectJson("title", photo, "title");
-                flick.reflectJson("owner", photo, "owner");
-                flick.reflectJson("ownername", photo, "owner_name");
-                flick.reflectJson("url_sq", photo, "url_sq");
-                flick.reflectJson("url_s", photo, "url_s");
-                flick.reflectJson("views", photo, "views");
-                flick.reflectJson("url_o", photo, "url_o");
-
-            } catch (IllegalAccessException e) {
-                e.getMessage();
-            } catch (NoSuchFieldException e) {
-                e.getMessage();
-            }
-
-            flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
-
-            mvc.model.storeFactorization(flick);
-        }
     }
 }

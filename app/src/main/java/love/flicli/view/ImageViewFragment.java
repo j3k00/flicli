@@ -59,7 +59,6 @@ public class ImageViewFragment extends Fragment implements AbstractFragment {
 
     @Override
     public void onModelChanged() {
-        String value = "";
         flickModel = mvc.model.getDetailFlicker();
 
         //Hide progress bar
