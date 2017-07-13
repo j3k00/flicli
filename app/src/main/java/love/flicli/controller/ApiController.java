@@ -124,8 +124,6 @@ public class ApiController extends IntentService {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
         JSONArray jPhoto = null;
-        JSONArray jComment = null;
-        JSONArray jFavourities = null;
 
         try {
             switch (intent.getAction()) {
@@ -161,8 +159,8 @@ public class ApiController extends IntentService {
                 case ACTION_DETAIL:
                     FlickModel flick = mvc.model.getDetailFlicker();
 
-                    jComment = makeRequest(flickerAPI.photos_getComments(flick.getId())).getJSONObject("comments").getJSONArray("comment");
-                    jFavourities = makeRequest(flickerAPI.photo_getFav(flick.getId())).getJSONObject("photo").getJSONArray("person");
+                    JSONObject jComment = makeRequest(flickerAPI.photos_getComments(flick.getId())).getJSONObject("comments");
+                    JSONArray jFavourities = makeRequest(flickerAPI.photo_getFav(flick.getId())).getJSONObject("photo").getJSONArray("person");
 
                     _generateFlickDetail(flick, jComment, jFavourities);
 
@@ -210,28 +208,31 @@ public class ApiController extends IntentService {
         }
     }
 
-    private void _generateFlickDetail(FlickModel flick, JSONArray jComment, JSONArray jFavourities) throws IOException, JSONException {
+    private void _generateFlickDetail(FlickModel flick, JSONObject jComment, JSONArray jFavourities) throws IOException {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
         // Comments
         ArrayList<Comment> comments = new ArrayList<Comment>();
 
-        for (int i = 0; i < jComment.length(); i++) {
-            JSONObject jsonComments = jComment.getJSONObject(i);
-            Iterator<String> keys= jsonComments.keys();
+        try {
 
-            Comment comment = new Comment(jsonComments.getString(keys.next()));
+            for (int i = 0; i < jComment.length(); i++) {
+                JSONObject jsonComments = jComment.getJSONArray("comment").getJSONObject(i);
+                Iterator<String> keys = jsonComments.keys();
 
-            while (keys.hasNext()) {
-                String keyValue = keys.next();
+                Comment comment = new Comment(jsonComments.getString(keys.next()));
 
-                try {
-                    comment.reflectJson(keyValue, jsonComments.getString(keyValue));
-                } catch (Exception e) {}
+                while (keys.hasNext()) {
+                    String keyValue = keys.next();
+
+                    try {
+                        comment.reflectJson(keyValue, jsonComments.getString(keyValue));
+                    } catch (Exception e) {}
+                }
+
+                comments.add(comment);
             }
-
-            comments.add(comment);
-        }
+        } catch (Exception e) {}
 
         // Photos
         String image = flick.getUrl_z().replace("_z", "_h");
