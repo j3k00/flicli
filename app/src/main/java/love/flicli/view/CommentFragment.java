@@ -60,16 +60,9 @@ public class CommentFragment extends ListFragment implements AbstractFragment  {
                 String date = "";
                 String text = "";
                 String author = "";
-
-                if (message.get_content().compareTo("No Comments") == 0) {
-                    date = getCalendarDate((long) 0);
-                    author = "Nessun Commento";
-                    text = "Nessun Commento";
-                } else {
-                    date = getCalendarDate(Long.parseLong(message.getDatecreate()));
-                    author = message.getAuthorname();
-                    text = message.get_content();
-                }
+                date = getCalendarDate(Long.parseLong(message.getDatecreate()));
+                author = message.getAuthorname();
+                text = message.get_content();
 
                 ((TextView) row.findViewById(R.id.author)).setText(author);
 

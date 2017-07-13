@@ -92,10 +92,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.share_menu, menu);
-
         this.menu = menu;
-        MenuItem shareItem = menu.findItem(R.id.menu_item_share);
-        myShareActionProvider= (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
 
     }
 
@@ -169,16 +166,12 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     }
 
     public void actionShare() {
-        if (myShareActionProvider != null) {
-            Intent shareIntent = new Intent();
-            shareIntent.setAction(Intent.ACTION_SEND);
-            shareIntent.setType("image/jpeg");
-            tempFile = Util.getImageUri(getActivity().getApplication(), mvc.model.getDetailFlicker().getBitmap_url_hd());
-            Uri contentUri = getUriForFile(getActivity().getApplication(), "love.flicli.fileprovider", tempFile);
-
-            shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-            shareIntent.setFlags(FLAG_GRANT_READ_URI_PERMISSION);
-            myShareActionProvider.setShareIntent(shareIntent);
-        }
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        tempFile = Util.getImageUri(getActivity().getApplication(), mvc.model.getDetailFlicker().getBitmap_url_hd());
+        Uri r = getUriForFile(getActivity().getApplication(), "love.flicli.fileprovider", tempFile);
+        intent.putExtra(Intent.EXTRA_STREAM, r);
+        startActivity(Intent.createChooser(intent, "..."));
     }
 }

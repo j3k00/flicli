@@ -8,7 +8,6 @@
     <!-- c'era un problema di compatibilità con android.widget.SharedActionProvider-->
     <item
         android:id="@+id/menu_item_share"
-        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
         android:enabled="true"
         android:icon="?attr/actionModeShareDrawable"
         android:title="Share"
