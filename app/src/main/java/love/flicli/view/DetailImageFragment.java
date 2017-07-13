@@ -18,10 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-
 import java.io.File;
-
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
@@ -56,7 +53,6 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         commentFragment = (CommentFragment) getChildFragmentManager().findFragmentById(R.id.comment_fragment);
         imageViewFragment = (ImageViewFragment) getChildFragmentManager().findFragmentById(R.id.view_fragment);
     }
-
 
     @Override @UiThread
     public void onCreate(@Nullable Bundle savedInstanceState) {
