@@ -179,6 +179,10 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     @UiThread
     //funzione che gestisce la condivisione con l'applicazione
     public void startActivityListView(Bitmap image) {
+
+        if (tempFile != null)
+            tempFile.delete();
+
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("image/*");
