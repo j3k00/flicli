@@ -112,6 +112,8 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_item_author) {
             showAuthorLastImage(mvc.model.getDetailFlicker().getOwner());
+        } else if (item.getItemId() == R.id.version) {
+            mvc.controller.showVersion();
         }
         return false;
     }
