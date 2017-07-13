@@ -44,9 +44,8 @@ public class ApiController extends IntentService {
     private final static String ACTION_FLICKER = "searchFlick";
     private final static String ACTION_RECENT = "getRecentFlick";
     private final static String ACTION_POPULAR = "getPopularFlick";
-    private final static String ACTION_COMMENT = "getCommentFlick";
+    private final static String ACTION_DETAIL = "getDetailFlick";
     private final static String ACTION_AUTHOR = "getFlickByAuthor";
-    private final static String ACTION_FAVOURITE = "getFavourities";
     private final static String ACTION_DOWNLOAD = "donwloadImage";
 
     private final static String PARAM = "param";
@@ -103,25 +102,17 @@ public class ApiController extends IntentService {
         context.startService(intent);
     }
 
-    @UiThread
     static void getPopularFlick(Context context) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_POPULAR);
         context.startService(intent);
     }
 
-    @UiThread
-    static void getCommentFlick(Context context, String photo_id) {
-        Intent intent = new Intent(context, ApiController.class);
-        intent.setAction(ACTION_COMMENT);
-        intent.putExtra(PARAM, photo_id);
-        context.startService(intent);
-    }
 
     @UiThread
-    static void getFavourities(Context context, String photo_id) {
+    static void getDetailFlick(Context context, String photo_id) {
         Intent intent = new Intent(context, ApiController.class);
-        intent.setAction(ACTION_FAVOURITE);
+        intent.setAction(ACTION_DETAIL);
         intent.putExtra(PARAM, photo_id);
         context.startService(intent);
     }
@@ -184,16 +175,11 @@ public class ApiController extends IntentService {
 
                     break;
 
-                case ACTION_COMMENT:
+                case ACTION_DETAIL:
                     param = (String) intent.getSerializableExtra(PARAM);
 
                     jComment = makeRequest(flickerAPI.photos_getComments(param)).getJSONObject("comments").getJSONArray("comment");
                     _generateComments(jComment, param);
-
-                    break;
-
-                case ACTION_FAVOURITE:
-                    param = (String) intent.getSerializableExtra(PARAM);
 
                     jComment = makeRequest(flickerAPI.photo_getFav(param)).getJSONObject("photo").getJSONArray("person");
                     _setFavourities(jComment, param);

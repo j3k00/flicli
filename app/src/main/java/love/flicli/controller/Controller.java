@@ -8,6 +8,8 @@ import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
 import love.flicli.view.View;
 
+import static love.flicli.controller.ApiController.getDetailFlick;
+
 /**
  * Created by tommaso on 18/05/17.
  */
@@ -29,9 +31,8 @@ public class Controller {
 
     public void getImageDetail(Context context, FlickModel flickModel) {
         mvc.model.storeDetailFlicker(flickModel);
-        comment(context, flickModel.getId());
+        detailFlick(context, flickModel.getId());
         downloadImage(context, flickModel.getUrl_z());
-        favourite(context, flickModel.getId());
         showImage();
     }
 
@@ -55,13 +56,8 @@ public class Controller {
     }
 
     @UiThread
-    public void comment(Context context, String image) {
-        ApiController.getCommentFlick(context, image);
-    }
-
-    @UiThread
-    public void favourite(Context context, String image) {
-        ApiController.getFavourities(context, image);
+    public void detailFlick(Context context, String image) {
+        getDetailFlick(context, image);
     }
 
     public void downloadImage(Context context, String image) {
