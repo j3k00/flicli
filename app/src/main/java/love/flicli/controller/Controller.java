@@ -30,7 +30,7 @@ public class Controller {
     }
 
     @UiThread
-    public void getImageDetail(Context context, FlickModel flickModel) {
+    public void getDetailFlicker(Context context, FlickModel flickModel) {
         mvc.model.setDetailFlicker(flickModel);
         ApiController.getDetailFlick(context);
         showImage();

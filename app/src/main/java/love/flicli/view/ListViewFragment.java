@@ -143,7 +143,7 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
 
     @UiThread
     private void onClickRow(FlickModel image) {
-        mvc.controller.getImageDetail(getActivity(), image);
+        mvc.controller.getDetailFlicker(getActivity(), image);
     }
 
     //implementato download dell'immagine in backGroud, con conseguente
