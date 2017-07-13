@@ -15,9 +15,7 @@ import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -28,12 +26,6 @@ import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
-
-import static love.flicli.R.drawable.comment;
-import static love.flicli.R.id.cancel_action;
-import static love.flicli.R.id.comments;
-import static love.flicli.R.id.image;
-import static love.flicli.R.id.populImage;
 
 /**
  * Created by tommaso on 09/05/17.
@@ -48,7 +40,8 @@ public class ApiController extends IntentService {
     private final static String ACTION_AUTHOR = "getFlickByAuthor";
     private final static String ACTION_DOWNLOAD = "donwloadImage";
 
-    private final static String PARAM = "param";
+    private final static String PARAM_ID = "paramId";
+    private final static String PARAM_URL = "paramUrl";
     private static String search = "";
 
     public ApiController() {
@@ -91,7 +84,7 @@ public class ApiController extends IntentService {
     static void searchFlick(Context context, String param) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_FLICKER);
-        intent.putExtra(PARAM, param);
+        intent.putExtra(PARAM_ID, param);
         context.startService(intent);
     }
 
@@ -110,18 +103,13 @@ public class ApiController extends IntentService {
 
 
     @UiThread
-    static void getDetailFlick(Context context, String photo_id) {
+    static void getDetailFlick(Context context, FlickModel flick) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_DETAIL);
-        intent.putExtra(PARAM, photo_id);
-        context.startService(intent);
-    }
 
-    @UiThread
-    static void downloadImage(Context context, String urlImage) {
-        Intent intent = new Intent(context, ApiController.class);
-        intent.setAction(ACTION_DOWNLOAD);
-        intent.putExtra(PARAM, urlImage);
+        intent.putExtra(PARAM_ID, flick.getId());
+        intent.putExtra(PARAM_URL, flick.getUrl_z());
+
         context.startService(intent);
     }
 
@@ -130,7 +118,7 @@ public class ApiController extends IntentService {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_AUTHOR);
         search = author;
-        intent.putExtra(PARAM, search);
+        intent.putExtra(PARAM_ID, search);
         context.startService(intent);
     }
 
@@ -150,7 +138,7 @@ public class ApiController extends IntentService {
                     // Empty list of Flickers
                     mvc.model.freeFlickers();
 
-                    param = (String) intent.getSerializableExtra(PARAM);
+                    param = (String) intent.getSerializableExtra(PARAM_ID);
 
                     jPhoto = makeRequest(flickerAPI.photos_search(param)).getJSONObject("photos").getJSONArray("photo");
                     _generateFlickers(jPhoto);
@@ -176,7 +164,7 @@ public class ApiController extends IntentService {
                     break;
 
                 case ACTION_DETAIL:
-                    param = (String) intent.getSerializableExtra(PARAM);
+                    param = (String) intent.getSerializableExtra(PARAM_ID);
 
                     jComment = makeRequest(flickerAPI.photos_getComments(param)).getJSONObject("comments").getJSONArray("comment");
                     _generateComments(jComment, param);
@@ -184,10 +172,7 @@ public class ApiController extends IntentService {
                     jComment = makeRequest(flickerAPI.photo_getFav(param)).getJSONObject("photo").getJSONArray("person");
                     _setFavourities(jComment, param);
 
-                    break;
-
-                case ACTION_DOWNLOAD:
-                    param = (String) intent.getSerializableExtra(PARAM);
+                    param = (String) intent.getSerializableExtra(PARAM_URL);
                     _downloadHighDefinitionImage(param);
 
                     break;
@@ -195,7 +180,7 @@ public class ApiController extends IntentService {
                 case ACTION_AUTHOR:
                     mvc.model.freeFlickers();
 
-                    String author = (String) intent.getSerializableExtra(PARAM);
+                    String author = (String) intent.getSerializableExtra(PARAM_ID);
                     jPhoto = makeRequest(flickerAPI.photo_getAuthor(author)).getJSONObject("photos").getJSONArray("photo");
                     _generateFlickers(jPhoto);
 

@@ -31,8 +31,7 @@ public class Controller {
 
     public void getImageDetail(Context context, FlickModel flickModel) {
         mvc.model.storeDetailFlicker(flickModel);
-        detailFlick(context, flickModel.getId());
-        downloadImage(context, flickModel.getUrl_z());
+        detailFlick(context, flickModel);
         showImage();
     }
 
@@ -56,12 +55,8 @@ public class Controller {
     }
 
     @UiThread
-    public void detailFlick(Context context, String image) {
-        getDetailFlick(context, image);
-    }
-
-    public void downloadImage(Context context, String image) {
-        ApiController.downloadImage(context, image);
+    public void detailFlick(Context context, FlickModel flick) {
+        getDetailFlick(context, flick);
     }
 
     public void lastAuthorImage(Context context, String author) {
