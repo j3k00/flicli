@@ -45,6 +45,15 @@ public class PhoneView extends FrameLayout implements View {
     }
 
     @Override
+    public void showAuthor() {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.phone_view, new AuthorFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+
+    @Override
     protected void onDetachedFromWindow() {
         mvc.unregister(this);
         super.onDetachedFromWindow();

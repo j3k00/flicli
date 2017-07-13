@@ -84,8 +84,8 @@ public class StartFragment extends Fragment implements AbstractFragment {
             mvc.controller.showHistory();
             return true;
         }
-        else
-            return super.onOptionsItemSelected(item);
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override @UiThread

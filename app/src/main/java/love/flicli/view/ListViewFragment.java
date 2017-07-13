@@ -19,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import net.jcip.annotations.ThreadSafe;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -29,7 +28,6 @@ import love.flicli.MVC;
 import love.flicli.R;
 import love.flicli.Util;
 import love.flicli.model.FlickModel;
-
 import static android.support.v4.content.FileProvider.getUriForFile;
 
 /**

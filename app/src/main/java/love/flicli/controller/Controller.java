@@ -50,6 +50,11 @@ public class Controller {
     }
 
     @UiThread
+    public void showVersion() {
+        version();
+    }
+
+    @UiThread
     public void comment(Context context, String image) {
         ApiController.getCommentFlick(context, image);
     }
@@ -75,4 +80,8 @@ public class Controller {
     public void showHistory() {
         mvc.forEachView(View::showHistory);
     }
+
+    @UiThread
+    public void version() { mvc.forEachView(View::showAuthor); }
+
 }
