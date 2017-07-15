@@ -6,4 +6,11 @@
     <string name="whatsapp">Whatsapp</string>
     <string name="telegram">Telegram</string>
     <string name="show_flicker_list">Mostra la lista dei flick</string>
+    <string name="application_name">Flici</string>
+    <string name="recent_image">Immagini Recenti</string>
+    <string name="popular_image">Immagini Popolari</string>
+    <string name="search">Cerca!</string>
+    <string name="app_developed_by">Applicazizone sviluppata da:</string>
+    <string name="author">Tommaso Bonetti e Andrea Colato</string>
+    <string name="version">Version 1.0.1</string>
 </resources>

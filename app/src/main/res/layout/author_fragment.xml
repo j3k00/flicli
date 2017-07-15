@@ -12,7 +12,7 @@
             android:id="@+id/applicationName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nome Applicazione o qualcosa del genere"
+            android:text="@string/application_name"
             android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"/>
@@ -23,14 +23,14 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true"
-            android:text="Applicazione Sviluppata da:"/>
+            android:text="@string/app_developed_by"/>
 
         <TextView
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Tommaso Bonetti e Andrea Colato"/>
+            android:text="@string/author"/>
 
 
         <TextView
@@ -39,15 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:id="@+id/version"
-            android:text="Version 1.1.5"/>
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="lololololololol"/>
-
+            android:text="@string/version"/>
 
     </LinearLayout>
 </LinearLayout>
