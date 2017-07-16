@@ -11,6 +11,8 @@ import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +63,25 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         registerForContextMenu(this.getListView());
         onModelChanged();
     }
+
+    @Override @UiThread
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_start, menu);
+        MenuItem item = menu.findItem(R.id.menu_item);
+        item.setVisible(false);
+    }
+
+    @Override @UiThread
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.version) {
+            mvc.controller.showVersion();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onDestroy() {

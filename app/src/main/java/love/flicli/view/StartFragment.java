@@ -83,8 +83,10 @@ public class StartFragment extends Fragment implements AbstractFragment {
         if (item.getItemId() == R.id.menu_item) {
             mvc.controller.showHistory();
             return true;
+        } else if (item.getItemId() == R.id.version) {
+            mvc.controller.showVersion();
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
