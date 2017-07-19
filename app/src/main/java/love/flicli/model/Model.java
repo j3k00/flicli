@@ -33,24 +33,27 @@ public class Model {
     }
 
     public void storeFactorization(FlickModel flick) {
-        for (FlickModel currentFlick: this.flickers) {
-            if (currentFlick.getId() == flick.getId()) {
-                return;
+        synchronized (flickers) {
+            for (FlickModel currentFlick : this.flickers) {
+                if (currentFlick.getId() == flick.getId()) {
+                    return;
+                }
             }
+
+            this.flickers.add(flick);
         }
-
-        this.flickers.add(flick);
-
         mvc.forEachView(View::onModelChanged);
     }
 
     public void storeDetail(String photo_id, int favs, ArrayList<Comment> comments, Bitmap bitmap_z ) {
 
-        for (FlickModel flick :  mvc.model.getFlickers()) {
-            if (flick.getId().compareTo(photo_id) == 0) {
-                flick.setComments(comments);
-                flick.setFavourities(String.valueOf(favs));
-                flick.setBitmap_url_h(bitmap_z);
+        synchronized (flickers) {
+            for (FlickModel flick : mvc.model.getFlickers()) {
+                if (flick.getId().compareTo(photo_id) == 0) {
+                    flick.setComments(comments);
+                    flick.setFavourities(String.valueOf(favs));
+                    flick.setBitmap_url_h(bitmap_z);
+                }
             }
         }
 
@@ -58,18 +61,29 @@ public class Model {
     }
 
     public LinkedList<FlickModel> getFlickers() {
-        return this.flickers;
+        synchronized (flickers)
+        {
+            return this.flickers;
+        }
     }
 
-    public FlickModel getDetailFlicker()  { return this.flick; }
+    public FlickModel getDetailFlicker()  {
+        synchronized (flickers) {
+            return this.flick;
+        }
+    }
 
-    public void setDetailFlicker(FlickModel flickModel) { this.flick = flickModel; }
+    public void setDetailFlicker(FlickModel flickModel) {
+        synchronized (flickers) {
+            this.flick = flickModel;
+        }
+    }
 
     public void freeFlickers() { this.flickers.clear(); }
 
     public FlickModel getFlick(int pos) {
-        if (this.flickers != null)
-            return this.flickers.get(pos);
-        return null;
+        synchronized (flickers) {
+            return (this.flickers.isEmpty()) ? null : this.flickers.get(pos);
+        }
     }
 }

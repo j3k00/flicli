@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,16 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import java.io.File;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
 import love.flicli.Util;
 import love.flicli.model.FlickModel;
-
-import static android.R.attr.duration;
-import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.support.v4.content.FileProvider.getUriForFile;
 
 /**
@@ -45,9 +39,6 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
 
     private Menu menu;
     private MVC mvc;
-    private ShareActionProvider myShareActionProvider;
-    ShareActionProvider mShareActionProvider = null;
-    private FlickModel flickModel;
     private final static String TAG = DetailImageFragment.class.getName();
     private CommentFragment commentFragment;
     private ImageViewFragment imageViewFragment;
@@ -99,13 +90,6 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
 
     }
 
-    @UiThread
-    private void setShareIntent(Intent shareIntent) {
-        if (mShareActionProvider != null) {
-            mShareActionProvider.setShareIntent(shareIntent);
-        }
-    }
-
     @Override
     @UiThread
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -136,16 +120,6 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     @Override
     @UiThread
     public void onModelChanged() {
-
-        //Ho dovuto implementare in questa maniere perchè il getChildFragment siccome mActivity è null ritornava sempre
-        //null nel richiamare i frammenti figli con il metodo findby....
-
-        //codice vecchio, riscriveva sempre i due frammenti da capo
-        /*FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        ft.replace(R.id.view_fragment, new ImageViewFragment());
-        ft.replace(R.id.comment_fragment, new CommentFragment());
-        ft.addToBackStack(null);
-        ft.commit();*/
 
         if (commentFragment != null && imageViewFragment != null) {
             commentFragment.onModelChanged();
