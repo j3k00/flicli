@@ -27,6 +27,10 @@ import love.flicli.MVC;
 import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
 
+import static android.R.attr.icon;
+import static android.R.attr.id;
+import static love.flicli.R.drawable.comment;
+
 /**
  * Created by tommaso on 09/05/17.
  */
@@ -213,23 +217,35 @@ public class ApiController extends IntentService {
 
         // Comments
         ArrayList<Comment> comments = new ArrayList<Comment>();
+        String id = "";
+        String author = "";
+        String author_is_deleted = "";
+        String authorname = "";
+        String iconserver = "";
+        String iconfarm = "";
+        String datecreate = "";
+        String permalink = "";
+        String path_alias = "";
+        String realname = "";
+        String _content = "";
 
         try {
-
             for (int i = 0; i < jComment.length(); i++) {
                 JSONObject jsonComments = jComment.getJSONArray("comment").getJSONObject(i);
-                Iterator<String> keys = jsonComments.keys();
 
-                Comment comment = new Comment(jsonComments.getString(keys.next()));
+                id = (jsonComments.isNull("id")) ? "" : jsonComments.getString("id");
+                author = (jsonComments.isNull("author")) ? "" : jsonComments.getString("author");
+                authorname = (jsonComments.isNull("authorname")) ? "" : jsonComments.getString("authorname");
+                author_is_deleted = (jsonComments.isNull("author_is_deleted")) ? "" : jsonComments.getString("author_is_deleted");
+                iconserver = (jsonComments.isNull("iconserver")) ? "" : jsonComments.getString("iconserver");
+                iconfarm = (jsonComments.isNull("iconfarm")) ? "" : jsonComments.getString("iconfarm");
+                datecreate = (jsonComments.isNull("datecreate")) ? "" : jsonComments.getString("datecreate");
+                permalink = (jsonComments.isNull("permalink")) ? "" : jsonComments.getString("permalink");
+                path_alias = (jsonComments.isNull("pathalias")) ? "" : jsonComments.getString("pathalias");
+                realname = (jsonComments.isNull("realname")) ? "" : jsonComments.getString("realname");
+                _content = (jsonComments.isNull("_content")) ? "" : jsonComments.getString("_content");
 
-                while (keys.hasNext()) {
-                    String keyValue = keys.next();
-
-                    try {
-                        comment.reflectJson(keyValue, jsonComments.getString(keyValue));
-                    } catch (Exception e) {}
-                }
-
+                Comment comment = new Comment(id, author, author_is_deleted, authorname, iconserver, iconfarm, datecreate, permalink, path_alias, realname, _content);
                 comments.add(comment);
             }
         } catch (Exception e) {}

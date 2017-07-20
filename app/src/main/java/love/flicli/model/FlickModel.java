@@ -3,6 +3,7 @@ package love.flicli.model;
 import android.graphics.Bitmap;
 
 import net.jcip.annotations.Immutable;
+import net.jcip.annotations.ThreadSafe;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 import static android.R.attr.mode;
 import static android.R.attr.name;
+import static android.R.attr.syncable;
 import static android.R.attr.thickness;
 import static android.R.attr.value;
 
@@ -27,7 +29,7 @@ import static android.R.attr.value;
  * When we make a request and store the results, we managed the photo in this format.
  */
 
-@Immutable
+@ThreadSafe
 public class FlickModel {
     // Default attribues
     private String id;
@@ -391,18 +393,35 @@ public class FlickModel {
     public String getFavourities() { return this.favourities; }
 
     public void setComments(ArrayList<Comment> comments) {
-        this.comments = comments;
+        synchronized (comments) {
+            this.comments = comments;
+        }
     }
 
-    public void addComments(Comment comment) { this.comments.add(comment); }
+    public void addComments(Comment comment) {
+        synchronized (comment) {
+            this.comments.add(comment);
+        }
+    }
 
     public ArrayList<Comment> getComments() {
-        return this.comments;
+        synchronized (comments) {
+            return this.comments;
+        }
     }
 
-    public void setBitmap_url_h(Bitmap image) { this.bitmap_url_h = image; }
+    //CONTROLlARE NON SONO SICURO
+    public void setBitmap_url_h(Bitmap image) {
+        synchronized (bitmap_url_h) {
+            this.bitmap_url_h = image;
+        }
+    }
 
-    public  Bitmap getBitmap_url_hd() { return this.bitmap_url_h;}
+    public  Bitmap getBitmap_url_hd() {
+        synchronized (bitmap_url_h) {
+            return this.bitmap_url_h;
+        }
+    }
 
     private String _setAttribute(String param) {
         return (param != null) ? param : "";

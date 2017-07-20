@@ -14,126 +14,87 @@ import java.util.ArrayList;
 @Immutable
 public class Comment {
     // Default attribues
-    private String id;
-    private String author;
-    private String author_is_deleted;
-    private String authorname;
-    private String iconserver;
-    private String iconfarm;
-    private String datecreate;
-    private String permalink;
-    private String path_alias;
-    private String realname;
-    private String _content;
+    private final String id;
+    private final String author;
+    private final String author_is_deleted;
+    private final String authorname;
+    private final String iconserver;
+    private final String iconfarm;
+    private final String datecreate;
+    private final String permalink;
+    private final String path_alias;
+    private final String realname;
+    private final String _content;
 
-    public Comment(String id) {
+    public Comment(
+        String id,
+        String author,
+        String author_is_deleted,
+        String authorname,
+        String iconserver,
+        String iconfarm,
+        String datecreate,
+        String permalink,
+        String path_alias,
+        String realname,
+        String _content
+    ) {
         this.id = id;
-        this.author = "";
-        this.author_is_deleted = "";
-        this.authorname = "";
-        this.iconserver = "";
-        this.iconfarm = "";
-        this.datecreate = "";
-        this.permalink = "";
-        this.path_alias = "";
-        this.realname = "";
-        this._content = "";
+        this.author = author;
+        this.author_is_deleted = author_is_deleted;
+        this.authorname = authorname;
+        this.iconserver = iconserver;
+        this.iconfarm = iconfarm;
+        this.datecreate = datecreate;
+        this.permalink = permalink;
+        this.path_alias = path_alias;
+        this.realname = realname;
+        this._content = _content;
     }
 
+    //da togliere
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
     public String getAuthor_is_deleted() {
         return author_is_deleted;
-    }
-
-    public void setAuthor_is_deleted(String author_is_deleted) {
-        this.author_is_deleted = author_is_deleted;
     }
 
     public String getAuthorname() {
         return authorname;
     }
 
-    public void setAuthorname(String authorname) {
-        this.authorname = authorname;
-    }
-
     public String getIconserver() {
         return iconserver;
-    }
-
-    public void setIconserver(String iconserver) {
-        this.iconserver = iconserver;
     }
 
     public String getIconfarm() {
         return iconfarm;
     }
 
-    public void setIconfarm(String iconfarm) {
-        this.iconfarm = iconfarm;
-    }
-
     public String getDatecreate() {
         return datecreate;
-    }
-
-    public void setDatecreate(String datecreate) {
-        this.datecreate = datecreate;
     }
 
     public String getPermalink() {
         return permalink;
     }
 
-    public void setPermalink(String permalink) {
-        this.permalink = permalink;
-    }
-
     public String getPath_alias() {
         return path_alias;
-    }
-
-    public void setPath_alias(String path_alias) {
-        this.path_alias = path_alias;
     }
 
     public String getRealname() {
         return realname;
     }
 
-    public void setRealname(String realname) {
-        this.realname = realname;
-    }
-
     public String get_content() {
         return _content;
     }
 
-    public void set_content(String _content) {
-        this._content = _content;
-    }
-
-    private String _setAttribute(String param) {
-        return (param != null) ? param : "";
-    }
-
-    public void reflectJson(String name, String value) throws NoSuchFieldException, IllegalAccessException, JSONException {
-        Field field = this.getClass().getDeclaredField(name);
-        field.set(this, _setAttribute(value));
-    }
 }
