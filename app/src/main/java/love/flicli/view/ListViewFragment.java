@@ -55,8 +55,8 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FlickModel f = mvc.model.getFlick(position);
-                onClickRow(f);
+                onClickRow(position);
+                ((MainActivity) getActivity()).position = position;
             }
         });
 
@@ -107,13 +107,13 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         //Botttone di condivisione
         if(item.getTitle()=="Condividi"){
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            FlickModel model = mvc.model.getFlick(info.position);
+            FlickModel model = mvc.model.getFlickers().get(info.position);
             new DownloadImage().execute(model.getUrl_z());
 
         //bottone che visualizza le ultime foto dell'autore
         } else if(item.getTitle()=="Ultime foto autore"){
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            FlickModel model = mvc.model.getFlick(info.position);
+            FlickModel model = mvc.model.getFlickers().get(info.position);
             mvc.controller.lastAuthorImage(getActivity().getApplication(), model.getOwner());
 
         } else {
@@ -163,8 +163,8 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     }
 
     @UiThread
-    private void onClickRow(FlickModel image) {
-        mvc.controller.getDetailFlicker(getActivity(), image);
+    private void onClickRow(int pos) {
+        mvc.controller.getDetailFlicker(getActivity(), pos);
     }
 
     //implementato download dell'immagine in backGroud, con conseguente

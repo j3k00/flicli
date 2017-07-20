@@ -21,15 +21,12 @@ import static love.flicli.R.id.comments;
 @ThreadSafe
 public class Model {
     private MVC mvc;
-    private final static int MAX_FLICK = 50;
 
     @GuardedBy("Itself")
-    private LinkedList<FlickModel> flickers;
-    private FlickModel flick;
+    private final LinkedList<FlickModel> flickers = new LinkedList<>();
 
     public void setMVC(MVC mvc) {
         this.mvc = mvc;
-        flickers = new LinkedList<FlickModel>();
     }
 
     public void storeFactorization(FlickModel flick) {
@@ -61,29 +58,14 @@ public class Model {
     }
 
     public LinkedList<FlickModel> getFlickers() {
-        synchronized (flickers)
-        {
+        synchronized (flickers) {
             return this.flickers;
         }
     }
 
-    public FlickModel getDetailFlicker()  {
+    public void freeFlickers() {
         synchronized (flickers) {
-            return this.flick;
-        }
-    }
-
-    public void setDetailFlicker(FlickModel flickModel) {
-        synchronized (flickers) {
-            this.flick = flickModel;
-        }
-    }
-
-    public void freeFlickers() { this.flickers.clear(); }
-
-    public FlickModel getFlick(int pos) {
-        synchronized (flickers) {
-            return (this.flickers.isEmpty()) ? null : this.flickers.get(pos);
+        this.flickers.clear();
         }
     }
 }

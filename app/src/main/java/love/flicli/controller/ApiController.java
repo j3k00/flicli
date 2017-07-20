@@ -105,9 +105,10 @@ public class ApiController extends IntentService {
 
 
     @UiThread
-    static void getDetailFlick(Context context) {
+    static void getDetailFlick(Context context, int pos) {
         Intent intent = new Intent(context, ApiController.class);
         intent.setAction(ACTION_DETAIL);
+        intent.putExtra(PARAM_ID, pos);
         context.startService(intent);
     }
 
@@ -162,7 +163,8 @@ public class ApiController extends IntentService {
 
                 case ACTION_DETAIL:
 
-                    FlickModel flick = mvc.model.getDetailFlicker();
+                    int pos = (int) intent.getSerializableExtra(PARAM_ID);
+                    FlickModel flick = mvc.model.getFlickers().get(pos);
 
                     JSONObject jComment = makeRequest(flickerAPI.photos_getComments(flick.getId())).getJSONObject("comments");
                     JSONArray jFavourities = makeRequest(flickerAPI.photo_getFav(flick.getId())).getJSONObject("photo").getJSONArray("person");

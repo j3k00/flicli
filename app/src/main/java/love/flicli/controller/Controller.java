@@ -30,10 +30,9 @@ public class Controller {
     }
 
     @UiThread
-    public void getDetailFlicker(Context context, FlickModel flickModel) {
-        mvc.model.setDetailFlicker(flickModel);
-        ApiController.getDetailFlick(context);
-        showImage();
+    public void getDetailFlicker(Context context, int pos) {
+        ApiController.getDetailFlick(context, pos);
+        showImage(1);
     }
 
    @UiThread
@@ -61,7 +60,7 @@ public class Controller {
     }
 
     @UiThread
-    public void showImage() { mvc.forEachView(View::showImage); }
+    public void showImage(int i) { mvc.forEachView(View::showImage); }
 
     @UiThread
     public void showHistory() {

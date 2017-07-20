@@ -52,7 +52,6 @@ public class Comment {
         this._content = _content;
     }
 
-    //da togliere
     public String getId() {
         return id;
     }
