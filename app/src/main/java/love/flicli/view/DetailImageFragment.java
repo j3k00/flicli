@@ -140,10 +140,8 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
 
         commentTextView.setText(String.valueOf(flickModel.getComments().size()));
         favTextView.setText(flickModel.getFavourities());
-
-
+        
         //Comments
-
         list.setAdapter(new CommentAdapter());
 
     }
