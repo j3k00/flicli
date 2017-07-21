@@ -219,35 +219,27 @@ public class ApiController extends IntentService {
 
         // Comments
         ArrayList<Comment> comments = new ArrayList<Comment>();
-        String id = "";
-        String author = "";
-        String author_is_deleted = "";
-        String authorname = "";
-        String iconserver = "";
-        String iconfarm = "";
-        String datecreate = "";
-        String permalink = "";
-        String path_alias = "";
-        String realname = "";
-        String _content = "";
 
         try {
-            for (int i = 0; i < jComment.length(); i++) {
-                JSONObject jsonComments = jComment.getJSONArray("comment").getJSONObject(i);
+            JSONArray commentArray = jComment.getJSONArray("comment");
 
-                id = (jsonComments.isNull("id")) ? "" : jsonComments.getString("id");
-                author = (jsonComments.isNull("author")) ? "" : jsonComments.getString("author");
-                authorname = (jsonComments.isNull("authorname")) ? "" : jsonComments.getString("authorname");
-                author_is_deleted = (jsonComments.isNull("author_is_deleted")) ? "" : jsonComments.getString("author_is_deleted");
-                iconserver = (jsonComments.isNull("iconserver")) ? "" : jsonComments.getString("iconserver");
-                iconfarm = (jsonComments.isNull("iconfarm")) ? "" : jsonComments.getString("iconfarm");
-                datecreate = (jsonComments.isNull("datecreate")) ? "" : jsonComments.getString("datecreate");
-                permalink = (jsonComments.isNull("permalink")) ? "" : jsonComments.getString("permalink");
-                path_alias = (jsonComments.isNull("pathalias")) ? "" : jsonComments.getString("pathalias");
-                realname = (jsonComments.isNull("realname")) ? "" : jsonComments.getString("realname");
-                _content = (jsonComments.isNull("_content")) ? "" : jsonComments.getString("_content");
+            for (int i = 0; i < commentArray.length(); i++) {
+                JSONObject jsonComments = commentArray.getJSONObject(i);
 
-                Comment comment = new Comment(id, author, author_is_deleted, authorname, iconserver, iconfarm, datecreate, permalink, path_alias, realname, _content);
+                Comment comment = new Comment(
+                        (jsonComments.isNull("id")) ? "" : jsonComments.getString("id"),
+                        (jsonComments.isNull("author")) ? "" : jsonComments.getString("author"),
+                        (jsonComments.isNull("author_is_deleted")) ? "" : jsonComments.getString("author_is_deleted"),
+                        (jsonComments.isNull("authorname")) ? "" : jsonComments.getString("authorname"),
+                        (jsonComments.isNull("iconserver")) ? "" : jsonComments.getString("iconserver"),
+                        (jsonComments.isNull("iconfarm")) ? "" : jsonComments.getString("iconfarm"),
+                        (jsonComments.isNull("datecreate")) ? "" : jsonComments.getString("datecreate"),
+                        (jsonComments.isNull("permalink")) ? "" : jsonComments.getString("permalink"),
+                        (jsonComments.isNull("pathalias")) ? "" : jsonComments.getString("pathalias"),
+                        (jsonComments.isNull("realname")) ? "" : jsonComments.getString("realname"),
+                        (jsonComments.isNull("_content")) ? "" : jsonComments.getString("_content")
+                );
+
                 comments.add(comment);
             }
         } catch (Exception e) {}
