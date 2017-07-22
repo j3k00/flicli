@@ -251,6 +251,13 @@ public class FlickModel {
             this.comments = comments;
         }
     }
+    public void freeComment() {
+        this.comments = null;
+    }
+
+    public void freeBitMapHD() {
+        this.bitmap_url_h = null;
+    }
 
     public void addComments(Comment comment) {
         synchronized (comment) {
@@ -266,21 +273,15 @@ public class FlickModel {
 
     //CONTROLlARE NON SONO SICURO
     public void setBitmap_url_h(Bitmap image) {
-        //synchronized (bitmap_url_h) {
             this.bitmap_url_h = image;
-        //}
     }
 
     public void setBitmap_url_s(Bitmap image) {
-        //synchronized (bitmap_url_s) {
         this.bitmap_url_s = image;
-        //}
     }
 
     public  Bitmap getBitmap_url_hd() {
-        //synchronized (bitmap_url_h) {
             return this.bitmap_url_h;
-        //}
     }
 
     private String _setAttribute(String param) {

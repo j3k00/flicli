@@ -15,7 +15,8 @@
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/favorite"/>
+            android:src="@drawable/favorite"
+            android:id="@+id/favoriteImage"/>
 
         <TextView
             android:textStyle="italic"
@@ -29,7 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/comment"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"
+            android:id="@+id/commentImage"/>
 
         <TextView
             android:textStyle="italic"
@@ -43,7 +45,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/eye"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"
+            android:id="@+id/viewImage"/>
 
         <TextView
             android:textStyle="italic"

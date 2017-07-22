@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -57,6 +58,9 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     TextView viewTextView = null;
     TextView commentTextView = null;
     TextView favTextView = null;
+    ImageView favorite = null;
+    ImageView comment = null;
+    ImageView views = null;
     ProgressBar progress = null;
     ListView list = null;
     private File tempFile = null;
@@ -81,6 +85,17 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         progress.setVisibility(View.VISIBLE);
         pos = ((MainActivity) getActivity()).position;
 
+        favorite = (ImageView) view.findViewById(R.id.favoriteImage);
+        comment = (ImageView) view.findViewById(R.id.commentImage);
+        views = (ImageView) view.findViewById(R.id.viewImage);
+
+        favorite.setVisibility(View.INVISIBLE);
+        comment.setVisibility(View.INVISIBLE);
+        views.setVisibility(View.INVISIBLE);
+        viewTextView.setText("");
+        commentTextView.setText("");
+        favTextView.setText("");
+
         list = (ListView) view.findViewById(R.id.list_item);
         return view;
     }
@@ -103,15 +118,13 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
 
     @Override @UiThread
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_item_author) {
-            showAuthorLastImage(mvc.model.getFlickers().get(pos).getOwner());
-        } else if (item.getItemId() == R.id.version) {
+        if (item.getItemId() == R.id.version) {
             mvc.controller.showVersion();
         } else if (item.getItemId() == R.id.menu_item_share) {
             if (mvc.model.getFlickers().get(pos).getBitmap_url_hd() != null)
                 actionShare();
             else {
-                Toast toast = Toast.makeText(getActivity().getApplication(), "Immage non pronta aspettare il caricamento", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getActivity().getApplication(), "Immagine non pronta aspettare il caricamento", Toast.LENGTH_LONG);
                 toast.show();
             }
         }
@@ -125,22 +138,31 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         //Delete the temporary file for share image with other application
         if (tempFile != null)
             tempFile.delete();
+
+//        flickModel.freeComment();
+//        flickModel.freeBitMapHD();
+
     }
 
     @Override @UiThread
     public void onModelChanged() {
 
         //Image
-        if (flickModel.getBitmap_url_hd() != null)
+        if (flickModel.getBitmap_url_hd() != null) {
             progress.setVisibility(View.INVISIBLE);
+            favorite.setVisibility(View.VISIBLE);
+            comment.setVisibility(View.VISIBLE);
+            views.setVisibility(View.VISIBLE);
+        }
+
+        if (progress.getVisibility() == View.INVISIBLE) {
+            viewTextView.setText(flickModel.getViews());
+            commentTextView.setText(String.valueOf(flickModel.getComments().size()));
+            favTextView.setText(flickModel.getFavourities());
+        }
 
         imageView.setImageBitmap(flickModel.getBitmap_url_hd());
 
-        viewTextView.setText(flickModel.getViews());
-
-        commentTextView.setText(String.valueOf(flickModel.getComments().size()));
-        favTextView.setText(flickModel.getFavourities());
-        
         //Comments
         list.setAdapter(new CommentAdapter());
 

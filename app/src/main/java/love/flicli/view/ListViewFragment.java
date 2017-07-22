@@ -55,8 +55,8 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onClickRow(position);
                 ((MainActivity) getActivity()).position = position;
+                onClickRow(position);
             }
         });
 
