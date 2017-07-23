@@ -32,7 +32,7 @@ public class Controller {
     @UiThread
     public void getDetailFlicker(Context context, int pos) {
         ApiController.getDetailFlick(context, pos);
-        showImage(1);
+        showImage();
     }
 
    @UiThread
@@ -56,15 +56,20 @@ public class Controller {
 
     public void lastAuthorImage(Context context, String author) {
         ApiController.getFlickByAuthor(context, author);
-        showHistory();
+        showLastImageAuthorFragment();
     }
 
     @UiThread
-    public void showImage(int i) { mvc.forEachView(View::showImage); }
+    public void showImage() { mvc.forEachView(View::showImage); }
 
     @UiThread
     public void showHistory() {
         mvc.forEachView(View::showHistory);
+    }
+
+    @UiThread
+    public void showLastImageAuthorFragment() {
+        mvc.forEachView(View::showLastImageAuthor);
     }
 
     @UiThread

@@ -294,6 +294,6 @@ public class FlickModel {
     }
 
     public void setFavourities(String param) {
-       this.favourities = favourities;
+       this.favourities = param;
     }
 }

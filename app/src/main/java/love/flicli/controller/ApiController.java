@@ -20,6 +20,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.jar.JarFile;
 
 import love.flicli.FlickerAPI;
 import love.flicli.FlicliApplication;
@@ -173,7 +174,7 @@ public class ApiController extends IntentService {
 
                     break;
                 case ACTION_AUTHOR:
-                    mvc.model.freeFlickers();
+                    //mvc.model.freeFlickers();
 
                     String author = (String) intent.getSerializableExtra(PARAM_ID);
                     jPhoto = makeRequest(flickerAPI.photo_getAuthor(author)).getJSONObject("photos").getJSONArray("photo");

@@ -6,12 +6,15 @@ import net.jcip.annotations.ThreadSafe;
 
 import org.json.JSONArray;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import love.flicli.MVC;
 import love.flicli.view.View;
 
+import static android.os.Build.VERSION_CODES.M;
 import static love.flicli.R.id.comments;
 
 /**
@@ -40,6 +43,26 @@ public class Model {
             this.flickers.add(flick);
         }
         mvc.forEachView(View::onModelChanged);
+    }
+
+    public void cutFactorization(LinkedList<FlickModel> l) {
+        synchronized (flickers) {
+            LinkedList<FlickModel> temp = (LinkedList<FlickModel>) l.clone();
+            mvc.model.freeFlickers();
+            for (int i = 0; i < 50; i++) {
+                flickers.add(temp.get(i));
+            }
+        }
+    }
+
+    public LinkedList<FlickModel> getLastAuthorImage() {
+        LinkedList<FlickModel> f = new LinkedList<>();
+        synchronized (flickers) {
+            for (int i = 50; i < flickers.size(); i++) {
+                f.add(flickers.get(i));
+            }
+        }
+        return f;
     }
 
     public void storeDetail(String photo_id, int favs, ArrayList<Comment> comments, Bitmap bitmap_z ) {

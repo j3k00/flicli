@@ -52,6 +52,14 @@ public class PhoneView extends FrameLayout implements View {
                 .commit();
     }
 
+    @Override
+    public void showLastImageAuthor() {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.phone_view, new LastImageAuthorFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
 
     @Override
     protected void onDetachedFromWindow() {

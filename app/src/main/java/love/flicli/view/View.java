@@ -20,4 +20,7 @@ public interface View {
 
     @UiThread
     void showAuthor();
+
+    @UiThread
+    void showLastImageAuthor();
 }

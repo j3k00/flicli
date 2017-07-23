@@ -82,6 +82,13 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (mvc.model.getFlickers().size() > 50)
+            mvc.model.cutFactorization(mvc.model.getFlickers());
+    }
 
     @Override
     public void onDestroy() {

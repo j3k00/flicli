@@ -70,6 +70,14 @@ public class TabletView extends LinearLayout implements View {
                 .commit();
     }
 
+    @Override
+    public void showLastImageAuthor() {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.changedFragment, new LastImageAuthorFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
     public TabletView(Context context) {
         super(context);
     }
