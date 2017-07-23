@@ -65,6 +65,16 @@ public class Model {
         return f;
     }
 
+    public LinkedList<FlickModel> getLastAuthorImage10() {
+        LinkedList<FlickModel> f = new LinkedList<>();
+        synchronized (flickers) {
+            for (int i = 0; i < 10; i++) {
+                f.add(flickers.get(i));
+            }
+        }
+        return f;
+    }
+
     public void storeDetail(String photo_id, int favs, ArrayList<Comment> comments, Bitmap bitmap_z ) {
 
         synchronized (flickers) {
