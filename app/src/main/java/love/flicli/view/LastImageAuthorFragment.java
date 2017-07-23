@@ -13,16 +13,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
-import love.flicli.model.Comment;
 import love.flicli.model.FlickModel;
-
-import static android.media.CamcorderProfile.get;
 
 /**
  * Created by tommaso on 23/07/17.

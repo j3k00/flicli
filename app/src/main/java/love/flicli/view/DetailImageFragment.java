@@ -139,8 +139,8 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         if (tempFile != null)
             tempFile.delete();
 
-//        flickModel.freeComment();
-//        flickModel.freeBitMapHD();
+        flickModel.freeComment();
+        flickModel.freeBitMapHD();
 
     }
 
