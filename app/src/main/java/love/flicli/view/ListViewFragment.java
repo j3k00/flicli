@@ -67,9 +67,7 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     @Override @UiThread
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_start, menu);
-        MenuItem item = menu.findItem(R.id.menu_item);
-        item.setVisible(false);
+        inflater.inflate(R.menu.list_menu, menu);
     }
 
     @Override @UiThread

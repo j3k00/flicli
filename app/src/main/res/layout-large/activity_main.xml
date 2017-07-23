@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="view.MainActivity">
+    tools:context="love.flicli.view.MainActivity">
 
     <love.flicli.view.TabletView
         android:layout_width="match_parent"
@@ -18,11 +18,12 @@
             android:layout_height="match_parent"
             android:layout_weight="2" />
 
-        <fragment
+        <FrameLayout
             android:id="@+id/changedFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"/>
+
     </love.flicli.view.TabletView>
 
 </FrameLayout>
