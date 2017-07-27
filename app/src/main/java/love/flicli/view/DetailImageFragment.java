@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,13 +27,12 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
 import love.flicli.Util;
-import love.flicli.model.Comment;
+import love.flicli.model.CommentModel;
 import love.flicli.model.FlickModel;
 import static android.support.v4.content.FileProvider.getUriForFile;
 
@@ -120,14 +117,8 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.version) {
             mvc.controller.showVersion();
-        } else if (item.getItemId() == R.id.menu_item_share) {
-            if (mvc.model.getFlickers().get(pos).getBitmap_url_hd() != null)
-                actionShare();
-            else {
-                Toast toast = Toast.makeText(getActivity().getApplication(), "Immagine non pronta aspettare il caricamento", Toast.LENGTH_LONG);
-                toast.show();
-            }
         }
+
         return false;
     }
 
@@ -183,8 +174,8 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         }
     }
 
-    private class CommentAdapter extends ArrayAdapter<Comment> {
-        private final ArrayList<Comment> messages = mvc.model.getFlickers().get(pos).getComments();
+    private class CommentAdapter extends ArrayAdapter<CommentModel> {
+        private final ArrayList<CommentModel> messages = mvc.model.getFlickers().get(pos).getComments();
 
         private CommentAdapter() {
             super(getActivity(), R.layout.list_adapter, mvc.model.getFlickers().get(pos).getComments());
@@ -200,21 +191,14 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
             }
 
             if (messages != null) {
-                Comment message = messages.get(position);
-                String date = "";
-                String text = "";
-                String author = "";
-                date = getCalendarDate(Long.parseLong(message.getDatecreate()));
-                author = message.getAuthorname();
-                text = message.get_content();
+                CommentModel message = messages.get(position);
+                String date = getCalendarDate(Long.parseLong(message.getDatecreate()));
+                String text = message.get_content();
+                String author = message.getAuthorname();
 
                 ((TextView) row.findViewById(R.id.author)).setText(author);
 
-                //create date test
-                String util = "\t";
-                util = util.concat(date);
-
-                ((TextView) row.findViewById(R.id.date)).setText(util);
+                ((TextView) row.findViewById(R.id.date)).setText("\t" + date);
                 ((TextView) row.findViewById(R.id.message)).setText(text);
             }
             return row;
@@ -223,11 +207,11 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
 
     @UiThread
     private String getCalendarDate(Long date) {
-        java.util.Date d = new java.util.Date(date*1000L);
+        java.util.Date d = new java.util.Date(date * 1000L);
         String itemDateStr = new SimpleDateFormat("dd-MMM HH:mm").format(d);
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
-        long time= System.currentTimeMillis();
+        long time = System.currentTimeMillis();
 
         Calendar currentDate = Calendar.getInstance();
         d = new java.util.Date(time);
@@ -244,10 +228,10 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
             else
                 diff = diff.concat(" year ago");
             return diff;
-        } else if(cal.get(Calendar.MONTH) == currentDate.get(Calendar.MONTH)) {
+        } else if (cal.get(Calendar.MONTH) == currentDate.get(Calendar.MONTH)) {
             //STESSO ANNO DELL'ANNO CORRENTE E STESSO MESE
 
-            if (currentDate.get(Calendar.DAY_OF_MONTH) > cal.get(Calendar.DAY_OF_MONTH)){
+            if (currentDate.get(Calendar.DAY_OF_MONTH) > cal.get(Calendar.DAY_OF_MONTH)) {
                 // SE IL MESE CORRENTE E' UGUALE CONFRONTO I GIORNI, SE IL GIORNO CORRENTE E MAGGIORE DI QUELLO
                 //DEL COMMENTO ALLORA RITORNO LA DIFFERENZA DEI GIORNI
 
@@ -292,16 +276,6 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
                 difference = difference.concat(" month ago");
             return difference;
         }
-    }
-
-    public void actionShare() {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.setType("image/*");
-        tempFile = Util.getImageUri(getActivity().getApplication(), mvc.model.getFlickers().get(pos).getBitmap_url_hd());
-        Uri r = getUriForFile(getActivity().getApplication(), "love.flicli.fileprovider", tempFile);
-        intent.putExtra(Intent.EXTRA_STREAM, r);
-        startActivity(Intent.createChooser(intent, "..."));
     }
 
     @UiThread

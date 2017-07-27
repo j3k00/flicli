@@ -83,9 +83,6 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        if (mvc.model.getFlickers().size() > 50)
-            mvc.model.cutFactorization(mvc.model.getFlickers());
     }
 
     @Override
@@ -113,7 +110,7 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         if(item.getTitle()=="Condividi"){
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
             FlickModel model = mvc.model.getFlickers().get(info.position);
-            new DownloadImage().execute(model.getUrl_z());
+            mvc.controller.getImageDetailFlicker(getActivity().getApplication(), info.position);
 
         //bottone che visualizza le ultime foto dell'autore
         } else if(item.getTitle()=="Ultime foto autore"){
@@ -171,51 +168,5 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     @UiThread
     private void onClickRow(int pos) {
         mvc.controller.getDetailFlicker(getActivity(), pos);
-    }
-
-    //implementato download dell'immagine in backGroud, con conseguente
-    // chiamata della funzione che apre il
-    @ThreadSafe
-    class DownloadImage extends AsyncTask<String, Void, Bitmap> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        //eseguito in backGround per scarica l'immagine una volta cliccato il bottone di
-        //condivisione del context menu
-        @WorkerThread @Override
-        protected Bitmap doInBackground(String... urls) {
-            Bitmap bitmap_z = null;
-            try {
-                String image = urls[0].replace("_z", "_h");
-                bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
-            } catch (IOException e) {
-                return null;
-            }
-            return bitmap_z;
-        }
-
-        @UiThread
-        protected void onPostExecute(Bitmap image) {
-            startActivityListView(image);
-        }
-    }
-
-    @UiThread
-    //funzione che gestisce la condivisione con l'applicazione
-    public void startActivityListView(Bitmap image) {
-
-        if (tempFile != null)
-            tempFile.delete();
-
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.setType("image/*");
-        tempFile = Util.getImageUri(getActivity().getApplication(), image);
-        Uri r = getUriForFile(getActivity().getApplication(), "love.flicli.fileprovider", tempFile);
-        intent.putExtra(Intent.EXTRA_STREAM, r);
-        startActivity(Intent.createChooser(intent, "..."));
     }
 }

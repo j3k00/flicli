@@ -4,11 +4,7 @@ import android.content.Context;
 import android.support.annotation.UiThread;
 
 import love.flicli.MVC;
-import love.flicli.model.Comment;
-import love.flicli.model.FlickModel;
 import love.flicli.view.View;
-
-import static love.flicli.controller.ApiController.getDetailFlick;
 
 /**
  * Created by tommaso on 18/05/17.
@@ -25,28 +21,39 @@ public class Controller {
     @UiThread
     public void flicker(Context context, String n) {
         //passiamo all servizio la stringa della ricerca più il contensto
-        ApiController.searchFlick(context, n);
+        FlickerService.searchFlick(context, n);
         showHistory();
     }
 
     @UiThread
     public void getDetailFlicker(Context context, int pos) {
-        ApiController.getDetailFlick(context, pos);
+        FlickerService.getDetailFlick(context, pos);
+        showImage();
+    }
+
+    public void getImageDetailFlicker(Context context, int pos) {
+        FlickerService.getImageDetailFLick(context, pos);
         showImage();
     }
 
    @UiThread
     public void recent(Context context) {
         //passiamo al servizio il contensto
-        ApiController.getRecentFlick(context);
+        FlickerService.getRecentFlick(context);
         showHistory();
     }
 
     @UiThread
     public void popular(Context context) {
         //passiamo al servizio il contensto
-        ApiController.getPopularFlick(context);
+        FlickerService.getPopularFlick(context);
         showHistory();
+    }
+
+    public void lastAuthorImage(Context context, String author) {
+        FlickerService.getFlickByAuthor(context, author);
+
+        showLastImageAuthorFragment();
     }
 
     @UiThread
@@ -54,13 +61,10 @@ public class Controller {
         version();
     }
 
-    public void lastAuthorImage(Context context, String author) {
-        ApiController.getFlickByAuthor(context, author);
-        showLastImageAuthorFragment();
-    }
-
     @UiThread
-    public void showImage() { mvc.forEachView(View::showImage); }
+    public void showImage() {
+        mvc.forEachView(View::showImage);
+    }
 
     @UiThread
     public void showHistory() {
@@ -73,6 +77,8 @@ public class Controller {
     }
 
     @UiThread
-    public void version() { mvc.forEachView(View::showAuthor); }
+    public void version() {
+        mvc.forEachView(View::showAuthor);
+    }
 
 }

@@ -5,6 +5,7 @@ import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
 import org.json.JSONArray;
+import org.w3c.dom.Comment;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -23,16 +24,34 @@ import static love.flicli.R.id.comments;
 
 @ThreadSafe
 public class Model {
+    public static final int FLICKERS = 50;
+    public static final int AUTHOR_IMAGE = 10;
+
     private MVC mvc;
 
     @GuardedBy("Itself")
     private final LinkedList<FlickModel> flickers = new LinkedList<>();
 
+    // TODO Deve essere final?
+    private AuthorModel author = null;
+
     public void setMVC(MVC mvc) {
         this.mvc = mvc;
     }
 
-    public void storeFactorization(FlickModel flick) {
+    public void setAuthorModel(AuthorModel author) {
+        synchronized (author) {
+            this.author = author;
+        }
+
+        mvc.forEachView(View::onModelChanged);
+    }
+
+    public AuthorModel getAuthorModel() {
+        return this.author;
+    }
+
+    public void storeFlick(FlickModel flick) {
         synchronized (flickers) {
             for (FlickModel currentFlick : this.flickers) {
                 if (currentFlick.getId() == flick.getId()) {
@@ -42,41 +61,32 @@ public class Model {
 
             this.flickers.add(flick);
         }
+
         mvc.forEachView(View::onModelChanged);
     }
 
-    public void cutFactorization(LinkedList<FlickModel> l) {
+    public void removeAuthorFlickers() {
         synchronized (flickers) {
-            LinkedList<FlickModel> temp = (LinkedList<FlickModel>) l.clone();
-            mvc.model.freeFlickers();
-            for (int i = 0; i < 50; i++) {
-                flickers.add(temp.get(i));
+            if (flickers.size() > FLICKERS) {
+                for (int i = FLICKERS; i < FLICKERS + AUTHOR_IMAGE; i++) {
+                    flickers.remove(i - 1);
+                }
             }
         }
     }
 
-    public LinkedList<FlickModel> getLastAuthorImage() {
-        LinkedList<FlickModel> f = new LinkedList<>();
+    public LinkedList<FlickModel> getAuthorFlickers() {
+        // check i -1
         synchronized (flickers) {
-            for (int i = 50; i < flickers.size(); i++) {
-                f.add(flickers.get(i));
+            if (flickers.size() > FLICKERS) {
+                return (LinkedList<FlickModel>) flickers.subList(FLICKERS-1, FLICKERS + AUTHOR_IMAGE-1);
             }
+
+            return null;
         }
-        return f;
     }
 
-    public LinkedList<FlickModel> getLastAuthorImage10() {
-        LinkedList<FlickModel> f = new LinkedList<>();
-        synchronized (flickers) {
-            for (int i = 0; i < 10; i++) {
-                f.add(flickers.get(i));
-            }
-        }
-        return f;
-    }
-
-    public void storeDetail(String photo_id, int favs, ArrayList<Comment> comments, Bitmap bitmap_z ) {
-
+    public void storeDetail(String photo_id, int favs, ArrayList<CommentModel> comments, Bitmap bitmap_z ) {
         synchronized (flickers) {
             for (FlickModel flick : mvc.model.getFlickers()) {
                 if (flick.getId().compareTo(photo_id) == 0) {
@@ -98,7 +108,7 @@ public class Model {
 
     public void freeFlickers() {
         synchronized (flickers) {
-        this.flickers.clear();
+            this.flickers.clear();
         }
     }
 }

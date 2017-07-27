@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 
 @Immutable
-public class Comment {
+public class CommentModel {
     // Default attribues
     private final String id;
     private final String author;
@@ -26,7 +26,7 @@ public class Comment {
     private final String realname;
     private final String _content;
 
-    public Comment(
+    public CommentModel(
         String id,
         String author,
         String author_is_deleted,

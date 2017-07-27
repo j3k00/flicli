@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
@@ -13,31 +14,34 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.jar.JarFile;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import love.flicli.ExecutorIntentService;
 import love.flicli.FlickerAPI;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
-import love.flicli.model.Comment;
+import love.flicli.Util;
+import love.flicli.model.AuthorModel;
+import love.flicli.model.CommentModel;
 import love.flicli.model.FlickModel;
 
-import static android.R.attr.icon;
-import static android.R.attr.id;
-import static love.flicli.R.drawable.comment;
+import static android.content.Intent.ACTION_SEND;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+import static android.support.v4.content.FileProvider.getUriForFile;
+import static love.flicli.FlickerAPI.makeRequest;
 
 /**
  * Created by tommaso on 09/05/17.
  */
 
-public class ApiController extends IntentService {
-    private final static String TAG = ApiController.class.getName();
+public class FlickerService extends ExecutorIntentService {
+    private final static String TAG = FlickerService.class.getName();
     private final static String ACTION_FLICKER = "searchFlick";
     private final static String ACTION_RECENT = "getRecentFlick";
     private final static String ACTION_POPULAR = "getPopularFlick";
@@ -47,59 +51,33 @@ public class ApiController extends IntentService {
     private final static String PARAM_ID = "paramId";
     private static String search = "";
 
-    public ApiController() {
-        super("ApiController");
+    public FlickerService() {
+        super("FlickerService");
     }
 
-    @WorkerThread
-    private JSONObject makeRequest(String endpoint) {
-        String response = "";
-        String line = "";
-        BufferedReader in = null;
-        JSONObject json = null;
-
-        try {
-            URL url = new URL(endpoint);
-            URLConnection conn = url.openConnection();
-            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-            while ((line = in.readLine()) != null) {
-                Log.d(TAG, "STARTING SEARCH OF" + line);
-                response += line + "\n";
-            }
-
-            in.close();
-
-            json = new JSONObject(response);
-
-        } catch (IOException e) {
-            Log.d(TAG, "I/O error", e);
-            return null;
-        } catch (JSONException e) {
-            Log.d(TAG, e.getMessage());
-            e.printStackTrace();
-        }
-
-        return json;
+    @Override
+    protected ExecutorService mkExecutorService() {
+        return Executors.newFixedThreadPool(10);
     }
 
     @UiThread
     static void searchFlick(Context context, String param) {
-        Intent intent = new Intent(context, ApiController.class);
+        Intent intent = new Intent(context, FlickerService.class);
         intent.setAction(ACTION_FLICKER);
         intent.putExtra(PARAM_ID, param);
+
         context.startService(intent);
     }
 
     @UiThread
     static void getRecentFlick(Context context) {
-        Intent intent = new Intent(context, ApiController.class);
+        Intent intent = new Intent(context, FlickerService.class);
         intent.setAction(ACTION_RECENT);
         context.startService(intent);
     }
 
     static void getPopularFlick(Context context) {
-        Intent intent = new Intent(context, ApiController.class);
+        Intent intent = new Intent(context, FlickerService.class);
         intent.setAction(ACTION_POPULAR);
         context.startService(intent);
     }
@@ -107,25 +85,36 @@ public class ApiController extends IntentService {
 
     @UiThread
     static void getDetailFlick(Context context, int pos) {
-        Intent intent = new Intent(context, ApiController.class);
+        Intent intent = new Intent(context, FlickerService.class);
         intent.setAction(ACTION_DETAIL);
         intent.putExtra(PARAM_ID, pos);
+
         context.startService(intent);
+    }
+
+    static void getImageDetailFLick(Context context, int pos){
+        Intent intent = new Intent(context, FlickerService.class);
+        intent.setAction(ACTION_SEND);
+        intent.setType("image/*");
+
+        intent.putExtra(PARAM_ID, pos);
+
+        context.startService(intent);
+
     }
 
     @UiThread
     static void getFlickByAuthor(Context context, String author) {
-        Intent intent = new Intent(context, ApiController.class);
+        Intent intent = new Intent(context, FlickerService.class);
         intent.setAction(ACTION_AUTHOR);
-        search = author;
-        intent.putExtra(PARAM_ID, search);
+        intent.putExtra(PARAM_ID, author);
+
         context.startService(intent);
     }
 
     @WorkerThread
     protected void onHandleIntent(Intent intent) {
         String param = "";
-        FlickerAPI flickerAPI = ((FlicliApplication) getApplication()).getFlickerAPI();
 
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
@@ -139,7 +128,7 @@ public class ApiController extends IntentService {
 
                     param = (String) intent.getSerializableExtra(PARAM_ID);
 
-                    jPhoto = makeRequest(flickerAPI.photos_search(param)).getJSONObject("photos").getJSONArray("photo");
+                    jPhoto = makeRequest(FlickerAPI.photos_search(param)).getJSONObject("photos").getJSONArray("photo");
                     _generateFlickers(jPhoto);
 
                     break;
@@ -148,7 +137,7 @@ public class ApiController extends IntentService {
                     // Empty list of Flickers
                     mvc.model.freeFlickers();
 
-                    jPhoto = makeRequest(flickerAPI.photos_getRecent()).getJSONObject("photos").getJSONArray("photo");
+                    jPhoto = makeRequest(FlickerAPI.photos_getRecent()).getJSONObject("photos").getJSONArray("photo");
                     //_generateFlickers(jPhoto);
                     _generateFlickers(jPhoto);
                     break;
@@ -157,7 +146,7 @@ public class ApiController extends IntentService {
                     // Empty list of Flickers
                     mvc.model.freeFlickers();
 
-                    jPhoto = makeRequest(flickerAPI.photos_getPopular()).getJSONObject("photos").getJSONArray("photo");
+                    jPhoto = makeRequest(FlickerAPI.photos_getPopular()).getJSONObject("photos").getJSONArray("photo");
                     _generateFlickers(jPhoto);
 
                     break;
@@ -167,20 +156,35 @@ public class ApiController extends IntentService {
                     int pos = (int) intent.getSerializableExtra(PARAM_ID);
                     FlickModel flick = mvc.model.getFlickers().get(pos);
 
-                    JSONObject jComment = makeRequest(flickerAPI.photos_getComments(flick.getId())).getJSONObject("comments");
-                    JSONArray jFavourities = makeRequest(flickerAPI.photo_getFav(flick.getId())).getJSONObject("photo").getJSONArray("person");
+                    JSONObject jComment = makeRequest(FlickerAPI.photos_getComments(flick.getId())).getJSONObject("comments");
+                    JSONArray jFavourities = makeRequest(FlickerAPI.photos_getFav(flick.getId())).getJSONObject("photo").getJSONArray("person");
 
                     _generateFlickDetail(flick, jComment, jFavourities);
 
                     break;
+
                 case ACTION_AUTHOR:
-                    //mvc.model.freeFlickers();
+                    mvc.model.removeAuthorFlickers();
 
                     String author = (String) intent.getSerializableExtra(PARAM_ID);
-                    jPhoto = makeRequest(flickerAPI.photo_getAuthor(author)).getJSONObject("photos").getJSONArray("photo");
+
+                    jPhoto = makeRequest(FlickerAPI.photo_getAuthor(author)).getJSONObject("photos").getJSONArray("photo");
+                    JSONObject jAuthor = makeRequest(FlickerAPI.people_getInfo(author)).getJSONObject("person");
+
+                    _generateAuthor(jAuthor);
                     _generateFlickers(jPhoto);
 
                     break;
+
+                case ACTION_SEND:
+                    pos = (int) intent.getSerializableExtra(PARAM_ID);
+                    flick = mvc.model.getFlickers().get(pos);
+
+                    File tempFile = Util.getImageUri(getApplicationContext(), flick.getBitmap_url_hd());
+                    Uri r = getUriForFile(getApplicationContext(), "love.flicli.fileprovider", tempFile);
+                    intent.putExtra(Intent.EXTRA_STREAM, r);
+                    startActivity(Intent.createChooser(intent, "..."));
+
             }
         } catch (JSONException e) {
             Log.d(TAG, e.getMessage());
@@ -211,7 +215,7 @@ public class ApiController extends IntentService {
 
             flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
 
-            mvc.model.storeFactorization(flick);
+            mvc.model.storeFlick(flick);
         }
     }
 
@@ -219,7 +223,7 @@ public class ApiController extends IntentService {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
         // Comments
-        ArrayList<Comment> comments = new ArrayList<Comment>();
+        ArrayList<CommentModel> comments = new ArrayList<CommentModel>();
 
         try {
             JSONArray commentArray = jComment.getJSONArray("comment");
@@ -227,7 +231,7 @@ public class ApiController extends IntentService {
             for (int i = 0; i < commentArray.length(); i++) {
                 JSONObject jsonComments = commentArray.getJSONObject(i);
 
-                Comment comment = new Comment(
+                CommentModel comment = new CommentModel(
                         (jsonComments.isNull("id")) ? "" : jsonComments.getString("id"),
                         (jsonComments.isNull("author")) ? "" : jsonComments.getString("author"),
                         (jsonComments.isNull("author_is_deleted")) ? "" : jsonComments.getString("author_is_deleted"),
@@ -250,5 +254,44 @@ public class ApiController extends IntentService {
         Bitmap bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
 
         mvc.model.storeDetail(flick.getId(), jFavourities.length(), comments, bitmap_z);
+    }
+
+    private void _generateAuthor(JSONObject jAuthor) {
+        MVC mvc = ((FlicliApplication) getApplication()).getMVC();
+
+        try {
+            JSONObject jAuthor_photos = jAuthor.getJSONObject("photos");
+
+            AuthorModel author = new AuthorModel(
+                    (jAuthor.isNull("id")) ? "" : jAuthor.getString("id"),
+                    (jAuthor.isNull("nsid")) ? "" : jAuthor.getString("nsid"),
+                    (jAuthor.isNull("ispro")) ? "" : jAuthor.getString("ispro"),
+                    (jAuthor.isNull("can_buy_pro")) ? "" : jAuthor.getString("can_buy_pro"),
+                    (jAuthor.isNull("iconserver")) ? "" : jAuthor.getString("iconserver"),
+                    (jAuthor.isNull("iconfarm")) ? "" : jAuthor.getString("iconfarm"),
+                    (jAuthor.isNull("path_alias")) ? "" : jAuthor.getString("path_alias"),
+                    (jAuthor.isNull("has_stats")) ? "" : jAuthor.getString("has_stats"),
+                    jAuthor.getJSONObject("username").isNull("_content") ? "" : jAuthor.getJSONObject("username").getString("_content"),
+                    jAuthor.getJSONObject("realname").isNull("_content") ? "" : jAuthor.getJSONObject("realname").getString("_content"),
+                    jAuthor.getJSONObject("mbox_sha1sum").isNull("_content") ? "" : jAuthor.getJSONObject("mbox_sha1sum").getString("_content"),
+                    jAuthor.getJSONObject("location").isNull("_content") ? "" : jAuthor.getJSONObject("location").getString("_content"),
+                    jAuthor.getJSONObject("description").isNull("_content") ? "" : jAuthor.getJSONObject("description").getString("_content"),
+                    jAuthor.getJSONObject("photosurl").isNull("_content") ? "" : jAuthor.getJSONObject("photosurl").getString("_content"),
+                    jAuthor.getJSONObject("profileurl").isNull("_content") ? "" : jAuthor.getJSONObject("profileurl").getString("_content"),
+                    jAuthor.getJSONObject("mobileurl").isNull("_content") ? "" : jAuthor.getJSONObject("mobileurl").getString("_content"),
+                    jAuthor_photos.getJSONObject("firstdatetaken").isNull("_content") ? "" : jAuthor_photos.getJSONObject("firstdatetaken").getString("_content"),
+                    jAuthor_photos.getJSONObject("firstdate").isNull("_content") ? "" : jAuthor_photos.getJSONObject("firstdate").getString("_content"),
+                    jAuthor_photos.getJSONObject("count").isNull("_content") ? "" : jAuthor_photos.getJSONObject("count").getString("_content"),
+                    jAuthor_photos.getJSONObject("views").isNull("_content") ? "" : jAuthor_photos.getJSONObject("views").getString("_content"),
+                    FlickerAPI.buddyIcon(
+                            (jAuthor.isNull("iconfarm")) ? "" : jAuthor.getString("iconfarm"),
+                            (jAuthor.isNull("iconserver")) ? "" : jAuthor.getString("iconserver"),
+                            (jAuthor.isNull("nsid")) ? "" : jAuthor.getString("nsid")
+                    )
+            );
+
+            mvc.model.setAuthorModel(author);
+        } catch (Exception e) {}
+
     }
 }

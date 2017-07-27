@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
+import love.flicli.model.AuthorModel;
 import love.flicli.model.FlickModel;
 
 import static android.content.ContentValues.TAG;
@@ -52,6 +53,8 @@ public class LastImageAuthorFragment extends Fragment implements AbstractFragmen
     private ImageView author_image;
     private String user = "";
     private int position = 0;
+    private AuthorModel author = null;
+    private Bitmap mIcon_val;
 
     @Override @UiThread
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,12 +65,13 @@ public class LastImageAuthorFragment extends Fragment implements AbstractFragmen
     @Override @UiThread
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.last_image_author_fragmnet, container, false);
+
         authorName = (TextView) view.findViewById(R.id.authorName);
         informationAuthor = (TextView) view.findViewById(R.id.informationAuthor);
         author_image = (ImageView) view.findViewById(R.id.image_author);
         list = (ListView) view.findViewById(R.id.listView);
-
         position = ((MainActivity) getActivity()).position;
+
         return view;
     }
 
@@ -75,25 +79,30 @@ public class LastImageAuthorFragment extends Fragment implements AbstractFragmen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mvc = ((FlicliApplication) getActivity().getApplication()).getMVC();
-        new DownloadInformation().execute(mvc.model.getFlickers().get(position).getOwner());
+
+        author = mvc.model.getAuthorModel();
         onModelChanged();
     }
 
     @Override
     public void onModelChanged() {
-        author_image.setImageResource(R.drawable.user);
+        try {
+            mIcon_val = BitmapFactory.decodeStream(new URL(author.getBuddyIcon()).openConnection() .getInputStream());
+            author_image.setImageBitmap(mIcon_val);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //listView
-        list.setAdapter(new FlickAdapter());
+        //list.setAdapter(new FlickAdapter());
     }
 
 
     private class FlickAdapter extends ArrayAdapter<FlickModel> {
-        private final LinkedList<FlickModel> flickers = mvc.model.getLastAuthorImage();
+        private final LinkedList<FlickModel> flickers = mvc.model.getAuthorFlickers();
 
-        //TODO trovare la soluzione, altrimenti stampa troppe foto
         private FlickAdapter() {
-            super(getActivity(), R.layout.layout_author, mvc.model.getLastAuthorImage10());
+            super(getActivity(), R.layout.layout_author,  mvc.model.getAuthorFlickers());
         }
 
         @Override
@@ -123,62 +132,6 @@ public class LastImageAuthorFragment extends Fragment implements AbstractFragmen
                 }
             }
             return row;
-        }
-    }
-
-    @ThreadSafe
-    class DownloadInformation extends AsyncTask<String, Void, JSONObject> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @WorkerThread @Override
-        protected JSONObject doInBackground(String... urls) {
-            String SERVER = "https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=c3474bf29107156411982633c3e020ab&user_id=" + urls[0] +"&format=json&nojsoncallback=1";
-            String response = "";
-            String line = "";
-            BufferedReader in = null;
-            JSONObject json = null;
-
-            try {
-                URL url = new URL(SERVER);
-                URLConnection conn = url.openConnection();
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-                while ((line = in.readLine()) != null) {
-                    Log.d(TAG, "STARTING SEARCH OF" + line);
-                    response += line + "\n";
-                }
-
-                in.close();
-            }catch (MalformedURLException e) {
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                json = new JSONObject(response);
-            } catch (JSONException e) {}
-
-            return json;
-        }
-
-        @UiThread
-        protected void onPostExecute(JSONObject jsonObject) {
-            try {
-                JSONObject name = jsonObject.getJSONObject("person");
-                name = name.getJSONObject("username");
-                authorName.setText(name.getString("_content"));
-
-                name = jsonObject.getJSONObject("person");
-                name = name.getJSONObject("location");
-                informationAuthor.setText(name.getString("_content"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
