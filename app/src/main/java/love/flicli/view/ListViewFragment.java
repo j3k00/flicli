@@ -105,16 +105,14 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         //Botttone di condivisione
-        if(item.getTitle()=="Condividi"){
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            FlickModel model = mvc.model.getFlickers().get(info.position);
+        if(item.getTitle() == "Condividi"){
             mvc.controller.getImageDetailFlicker(getActivity().getApplication(), info.position);
 
         //bottone che visualizza le ultime foto dell'autore
-        } else if(item.getTitle()=="Ultime foto autore"){
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        } else if(item.getTitle() == "Ultime foto autore"){
             FlickModel model = mvc.model.getFlickers().get(info.position);
             ((MainActivity) getActivity()).position = info.position;
             mvc.controller.lastAuthorImage(getActivity().getApplication(), model.getOwner());
@@ -122,7 +120,8 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         } else {
             return false;
         }
-        return true;
+
+        return false;
     }
 
     @Override @UiThread

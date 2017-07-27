@@ -3,6 +3,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
@@ -34,6 +35,8 @@ import love.flicli.R;
 import love.flicli.Util;
 import love.flicli.model.CommentModel;
 import love.flicli.model.FlickModel;
+
+import static android.media.CamcorderProfile.get;
 import static android.support.v4.content.FileProvider.getUriForFile;
 
 /**
@@ -155,7 +158,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         imageView.setImageBitmap(flickModel.getBitmap_url_hd());
 
         //Comments
-        list.setAdapter(new CommentAdapter());
+        list.setAdapter(new CommentAdapter(getActivity().getApplication(), flickModel.getComments()));
 
     }
 
@@ -175,9 +178,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     }
 
     private class CommentAdapter extends ArrayAdapter<CommentModel> {
-        private final ArrayList<CommentModel> messages = mvc.model.getFlickers().get(pos).getComments();
-
-        private CommentAdapter() {
+        public CommentAdapter(Context context, ArrayList<CommentModel> comments) {
             super(getActivity(), R.layout.list_adapter, mvc.model.getFlickers().get(pos).getComments());
         }
 
@@ -190,17 +191,12 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
                 row = inflater.inflate(R.layout.list_adapter, parent, false);
             }
 
-            if (messages != null) {
-                CommentModel message = messages.get(position);
-                String date = getCalendarDate(Long.parseLong(message.getDatecreate()));
-                String text = message.get_content();
-                String author = message.getAuthorname();
+            CommentModel message = getItem(position);
 
-                ((TextView) row.findViewById(R.id.author)).setText(author);
+            ((TextView) row.findViewById(R.id.author)).setText(message.getAuthorname());
+            ((TextView) row.findViewById(R.id.date)).setText("\t" + getCalendarDate(Long.parseLong(message.getDatecreate())));
+            ((TextView) row.findViewById(R.id.message)).setText(message.get_content());
 
-                ((TextView) row.findViewById(R.id.date)).setText("\t" + date);
-                ((TextView) row.findViewById(R.id.message)).setText(text);
-            }
             return row;
         }
     }
