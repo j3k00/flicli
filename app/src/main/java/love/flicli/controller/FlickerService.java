@@ -186,10 +186,7 @@ public class FlickerService extends ExecutorIntentService {
                     startActivity(Intent.createChooser(intent, "..."));
 
             }
-        } catch (JSONException e) {
-            Log.d(TAG, e.getMessage());
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.d(TAG, e.getMessage());
             e.printStackTrace();
         }

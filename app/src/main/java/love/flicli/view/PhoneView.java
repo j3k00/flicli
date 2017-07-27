@@ -37,7 +37,7 @@ public class PhoneView extends FrameLayout implements View {
     }
 
     @Override
-    public void showImage() {
+    public void showDetail() {
         getFragmentManager().beginTransaction()
                 .replace(R.id.phone_view, new DetailImageFragment())
                 .addToBackStack(null)
@@ -68,16 +68,16 @@ public class PhoneView extends FrameLayout implements View {
     }
 
     @Override
-    public void onModelChanged() {
-        getFragment().onModelChanged();
-    }
-
-    @Override
     public void showHistory() {
         getFragmentManager().beginTransaction()
                 .replace(R.id.phone_view, new ListViewFragment())
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onModelChanged() {
+        getFragment().onModelChanged();
     }
 
     /**

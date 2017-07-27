@@ -65,27 +65,6 @@ public class Model {
         mvc.forEachView(View::onModelChanged);
     }
 
-    public void removeAuthorFlickers() {
-        synchronized (flickers) {
-            if (flickers.size() > FLICKERS) {
-                for (int i = FLICKERS; i < FLICKERS + AUTHOR_IMAGE; i++) {
-                    flickers.remove(i - 1);
-                }
-            }
-        }
-    }
-
-    public LinkedList<FlickModel> getAuthorFlickers() {
-        // check i -1
-        synchronized (flickers) {
-            if (flickers.size() > FLICKERS) {
-                return (LinkedList<FlickModel>) flickers.subList(FLICKERS-1, FLICKERS + AUTHOR_IMAGE-1);
-            }
-
-            return null;
-        }
-    }
-
     public void storeDetail(String photo_id, int favs, ArrayList<CommentModel> comments, Bitmap bitmap_z ) {
         synchronized (flickers) {
             for (FlickModel flick : mvc.model.getFlickers()) {
@@ -109,6 +88,27 @@ public class Model {
     public void freeFlickers() {
         synchronized (flickers) {
             this.flickers.clear();
+        }
+    }
+
+    public void removeAuthorFlickers() {
+        synchronized (flickers) {
+            if (flickers.size() > FLICKERS) {
+                for (int i = FLICKERS; i < FLICKERS + AUTHOR_IMAGE; i++) {
+                    flickers.remove(i - 1);
+                }
+            }
+        }
+    }
+
+    public LinkedList<FlickModel> getAuthorFlickers() {
+        // check i -1
+        synchronized (flickers) {
+            if (flickers.size() > FLICKERS) {
+                return (LinkedList<FlickModel>) flickers.subList(FLICKERS-1, FLICKERS + AUTHOR_IMAGE-1);
+            }
+
+            return null;
         }
     }
 }

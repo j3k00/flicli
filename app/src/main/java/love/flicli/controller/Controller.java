@@ -28,12 +28,12 @@ public class Controller {
     @UiThread
     public void getDetailFlicker(Context context, int pos) {
         FlickerService.getDetailFlick(context, pos);
-        showImage();
+        showDetail();
     }
 
     public void getImageDetailFlicker(Context context, int pos) {
         FlickerService.getImageDetailFLick(context, pos);
-        showImage();
+        showDetail();
     }
 
    @UiThread
@@ -62,8 +62,8 @@ public class Controller {
     }
 
     @UiThread
-    public void showImage() {
-        mvc.forEachView(View::showImage);
+    public void showDetail() {
+        mvc.forEachView(View::showDetail);
     }
 
     @UiThread

@@ -16,7 +16,7 @@ public interface View {
     void onModelChanged();
 
     @UiThread
-    void showImage();
+    void showDetail();
 
     @UiThread
     void showAuthor();

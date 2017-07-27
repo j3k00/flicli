@@ -55,7 +55,7 @@ public class TabletView extends LinearLayout implements View {
                 .commit();
     }
 
-    public void showImage() {
+    public void showDetail() {
         getFragmentManager().beginTransaction()
                 .replace(R.id.changedFragment, new DetailImageFragment())
                 .addToBackStack(null)

@@ -62,10 +62,10 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     ImageView comment = null;
     ImageView views = null;
     ProgressBar progress = null;
-    ListView list = null;
     private File tempFile = null;
     private FlickModel flickModel;
     private int pos = 0;
+    ListView list = null;
 
     @Override @UiThread
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,6 +103,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     @Override @UiThread
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         mvc = ((FlicliApplication) getActivity().getApplication()).getMVC();
         flickModel = mvc.model.getFlickers().get(pos);
         onModelChanged();
@@ -156,7 +157,6 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         }
 
         imageView.setImageBitmap(flickModel.getBitmap_url_hd());
-
         //Comments
         list.setAdapter(new CommentAdapter(getActivity().getApplication(), flickModel.getComments()));
 
@@ -187,8 +187,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
             View row = convertView;
 
             if (row == null) {
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                row = inflater.inflate(R.layout.list_adapter, parent, false);
+                row = getActivity().getLayoutInflater().inflate(R.layout.list_adapter, parent, false);
             }
 
             CommentModel message = getItem(position);
@@ -272,10 +271,5 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
                 difference = difference.concat(" month ago");
             return difference;
         }
-    }
-
-    @UiThread
-    public void showAuthorLastImage(String author) {
-        mvc.controller.lastAuthorImage(getActivity(), author);
     }
 }
