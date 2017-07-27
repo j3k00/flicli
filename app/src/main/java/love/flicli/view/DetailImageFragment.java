@@ -179,7 +179,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
 
     private class CommentAdapter extends ArrayAdapter<CommentModel> {
         public CommentAdapter(Context context, ArrayList<CommentModel> comments) {
-            super(getActivity(), R.layout.list_adapter, mvc.model.getFlickers().get(pos).getComments());
+            super(getActivity(), R.layout.list_adapter, comments);
         }
 
         @Override
