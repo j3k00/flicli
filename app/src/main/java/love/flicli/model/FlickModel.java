@@ -247,28 +247,30 @@ public class FlickModel {
 
     public String getFavourities() { return this.favourities; }
 
-    public void freeComment() {
+    public synchronized void freeComment() {
         this.comments = null;
     }
 
-    public void freeBitMapHD() {
+    public synchronized void freeBitMapHD() {
         this.bitmap_url_h = null;
     }
 
     public ArrayList<CommentModel> getComments() {
+            if (this.comments == null)
+                return new ArrayList<CommentModel>();
             return this.comments;
     }
 
-    public  void setComments(ArrayList<CommentModel> comments) {
-        this.comments = comments;
+    public synchronized void setComments(ArrayList<CommentModel> comments) {
+            this.comments = comments;
     }
 
         //CONTROLlARE NON SONO SICURO
-    public void setBitmap_url_h(Bitmap image) {
+    public synchronized void setBitmap_url_h(Bitmap image) {
             this.bitmap_url_h = image;
     }
 
-    public void setBitmap_url_s(Bitmap image) {
+    public synchronized void setBitmap_url_s(Bitmap image) {
         this.bitmap_url_s = image;
     }
 
