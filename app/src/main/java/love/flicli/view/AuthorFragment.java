@@ -64,7 +64,7 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
 
     @Override @UiThread
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.last_image_author_fragmnet, container, false);
+        View view = inflater.inflate(R.layout.last_image_author_fragment, container, false);
 
         authorName = (TextView) view.findViewById(R.id.authorName);
         informationAuthor = (TextView) view.findViewById(R.id.informationAuthor);
