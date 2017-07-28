@@ -33,15 +33,15 @@ public class FlickerAPI {
     private final static String TAG = FlickerService.class.getName();
 
     private static String makeUrl(Map<String, String> params) {
-        String endpoint = ENDPOINT + "api_key=" + API_KEY + "&format=" + FORMAT + "&nojsoncallback=1";
+        String endpoint = ENDPOINT;
 
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            endpoint += "&" + entry.getKey() + "=" + entry.getValue();
+            endpoint += entry.getKey() + "=" + entry.getValue() + "&";
         }
 
-        Log.d(TAG, "ENDPOINT --------" + endpoint + "--------------------------------");
+        Log.d(TAG, "ENDPOINT --------" + endpoint + "api_key=" + API_KEY + "&format=" + FORMAT + "&nojsoncallback=1 --------------------------------");
 
-        return endpoint;
+        return endpoint + "api_key=" + API_KEY + "&format=" + FORMAT + "&nojsoncallback=1";
     }
 
     //https://api.flickr.com/services/rest/?
@@ -152,6 +152,7 @@ public class FlickerAPI {
         String method = "flickr.people.getInfo";
 
         Map<String, String> params = new HashMap<>();
+        params.put("method", method);
         params.put("user_id", userId);
 
         return makeUrl(params);
@@ -165,6 +166,7 @@ public class FlickerAPI {
         return "https://www.flickr.com/images/buddyicon.gif";
     }
 
+    // {"stat":"fail","code":112,"message":"Method \"unknown\" not found"}
     public static JSONObject makeRequest(String endpoint) {
         String response = "";
         String line = "";

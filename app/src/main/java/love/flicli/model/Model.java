@@ -25,14 +25,11 @@ import static love.flicli.R.id.comments;
 @ThreadSafe
 public class Model {
     public static final int FLICKERS = 50;
-    public static final int AUTHOR_IMAGE = 10;
 
     private MVC mvc;
 
     @GuardedBy("Itself")
     private final LinkedList<FlickModel> flickers = new LinkedList<>();
-
-    // TODO Deve essere final?
     private AuthorModel author = null;
 
     public void setMVC(MVC mvc) {
@@ -88,27 +85,6 @@ public class Model {
     public void freeFlickers() {
         synchronized (flickers) {
             this.flickers.clear();
-        }
-    }
-
-    public void removeAuthorFlickers() {
-        synchronized (flickers) {
-            if (flickers.size() > FLICKERS) {
-                for (int i = FLICKERS; i < FLICKERS + AUTHOR_IMAGE; i++) {
-                    flickers.remove(i - 1);
-                }
-            }
-        }
-    }
-
-    public LinkedList<FlickModel> getAuthorFlickers() {
-        // check i -1
-        synchronized (flickers) {
-            if (flickers.size() > FLICKERS) {
-                return (LinkedList<FlickModel>) flickers.subList(FLICKERS-1, FLICKERS + AUTHOR_IMAGE-1);
-            }
-
-            return null;
         }
     }
 }

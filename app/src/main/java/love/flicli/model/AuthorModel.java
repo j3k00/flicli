@@ -2,6 +2,8 @@ package love.flicli.model;
 
 import net.jcip.annotations.Immutable;
 
+import java.util.ArrayList;
+
 /**
  * Created by jeko on 25/07/17.
  */
@@ -56,6 +58,7 @@ public class AuthorModel {
     private final String views;
 
     private final String buddyIcon;
+    private ArrayList<FlickModel> flickers;
 
     public AuthorModel(String id, String nsid, String ispro, String can_buy_pro, String iconserver, String iconfarm, String path_alias, String has_stats, String username, String realname, String mbox_sha1sum, String location, String description, String photosurl, String profileurl, String mobileurl, String photos_firstdatetaken, String photos_firstdate, String photos_count, String views, String buddyIcon) {
         this.id = id;
@@ -160,8 +163,17 @@ public class AuthorModel {
     public String getViews() {
         return views;
     }
+
     public String getBuddyIcon () {
         return buddyIcon;
+    }
+
+    public ArrayList<FlickModel> getFlickers() {
+        return this.flickers;
+    }
+
+    public synchronized void setFlickers(ArrayList<FlickModel> flickers) {
+        this.flickers = flickers;
     }
 
 }
