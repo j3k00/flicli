@@ -65,7 +65,7 @@ public class TabletView extends LinearLayout implements View {
     @Override
     public void showAuthor() {
         getFragmentManager().beginTransaction()
-                .replace(R.id.changedFragment, new AuthorFragment())
+                .replace(R.id.changedFragment, new CreditsFragment())
                 .addToBackStack(null)
                 .commit();
     }
@@ -73,7 +73,7 @@ public class TabletView extends LinearLayout implements View {
     @Override
     public void showLastImageAuthor() {
         getFragmentManager().beginTransaction()
-                .replace(R.id.changedFragment, new LastImageAuthorFragment())
+                .replace(R.id.changedFragment, new AuthorFragment())
                 .addToBackStack(null)
                 .commit();
     }

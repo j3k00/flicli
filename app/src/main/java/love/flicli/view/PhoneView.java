@@ -47,7 +47,7 @@ public class PhoneView extends FrameLayout implements View {
     @Override
     public void showAuthor() {
         getFragmentManager().beginTransaction()
-                .replace(R.id.phone_view, new AuthorFragment())
+                .replace(R.id.phone_view, new CreditsFragment())
                 .addToBackStack(null)
                 .commit();
     }
@@ -55,7 +55,7 @@ public class PhoneView extends FrameLayout implements View {
     @Override
     public void showLastImageAuthor() {
         getFragmentManager().beginTransaction()
-                .replace(R.id.phone_view, new LastImageAuthorFragment())
+                .replace(R.id.phone_view, new AuthorFragment())
                 .addToBackStack(null)
                 .commit();
     }
