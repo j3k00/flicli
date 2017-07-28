@@ -46,7 +46,6 @@ public class AuthorModel {
 
     private final String username;
     private final String realname;
-    private final String mbox_sha1sum;
     private final String location;
     private final String description;
     private final String photosurl;
@@ -55,12 +54,11 @@ public class AuthorModel {
     private final String photos_firstdatetaken;
     private final String photos_firstdate;
     private final String photos_count;
-    private final String views;
 
     private final String buddyIcon;
     private ArrayList<FlickModel> flickers;
 
-    public AuthorModel(String id, String nsid, String ispro, String can_buy_pro, String iconserver, String iconfarm, String path_alias, String has_stats, String username, String realname, String mbox_sha1sum, String location, String description, String photosurl, String profileurl, String mobileurl, String photos_firstdatetaken, String photos_firstdate, String photos_count, String views, String buddyIcon) {
+    public AuthorModel(String id, String nsid, String ispro, String can_buy_pro, String iconserver, String iconfarm, String path_alias, String has_stats, String username, String realname, String location, String description, String photosurl, String profileurl, String mobileurl, String photos_firstdatetaken, String photos_firstdate, String photos_count, String buddyIcon) {
         this.id = id;
         this.nsid = nsid;
         this.ispro = ispro;
@@ -71,7 +69,6 @@ public class AuthorModel {
         this.has_stats = has_stats;
         this.username = username;
         this.realname = realname;
-        this.mbox_sha1sum = mbox_sha1sum;
         this.location = location;
         this.description = description;
         this.photosurl = photosurl;
@@ -80,7 +77,6 @@ public class AuthorModel {
         this.photos_firstdatetaken = photos_firstdatetaken;
         this.photos_firstdate = photos_firstdate;
         this.photos_count = photos_count;
-        this.views = views;
         this.buddyIcon = buddyIcon;
     }
 
@@ -124,10 +120,6 @@ public class AuthorModel {
         return realname;
     }
 
-    public String getMbox_sha1sum() {
-        return mbox_sha1sum;
-    }
-
     public String getLocation() {
         return location;
     }
@@ -158,10 +150,6 @@ public class AuthorModel {
 
     public String getPhotos_count() {
         return photos_count;
-    }
-
-    public String getViews() {
-        return views;
     }
 
     public String getBuddyIcon () {
