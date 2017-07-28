@@ -248,7 +248,7 @@ public class FlickModel {
     public String getFavourities() { return this.favourities; }
 
     public synchronized void freeComment() {
-        this.comments = null;
+        this.comments = new ArrayList<CommentModel>();
     }
 
     public synchronized void freeBitMapHD() {
@@ -256,8 +256,6 @@ public class FlickModel {
     }
 
     public ArrayList<CommentModel> getComments() {
-            if (this.comments == null)
-                return new ArrayList<CommentModel>();
             return this.comments;
     }
 
