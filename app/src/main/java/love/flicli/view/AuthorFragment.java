@@ -90,6 +90,8 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
 
     @Override
     public void onModelChanged() {
+        authorName.setText(author.getRealname());
+
         try {
             mIcon_val = BitmapFactory.decodeStream(new URL(author.getBuddyIcon()).openConnection() .getInputStream());
             author_image.setImageBitmap(mIcon_val);
