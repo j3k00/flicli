@@ -138,7 +138,6 @@ public class FlickerService extends ExecutorIntentService {
                     mvc.model.freeFlickers();
 
                     jPhoto = makeRequest(FlickerAPI.photos_getRecent()).getJSONObject("photos").getJSONArray("photo");
-                    //_generateFlickers(jPhoto);
                     _generateFlickers(jPhoto);
                     break;
 
@@ -164,15 +163,12 @@ public class FlickerService extends ExecutorIntentService {
                     break;
 
                 case ACTION_AUTHOR:
-                    mvc.model.removeAuthorFlickers();
-
                     String author = (String) intent.getSerializableExtra(PARAM_ID);
 
                     jPhoto = makeRequest(FlickerAPI.photo_getAuthor(author)).getJSONObject("photos").getJSONArray("photo");
                     JSONObject jAuthor = makeRequest(FlickerAPI.people_getInfo(author)).getJSONObject("person");
 
-                    _generateAuthor(jAuthor);
-                    _generateFlickers(jPhoto);
+                    _generateAuthor(jAuthor, jPhoto);
 
                     break;
 
@@ -253,8 +249,9 @@ public class FlickerService extends ExecutorIntentService {
         mvc.model.storeDetail(flick.getId(), jFavourities.length(), comments, bitmap_z);
     }
 
-    private void _generateAuthor(JSONObject jAuthor) {
+    private void _generateAuthor(JSONObject jAuthor, JSONArray elements) {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
+        ArrayList<FlickModel> flickers = new ArrayList<FlickModel>();
 
         try {
             JSONObject jAuthor_photos = jAuthor.getJSONObject("photos");
@@ -270,7 +267,6 @@ public class FlickerService extends ExecutorIntentService {
                     (jAuthor.isNull("has_stats")) ? "" : jAuthor.getString("has_stats"),
                     jAuthor.getJSONObject("username").isNull("_content") ? "" : jAuthor.getJSONObject("username").getString("_content"),
                     jAuthor.getJSONObject("realname").isNull("_content") ? "" : jAuthor.getJSONObject("realname").getString("_content"),
-                    jAuthor.getJSONObject("mbox_sha1sum").isNull("_content") ? "" : jAuthor.getJSONObject("mbox_sha1sum").getString("_content"),
                     jAuthor.getJSONObject("location").isNull("_content") ? "" : jAuthor.getJSONObject("location").getString("_content"),
                     jAuthor.getJSONObject("description").isNull("_content") ? "" : jAuthor.getJSONObject("description").getString("_content"),
                     jAuthor.getJSONObject("photosurl").isNull("_content") ? "" : jAuthor.getJSONObject("photosurl").getString("_content"),
@@ -279,7 +275,6 @@ public class FlickerService extends ExecutorIntentService {
                     jAuthor_photos.getJSONObject("firstdatetaken").isNull("_content") ? "" : jAuthor_photos.getJSONObject("firstdatetaken").getString("_content"),
                     jAuthor_photos.getJSONObject("firstdate").isNull("_content") ? "" : jAuthor_photos.getJSONObject("firstdate").getString("_content"),
                     jAuthor_photos.getJSONObject("count").isNull("_content") ? "" : jAuthor_photos.getJSONObject("count").getString("_content"),
-                    jAuthor_photos.getJSONObject("views").isNull("_content") ? "" : jAuthor_photos.getJSONObject("views").getString("_content"),
                     FlickerAPI.buddyIcon(
                             (jAuthor.isNull("iconfarm")) ? "" : jAuthor.getString("iconfarm"),
                             (jAuthor.isNull("iconserver")) ? "" : jAuthor.getString("iconserver"),
@@ -287,8 +282,34 @@ public class FlickerService extends ExecutorIntentService {
                     )
             );
 
+            for (int i = 0; i < elements.length(); i++) {
+                JSONObject photo = elements.getJSONObject(i);
+                Iterator<String> keys= photo.keys();
+
+                // Generate new object based on first param, that is id of flickr
+                FlickModel flick = new FlickModel(photo.getString(keys.next()));
+
+                while (keys.hasNext()) {
+                    String keyValue = keys.next();
+
+                    try {
+                        flick.reflectJson(keyValue, photo.getString(keyValue));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
+
+                flickers.add(flick);
+            }
+
+            author.setFlickers(flickers);
+
             mvc.model.setAuthorModel(author);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }

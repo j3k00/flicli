@@ -117,8 +117,6 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
             ((MainActivity) getActivity()).position = info.position;
             mvc.controller.lastAuthorImage(getActivity().getApplication(), model.getOwner());
 
-        } else {
-            return false;
         }
 
         return false;

@@ -1,6 +1,7 @@
 package love.flicli.view;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
@@ -29,12 +30,15 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
+import love.flicli.FlickerAPI;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
 import love.flicli.model.AuthorModel;
+import love.flicli.model.CommentModel;
 import love.flicli.model.FlickModel;
 
 import static android.content.ContentValues.TAG;
@@ -86,6 +90,8 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
 
     @Override
     public void onModelChanged() {
+        authorName.setText(author.getRealname());
+
         try {
             mIcon_val = BitmapFactory.decodeStream(new URL(author.getBuddyIcon()).openConnection() .getInputStream());
             author_image.setImageBitmap(mIcon_val);
@@ -94,15 +100,12 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
         }
 
         //listView
-        //list.setAdapter(new FlickAdapter());
+        list.setAdapter(new FlickAdapter(getActivity().getApplication(), author.getFlickers()));
     }
 
-
     private class FlickAdapter extends ArrayAdapter<FlickModel> {
-        private final LinkedList<FlickModel> flickers = mvc.model.getAuthorFlickers();
-
-        private FlickAdapter() {
-            super(getActivity(), R.layout.layout_author,  mvc.model.getAuthorFlickers());
+        public FlickAdapter(Context context, ArrayList<FlickModel> flickers) {
+            super(getActivity(), R.layout.layout_author, flickers);
         }
 
         @Override
@@ -110,27 +113,13 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
             View row = convertView;
 
             if (row == null) {
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                row = inflater.inflate(R.layout.layout_author, parent, false);
+                row = getActivity().getLayoutInflater().inflate(R.layout.layout_author, parent, false);
             }
 
-            if (flickers!= null) {
-                if ((position*5) < flickers.size()) {
-                    ((ImageView) row.findViewById(R.id.image1)).setImageBitmap(flickers.get(position * 5).getBitmap_url_s());
+            FlickModel flicker = getItem(position);
 
-                    if ((position * 5) + 1 < flickers.size())
-                        ((ImageView) row.findViewById(R.id.image2)).setImageBitmap(flickers.get((position * 5) + 1).getBitmap_url_s());
+            ((ImageView) row.findViewById(R.id.image3)).setImageBitmap(flicker.getBitmap_url_s());
 
-                    if ((position * 5) + 2 < flickers.size())
-                        ((ImageView) row.findViewById(R.id.image3)).setImageBitmap(flickers.get((position * 5) + 2).getBitmap_url_s());
-
-                    if ((position * 5) + 3 < flickers.size())
-                        ((ImageView) row.findViewById(R.id.image4)).setImageBitmap(flickers.get((position * 5) + 3).getBitmap_url_s());
-
-                    if ((position * 5) + 4 < flickers.size())
-                        ((ImageView) row.findViewById(R.id.image5)).setImageBitmap(flickers.get((position * 5) + 4).getBitmap_url_s());
-                }
-            }
             return row;
         }
     }
