@@ -17,6 +17,7 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ import love.flicli.model.FlickModel;
 
 import static android.content.Intent.ACTION_SEND;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+import static android.os.Build.VERSION_CODES.M;
 import static android.support.v4.content.FileProvider.getUriForFile;
 import static love.flicli.FlickerAPI.makeRequest;
 import static love.flicli.FlickerAPI.people_getInfo;
@@ -301,6 +303,8 @@ public class FlickerService extends ExecutorIntentService {
         // Photos
         String image = flick.getUrl_z().replace("_z", "_h");
         Bitmap bitmap_z;
+
+        //non riesco a capire perchè l'immagine in hd non c'è
         try {
             bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
         } catch (FileNotFoundException e) {
@@ -313,11 +317,15 @@ public class FlickerService extends ExecutorIntentService {
 
     private void _generateAuthor(JSONObject jAuthor, JSONArray elements) {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
-        ArrayList<FlickModel> flickers = new ArrayList<FlickModel>();
+        //ArrayList<FlickModel> flickers = new ArrayList<FlickModel>();
 
         try {
+            JSONObject jName = jAuthor.getJSONObject("username");
             JSONObject jAuthor_photos = jAuthor.getJSONObject("photos");
 
+
+            //TODO devi leggere separatamente i sotto JSONObject perchè molti autori non hanno valorizzati tutti i campi, se fallisce questo fallisce
+            //tutto
             AuthorModel author = new AuthorModel(
                     (jAuthor.isNull("id")) ? "" : jAuthor.getString("id"),
                     (jAuthor.isNull("nsid")) ? "" : jAuthor.getString("nsid"),
@@ -344,36 +352,62 @@ public class FlickerService extends ExecutorIntentService {
                     )
             );
 
-            /*
+
             for (int i = 0; i < elements.length(); i++) {
                 JSONObject photo = elements.getJSONObject(i);
-                Iterator<String> keys= photo.keys();
+                Iterator<String> keys = photo.keys();
 
-                // Generate new object based on first param, that is id of flickr
-                FlickModel flick = new FlickModel(photo.getString(keys.next()));
+                try {
+                    FlickModel flick;
+                    // Generate new object based on first param, that is id of flickr
+                    flick = new FlickModel(
+                            (photo.isNull("id")) ? "" : photo.getString("id"),
+                            (photo.isNull("owner")) ? "" : photo.getString("owner"),
+                            (photo.isNull("secret")) ? "" : photo.getString("secret"),
+                            (photo.isNull("server")) ? "" : photo.getString("server"),
+                            (photo.isNull("title")) ? "" : photo.getString("title"),
+                            (photo.isNull("description")) ? "" : photo.getString("description"),
+                            (photo.isNull("license")) ? "" : photo.getString("license"),
+                            (photo.isNull("date_upload")) ? "" : photo.getString("date_upload"),
+                            (photo.isNull("date_taken")) ? "" : photo.getString("date_taken"),
+                            (photo.isNull("owner_name")) ? "" : photo.getString("owener_name"),
+                            (photo.isNull("icon_server")) ? "" : photo.getString("icon_server"),
+                            (photo.isNull("original_format")) ? "" : photo.getString("original_format"),
+                            (photo.isNull("last_update")) ? "" : photo.getString("last_update"),
+                            (photo.isNull("geo")) ? "" : photo.getString("geo"),
+                            (photo.isNull("tags")) ? "" : photo.getString("tags"),
+                            (photo.isNull("machine_tags")) ? "" : photo.getString("machine_tags"),
+                            (photo.isNull("o_dims")) ? "" : photo.getString("o_dims"),
+                            (photo.isNull("views")) ? "" : photo.getString("views"),
+                            (photo.isNull("media")) ? "" : photo.getString("media"),
+                            (photo.isNull("path_alias")) ? "" : photo.getString("path_alias"),
+                            (photo.isNull("url_sq")) ? "" : photo.getString("url_sq"),
+                            (photo.isNull("url_t")) ? "" : photo.getString("url_t"),
+                            (photo.isNull("url_s")) ? "" : photo.getString("url_s"),
+                            (photo.isNull("url_q")) ? "" : photo.getString("url_q"),
+                            (photo.isNull("url_m")) ? "" : photo.getString("url_m"),
+                            (photo.isNull("url_n")) ? "" : photo.getString("url_n"),
+                            (photo.isNull("url_z")) ? "" : photo.getString("url_z"),
+                            (photo.isNull("url_c")) ? "" : photo.getString("url_c"),
+                            (photo.isNull("url_l")) ? "" : photo.getString("url_l"),
+                            (photo.isNull("url_o")) ? "" : photo.getString("url_o"),
+                            (photo.isNull("fam")) ? 0 : photo.getInt("farm"),
+                            (photo.isNull("ispublic")) ? 0 : photo.getInt("ispublic"),
+                            (photo.isNull("isfriend")) ? 0 : photo.getInt("isfriend"),
+                            (photo.isNull("isfamily")) ? 0 : photo.getInt("isfamily"));
 
-                while (keys.hasNext()) {
-                    String keyValue = keys.next();
 
-                    try {
-                        flick.reflectJson(keyValue, photo.getString(keyValue));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                    flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
+                    //flickers.add(flick);
 
-                flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
+                    author.setFlickers(flick);
+                } catch (JSONException e) {}
 
-                flickers.add(flick);
+                mvc.model.setAuthorModel(author);
             }
-
-            author.setFlickers(flickers);
-
-            mvc.model.setAuthorModel(author);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch(JSONException e){
+                e.printStackTrace();
+        } catch(IOException e){
         }
-*/
-        }catch (JSONException e) {}
     }
 }

@@ -30,22 +30,21 @@ public class Model {
 
     @GuardedBy("Itself")
     private final LinkedList<FlickModel> flickers = new LinkedList<>();
+
+    @GuardedBy("Itself")
     private AuthorModel author = null;
 
     public void setMVC(MVC mvc) {
         this.mvc = mvc;
     }
 
-    public void setAuthorModel(AuthorModel author) {
-        synchronized (author) {
-            this.author = author;
-        }
-
+    public synchronized void setAuthorModel(AuthorModel author) {
+        this.author = author;
         mvc.forEachView(View::onModelChanged);
     }
 
-    public AuthorModel getAuthorModel() {
-        return this.author;
+    public synchronized AuthorModel getAuthorModel() {
+            return this.author;
     }
 
     public void storeFlick(FlickModel flick) {

@@ -1,8 +1,11 @@
 package love.flicli.model;
 
+import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.Immutable;
+import net.jcip.annotations.ThreadSafe;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by jeko on 25/07/17.
@@ -33,7 +36,7 @@ import java.util.ArrayList;
     }
 }***, "stat": "ok" }*/
 
-@Immutable
+@ThreadSafe
 public class AuthorModel {
     private final String id;
     private final String nsid;
@@ -56,7 +59,9 @@ public class AuthorModel {
     private final String photos_count;
 
     private final String buddyIcon;
-    private ArrayList<FlickModel> flickers;
+
+    @GuardedBy("Itself")
+    private final LinkedList<FlickModel> flickers = new LinkedList<>();
 
     public AuthorModel(String id, String nsid, String ispro, String can_buy_pro, String iconserver, String iconfarm, String path_alias, String has_stats, String username, String realname, String location, String description, String photosurl, String profileurl, String mobileurl, String photos_firstdatetaken, String photos_firstdate, String photos_count, String buddyIcon) {
         this.id = id;
@@ -156,12 +161,12 @@ public class AuthorModel {
         return buddyIcon;
     }
 
-    public ArrayList<FlickModel> getFlickers() {
+    public synchronized LinkedList<FlickModel> getFlickers() {
         return this.flickers;
     }
 
-    public synchronized void setFlickers(ArrayList<FlickModel> flickers) {
-        this.flickers = flickers;
+    public synchronized void setFlickers(FlickModel flickers) {
+        this.flickers.add(flickers);
     }
 
 }

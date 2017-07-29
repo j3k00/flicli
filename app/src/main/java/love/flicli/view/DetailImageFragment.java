@@ -127,7 +127,6 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         return false;
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();

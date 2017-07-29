@@ -59,6 +59,7 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
     private int position = 0;
     private AuthorModel author = null;
     private Bitmap mIcon_val;
+    private FlickAdapter flickAdapter = null;
 
     @Override @UiThread
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,29 +84,37 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mvc = ((FlicliApplication) getActivity().getApplication()).getMVC();
-
-        author = mvc.model.getAuthorModel();
         onModelChanged();
     }
 
     @Override
     public void onModelChanged() {
-        authorName.setText(author.getRealname());
+        if (mvc.model.getAuthorModel() != null) {
+            authorName.setText(mvc.model.getAuthorModel().getRealname());
 
-        try {
-            mIcon_val = BitmapFactory.decodeStream(new URL(author.getBuddyIcon()).openConnection() .getInputStream());
-            author_image.setImageBitmap(mIcon_val);
-        } catch (Exception e) {
-            e.printStackTrace();
+            try {
+                mIcon_val = BitmapFactory.decodeStream(new URL(mvc.model.getAuthorModel().getBuddyIcon()).openConnection().getInputStream());
+                author_image.setImageBitmap(mIcon_val);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //listView
+            if (flickAdapter == null) {
+                flickAdapter = new FlickAdapter(getActivity().getApplication(), mvc.model.getAuthorModel().getFlickers());
+                list.setAdapter(flickAdapter);
+            } else  {
+                flickAdapter.notifyDataSetChanged();
+            }
         }
-
-        //listView
-        list.setAdapter(new FlickAdapter(getActivity().getApplication(), author.getFlickers()));
     }
 
     private class FlickAdapter extends ArrayAdapter<FlickModel> {
-        public FlickAdapter(Context context, ArrayList<FlickModel> flickers) {
-            super(getActivity(), R.layout.layout_author, flickers);
+        LinkedList<FlickModel> flickers = mvc.model.getFlickers();
+
+        //DEVE RIMANERE COSì ALTRIMENTI STAMPA 50 RIGHE
+        public FlickAdapter(Context context, LinkedList<FlickModel> flickers) {
+            super(getActivity(), R.layout.layout_author, new FlickModel[10]);
         }
 
         @Override
@@ -116,10 +125,23 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
                 row = getActivity().getLayoutInflater().inflate(R.layout.layout_author, parent, false);
             }
 
-            FlickModel flicker = getItem(position);
+            if (flickers!= null) {
+                if ((position*5) < flickers.size()) {
+                    ((ImageView) row.findViewById(R.id.image1)).setImageBitmap(flickers.get(position * 5).getBitmap_url_s());
 
-            ((ImageView) row.findViewById(R.id.image3)).setImageBitmap(flicker.getBitmap_url_s());
+                    if ((position * 5) + 1 < flickers.size())
+                        ((ImageView) row.findViewById(R.id.image2)).setImageBitmap(flickers.get((position * 5) + 1).getBitmap_url_s());
 
+                    if ((position * 5) + 2 < flickers.size())
+                        ((ImageView) row.findViewById(R.id.image3)).setImageBitmap(flickers.get((position * 5) + 2).getBitmap_url_s());
+
+                    if ((position * 5) + 3 < flickers.size())
+                        ((ImageView) row.findViewById(R.id.image4)).setImageBitmap(flickers.get((position * 5) + 3).getBitmap_url_s());
+
+                    if ((position * 5) + 4 < flickers.size())
+                        ((ImageView) row.findViewById(R.id.image5)).setImageBitmap(flickers.get((position * 5) + 4).getBitmap_url_s());
+                }
+            }
             return row;
         }
     }
