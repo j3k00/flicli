@@ -121,7 +121,8 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.version) {
             mvc.controller.showVersion();
-        }
+        } else if (item.getItemId() == R.id.menu_item_share)
+            mvc.controller.getImageDetailFlicker(getActivity().getApplication(), ((MainActivity) getActivity()).position);
 
         return false;
     }

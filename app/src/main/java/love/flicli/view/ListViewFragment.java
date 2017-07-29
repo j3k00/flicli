@@ -148,8 +148,8 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
                 row = inflater.inflate(R.layout.history_fragment, parent, false);
             }
 
-            if (listFlick != null) {
-                FlickModel flick = listFlick.get(position);
+                FlickModel flick = getItem(position);
+
                 if (flick.getBitmap_url_s() == null) {
                     ((ImageView) row.findViewById(R.id.icon)).setImageResource(R.drawable.image);
                 } else
@@ -157,7 +157,7 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
 
                 ((TextView) row.findViewById(R.id.description)).setText(flick.getTitle());
                 ((TextView) row.findViewById(R.id.url)).setText(flick.getId());
-            }
+
             return row;
         }
     }

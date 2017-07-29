@@ -33,7 +33,6 @@ public class Controller {
 
     public void getImageDetailFlicker(Context context, int pos) {
         FlickerService.getImageDetailFLick(context, pos);
-        showDetail();
     }
 
    @UiThread
