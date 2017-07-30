@@ -303,7 +303,7 @@ public class FlickModel {
         this.bitmap_url_h = null;
     }
 
-    public ArrayList<CommentModel> getComments() {
+    public synchronized ArrayList<CommentModel> getComments() {
             return this.comments;
     }
 
@@ -311,7 +311,6 @@ public class FlickModel {
             this.comments = comments;
     }
 
-    //CONTROLlARE NON SONO SICURO
     public synchronized void setBitmap_url_h(Bitmap image) {
             this.bitmap_url_h = image;
     }
@@ -320,9 +319,15 @@ public class FlickModel {
        this.bitmap_url_s = image;
     }
 
-    public  Bitmap getBitmap_url_hd() {
+    public synchronized Bitmap getBitmap_url_hd() {
             return this.bitmap_url_h;
     }
+
+    public synchronized void setFavourities(String param) {
+       this.favourities = param;
+    }
+
+    public synchronized String getFavourities() { return this.favourities; }
 
     private String _setAttribute(String param) {
         return (param != null) ? param : "";
@@ -332,11 +337,4 @@ public class FlickModel {
         Field field = this.getClass().getDeclaredField(name);
         field.set(this, object);
     }
-
-    public synchronized void setFavourities(String param) {
-       this.favourities = param;
-    }
-
-    public synchronized String getFavourities() { return this.favourities; }
-
 }

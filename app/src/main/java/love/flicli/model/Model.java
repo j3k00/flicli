@@ -43,6 +43,10 @@ public class Model {
         mvc.forEachView(View::onModelChanged);
     }
 
+    public synchronized void freeAuthorModel() {
+        this.author = null;
+    }
+
     public synchronized AuthorModel getAuthorModel() {
             return this.author;
     }
