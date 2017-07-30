@@ -42,6 +42,7 @@ import love.flicli.model.CommentModel;
 import love.flicli.model.FlickModel;
 
 import static android.content.ContentValues.TAG;
+import static love.flicli.FlickerAPI.API_KEY;
 import static love.flicli.R.drawable.user;
 
 /**
@@ -57,7 +58,7 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
     private ImageView author_image;
     private String user = "";
     private int position = 0;
-    private AuthorModel author = null;
+    private AuthorModel author;
     private Bitmap mIcon_val;
     private FlickAdapter flickAdapter = null;
 
@@ -91,13 +92,12 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
     public void onModelChanged() {
         if (mvc.model.getAuthorModel() != null) {
             authorName.setText(mvc.model.getAuthorModel().getRealname());
+            Log.d(TAG, "BUDDYICON -------- " + mvc.model.getAuthorModel().getBuddyIcon());
 
             try {
                 mIcon_val = BitmapFactory.decodeStream(new URL(mvc.model.getAuthorModel().getBuddyIcon()).openConnection().getInputStream());
                 author_image.setImageBitmap(mIcon_val);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            } catch (Exception e) {}
 
             //listView
             if (flickAdapter == null) {

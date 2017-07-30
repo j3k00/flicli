@@ -208,64 +208,48 @@ public class FlickerService extends ExecutorIntentService {
             Iterator<String> keys = photo.keys();
             FlickModel flick;
             try {
-                flick = new FlickModel(
-                    (photo.isNull("id")) ? "" : photo.getString("id"),
-                    (photo.isNull("owner")) ? "" : photo.getString("owner"),
-                    (photo.isNull("secret")) ? "" : photo.getString("secret"),
-                    (photo.isNull("server")) ? "" : photo.getString("server"),
-                    (photo.isNull("title")) ? "" : photo.getString("title"),
-                    (photo.isNull("description")) ? "" : photo.getString("description"),
-                    (photo.isNull("license")) ? "" : photo.getString("license"),
-                    (photo.isNull("date_upload")) ? "" : photo.getString("date_upload"),
-                    (photo.isNull("date_taken")) ? "" : photo.getString("date_taken"),
-                    (photo.isNull("owner_name")) ? "" : photo.getString("owener_name"),
-                    (photo.isNull("icon_server")) ? "" : photo.getString("icon_server"),
-                    (photo.isNull("original_format")) ? "" : photo.getString("original_format"),
-                    (photo.isNull("last_update")) ? "" : photo.getString("last_update"),
-                    (photo.isNull("geo")) ? "" : photo.getString("geo"),
-                    (photo.isNull("tags")) ? "" : photo.getString("tags"),
-                    (photo.isNull("machine_tags")) ? "" : photo.getString("machine_tags"),
-                    (photo.isNull("o_dims")) ? "" : photo.getString("o_dims"),
-                    (photo.isNull("views")) ? "" : photo.getString("views"),
-                    (photo.isNull("media")) ? "" : photo.getString("media"),
-                    (photo.isNull("path_alias")) ? "" : photo.getString("path_alias"),
-                    (photo.isNull("url_sq")) ? "" : photo.getString("url_sq"),
-                    (photo.isNull("url_t")) ? "" : photo.getString("url_t"),
-                    (photo.isNull("url_s")) ? "" : photo.getString("url_s"),
-                    (photo.isNull("url_q")) ? "" : photo.getString("url_q"),
-                    (photo.isNull("url_m")) ? "" : photo.getString("url_m"),
-                    (photo.isNull("url_n")) ? "" : photo.getString("url_n"),
-                    (photo.isNull("url_z")) ? "" : photo.getString("url_z"),
-                    (photo.isNull("url_c")) ? "" : photo.getString("url_c"),
-                    (photo.isNull("url_l")) ? "" : photo.getString("url_l"),
-                    (photo.isNull("url_o")) ? "" : photo.getString("url_o"),
-                    (photo.isNull("fam")) ? 0 : photo.getInt("farm"),
-                    (photo.isNull("ispublic")) ? 0 : photo.getInt("ispublic"),
-                    (photo.isNull("isfriend")) ? 0 : photo.getInt("isfriend"),
-                    (photo.isNull("isfamily")) ? 0 : photo.getInt("isfamily"));
 
+                flick = new FlickModel(
+                        _getLabelString(photo, "id"),
+                        _getLabelString(photo, "owner"),
+                        _getLabelString(photo, "secret"),
+                        _getLabelString(photo, "server"),
+                        _getLabelString(photo, "title"),
+                        _getLabelString(photo, "description"),
+                        _getLabelString(photo, "license"),
+                        _getLabelString(photo, "date_upload"),
+                        _getLabelString(photo, "date_taken"),
+                        _getLabelString(photo, "owner_name"),
+                        _getLabelString(photo, "icon_server"),
+                        _getLabelString(photo, "original_format"),
+                        _getLabelString(photo, "last_update"),
+                        _getLabelString(photo, "geo"),
+                        _getLabelString(photo, "tags"),
+                        _getLabelString(photo, "machine_tags"),
+                        _getLabelString(photo, "o_dims"),
+                        _getLabelString(photo, "views"),
+                        _getLabelString(photo, "media"),
+                        _getLabelString(photo, "path_alias"),
+                        _getLabelString(photo, "url_sq"),
+                        _getLabelString(photo, "url_t"),
+                        _getLabelString(photo, "url_s"),
+                        _getLabelString(photo, "url_q"),
+                        _getLabelString(photo, "url_m"),
+                        _getLabelString(photo, "url_n"),
+                        _getLabelString(photo, "url_z"),
+                        _getLabelString(photo, "url_c"),
+                        _getLabelString(photo, "url_l"),
+                        _getLabelString(photo, "url_o"),
+                        _getLabelInt(photo, "farm"),
+                        _getLabelInt(photo, "ispublic"),
+                        _getLabelInt(photo, "isfriend"),
+                        _getLabelInt(photo, "isfamily")
+                );
 
                 flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
                 mvc.model.storeFlick(flick);
 
-            } catch (Exception e) {
-
-
-            }
-            // Generate new object based on first param, that is id of flickr
-            /*
-            FlickModel flick = new FlickModel(photo.getString(keys.next()));
-
-            while (keys.hasNext()) {
-                String keyValue = keys.next();
-
-                try {
-                    flick.reflectJson(keyValue, photo.getString(keyValue));
-                } catch (Exception e) {}
-            }
-
-            flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
-            */
+            } catch (Exception e) {}
         }
     }
 
@@ -282,17 +266,17 @@ public class FlickerService extends ExecutorIntentService {
                 JSONObject jsonComments = commentArray.getJSONObject(i);
 
                 CommentModel comment = new CommentModel(
-                        (jsonComments.isNull("id")) ? "" : jsonComments.getString("id"),
-                        (jsonComments.isNull("author")) ? "" : jsonComments.getString("author"),
-                        (jsonComments.isNull("author_is_deleted")) ? "" : jsonComments.getString("author_is_deleted"),
-                        (jsonComments.isNull("authorname")) ? "" : jsonComments.getString("authorname"),
-                        (jsonComments.isNull("iconserver")) ? "" : jsonComments.getString("iconserver"),
-                        (jsonComments.isNull("iconfarm")) ? "" : jsonComments.getString("iconfarm"),
-                        (jsonComments.isNull("datecreate")) ? "" : jsonComments.getString("datecreate"),
-                        (jsonComments.isNull("permalink")) ? "" : jsonComments.getString("permalink"),
-                        (jsonComments.isNull("pathalias")) ? "" : jsonComments.getString("pathalias"),
-                        (jsonComments.isNull("realname")) ? "" : jsonComments.getString("realname"),
-                        (jsonComments.isNull("_content")) ? "" : jsonComments.getString("_content")
+                        _getLabelString(jsonComments, "id"),
+                        _getLabelString(jsonComments, "author"),
+                        _getLabelString(jsonComments, "author_is_deleted"),
+                        _getLabelString(jsonComments, "authorname"),
+                        _getLabelString(jsonComments, "iconserver"),
+                        _getLabelString(jsonComments, "iconfarm"),
+                        _getLabelString(jsonComments, "datecreate"),
+                        _getLabelString(jsonComments, "permalink"),
+                        _getLabelString(jsonComments, "pathalias"),
+                        _getLabelString(jsonComments, "realname"),
+                        _getLabelString(jsonComments, "_content")
                 );
 
                 comments.add(comment);
@@ -320,38 +304,33 @@ public class FlickerService extends ExecutorIntentService {
         //ArrayList<FlickModel> flickers = new ArrayList<FlickModel>();
 
         try {
-            JSONObject jName = jAuthor.getJSONObject("username");
             JSONObject jAuthor_photos = jAuthor.getJSONObject("photos");
 
-
-            //TODO devi leggere separatamente i sotto JSONObject perchè molti autori non hanno valorizzati tutti i campi, se fallisce questo fallisce
-            //tutto
             AuthorModel author = new AuthorModel(
-                    (jAuthor.isNull("id")) ? "" : jAuthor.getString("id"),
-                    (jAuthor.isNull("nsid")) ? "" : jAuthor.getString("nsid"),
-                    (jAuthor.isNull("ispro")) ? "" : jAuthor.getString("ispro"),
-                    (jAuthor.isNull("can_buy_pro")) ? "" : jAuthor.getString("can_buy_pro"),
-                    (jAuthor.isNull("iconserver")) ? "" : jAuthor.getString("iconserver"),
-                    (jAuthor.isNull("iconfarm")) ? "" : jAuthor.getString("iconfarm"),
-                    (jAuthor.isNull("path_alias")) ? "" : jAuthor.getString("path_alias"),
-                    (jAuthor.isNull("has_stats")) ? "" : jAuthor.getString("has_stats"),
-                    jAuthor.getJSONObject("username").isNull("_content") ? "" : jAuthor.getJSONObject("username").getString("_content"),
-                    jAuthor.getJSONObject("realname").isNull("_content") ? "" : jAuthor.getJSONObject("realname").getString("_content"),
-                    jAuthor.getJSONObject("location").isNull("_content") ? "" : jAuthor.getJSONObject("location").getString("_content"),
-                    jAuthor.getJSONObject("description").isNull("_content") ? "" : jAuthor.getJSONObject("description").getString("_content"),
-                    jAuthor.getJSONObject("photosurl").isNull("_content") ? "" : jAuthor.getJSONObject("photosurl").getString("_content"),
-                    jAuthor.getJSONObject("profileurl").isNull("_content") ? "" : jAuthor.getJSONObject("profileurl").getString("_content"),
-                    jAuthor.getJSONObject("mobileurl").isNull("_content") ? "" : jAuthor.getJSONObject("mobileurl").getString("_content"),
-                    jAuthor_photos.getJSONObject("firstdatetaken").isNull("_content") ? "" : jAuthor_photos.getJSONObject("firstdatetaken").getString("_content"),
-                    jAuthor_photos.getJSONObject("firstdate").isNull("_content") ? "" : jAuthor_photos.getJSONObject("firstdate").getString("_content"),
-                    jAuthor_photos.getJSONObject("count").isNull("_content") ? "" : jAuthor_photos.getJSONObject("count").getString("_content"),
+                    _getLabelString(jAuthor, "id"),
+                    _getLabelString(jAuthor, "nsid"),
+                    _getLabelString(jAuthor, "ispro"),
+                    _getLabelString(jAuthor, "can_buy_pro"),
+                    _getLabelString(jAuthor, "iconserver"),
+                    _getLabelString(jAuthor, "iconfarm"),
+                    _getLabelString(jAuthor, "path_alias"),
+                    _getLabelString(jAuthor, "has_stats"),
+                    _getLabelString(_getJSONObject(jAuthor, "username"), "_content"),
+                    _getLabelString(_getJSONObject(jAuthor, "realname"), "_content"),
+                    _getLabelString(_getJSONObject(jAuthor, "location"), "_content"),
+                    _getLabelString(_getJSONObject(jAuthor, "description"), "_content"),
+                    _getLabelString(_getJSONObject(jAuthor, "photosurl"), "_content"),
+                    _getLabelString(_getJSONObject(jAuthor, "profileurl"), "_content"),
+                    _getLabelString(_getJSONObject(jAuthor, "mobileurl"), "_content"),
+                    _getLabelString(_getJSONObject(jAuthor_photos, "firstdatetaken"), "_content"),
+                    _getLabelString(_getJSONObject(jAuthor_photos, "firstdate"), "_content"),
+                    _getLabelString(_getJSONObject(jAuthor_photos, "count"), "_content"),
                     FlickerAPI.buddyIcon(
-                            (jAuthor.isNull("iconfarm")) ? "" : jAuthor.getString("iconfarm"),
-                            (jAuthor.isNull("iconserver")) ? "" : jAuthor.getString("iconserver"),
-                            (jAuthor.isNull("nsid")) ? "" : jAuthor.getString("nsid")
+                            _getLabelString(jAuthor, "iconfarm"),
+                            _getLabelString(jAuthor, "iconserver"),
+                            _getLabelString(jAuthor, "nsid")
                     )
             );
-
 
             for (int i = 0; i < elements.length(); i++) {
                 JSONObject photo = elements.getJSONObject(i);
@@ -361,40 +340,41 @@ public class FlickerService extends ExecutorIntentService {
                     FlickModel flick;
                     // Generate new object based on first param, that is id of flickr
                     flick = new FlickModel(
-                            (photo.isNull("id")) ? "" : photo.getString("id"),
-                            (photo.isNull("owner")) ? "" : photo.getString("owner"),
-                            (photo.isNull("secret")) ? "" : photo.getString("secret"),
-                            (photo.isNull("server")) ? "" : photo.getString("server"),
-                            (photo.isNull("title")) ? "" : photo.getString("title"),
-                            (photo.isNull("description")) ? "" : photo.getString("description"),
-                            (photo.isNull("license")) ? "" : photo.getString("license"),
-                            (photo.isNull("date_upload")) ? "" : photo.getString("date_upload"),
-                            (photo.isNull("date_taken")) ? "" : photo.getString("date_taken"),
-                            (photo.isNull("owner_name")) ? "" : photo.getString("owener_name"),
-                            (photo.isNull("icon_server")) ? "" : photo.getString("icon_server"),
-                            (photo.isNull("original_format")) ? "" : photo.getString("original_format"),
-                            (photo.isNull("last_update")) ? "" : photo.getString("last_update"),
-                            (photo.isNull("geo")) ? "" : photo.getString("geo"),
-                            (photo.isNull("tags")) ? "" : photo.getString("tags"),
-                            (photo.isNull("machine_tags")) ? "" : photo.getString("machine_tags"),
-                            (photo.isNull("o_dims")) ? "" : photo.getString("o_dims"),
-                            (photo.isNull("views")) ? "" : photo.getString("views"),
-                            (photo.isNull("media")) ? "" : photo.getString("media"),
-                            (photo.isNull("path_alias")) ? "" : photo.getString("path_alias"),
-                            (photo.isNull("url_sq")) ? "" : photo.getString("url_sq"),
-                            (photo.isNull("url_t")) ? "" : photo.getString("url_t"),
-                            (photo.isNull("url_s")) ? "" : photo.getString("url_s"),
-                            (photo.isNull("url_q")) ? "" : photo.getString("url_q"),
-                            (photo.isNull("url_m")) ? "" : photo.getString("url_m"),
-                            (photo.isNull("url_n")) ? "" : photo.getString("url_n"),
-                            (photo.isNull("url_z")) ? "" : photo.getString("url_z"),
-                            (photo.isNull("url_c")) ? "" : photo.getString("url_c"),
-                            (photo.isNull("url_l")) ? "" : photo.getString("url_l"),
-                            (photo.isNull("url_o")) ? "" : photo.getString("url_o"),
-                            (photo.isNull("fam")) ? 0 : photo.getInt("farm"),
-                            (photo.isNull("ispublic")) ? 0 : photo.getInt("ispublic"),
-                            (photo.isNull("isfriend")) ? 0 : photo.getInt("isfriend"),
-                            (photo.isNull("isfamily")) ? 0 : photo.getInt("isfamily"));
+                            _getLabelString(photo, "id"),
+                            _getLabelString(photo, "owner"),
+                            _getLabelString(photo, "secret"),
+                            _getLabelString(photo, "server"),
+                            _getLabelString(photo, "title"),
+                            _getLabelString(photo, "description"),
+                            _getLabelString(photo, "license"),
+                            _getLabelString(photo, "date_upload"),
+                            _getLabelString(photo, "date_taken"),
+                            _getLabelString(photo, "owner_name"),
+                            _getLabelString(photo, "icon_server"),
+                            _getLabelString(photo, "original_format"),
+                            _getLabelString(photo, "last_update"),
+                            _getLabelString(photo, "geo"),
+                            _getLabelString(photo, "tags"),
+                            _getLabelString(photo, "machine_tags"),
+                            _getLabelString(photo, "o_dims"),
+                            _getLabelString(photo, "views"),
+                            _getLabelString(photo, "media"),
+                            _getLabelString(photo, "path_alias"),
+                            _getLabelString(photo, "url_sq"),
+                            _getLabelString(photo, "url_t"),
+                            _getLabelString(photo, "url_s"),
+                            _getLabelString(photo, "url_q"),
+                            _getLabelString(photo, "url_m"),
+                            _getLabelString(photo, "url_n"),
+                            _getLabelString(photo, "url_z"),
+                            _getLabelString(photo, "url_c"),
+                            _getLabelString(photo, "url_l"),
+                            _getLabelString(photo, "url_o"),
+                            _getLabelInt(photo, "farm"),
+                            _getLabelInt(photo, "ispublic"),
+                            _getLabelInt(photo, "isfriend"),
+                            _getLabelInt(photo, "isfamily")
+                    );
 
 
                     flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
@@ -409,5 +389,26 @@ public class FlickerService extends ExecutorIntentService {
                 e.printStackTrace();
         } catch(IOException e){
         }
+    }
+
+    private String _getLabelString(JSONObject json, String label) throws JSONException{
+        if (json == null || label == "") {
+            return "";
+        }
+
+        return (json.isNull(label)) ? "" : json.getString(label);
+    }
+
+    private int _getLabelInt(JSONObject json, String label)  throws JSONException{
+        if (json == null || label == "") {
+            return 0;
+        }
+
+        return (json.isNull(label)) ? 0 : json.getInt(label);
+
+    }
+
+    private JSONObject _getJSONObject(JSONObject json, String label)  throws JSONException{
+        return json.isNull(label) ? null : json.getJSONObject(label);
     }
 }
