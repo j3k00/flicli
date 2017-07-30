@@ -1,5 +1,7 @@
 package love.flicli.model;
 
+import android.graphics.Bitmap;
+
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.Immutable;
 import net.jcip.annotations.ThreadSafe;
@@ -59,11 +61,13 @@ public class AuthorModel {
     private final String photos_count;
 
     private final String buddyIcon;
+    private final Bitmap buddyIconBitmap;
+
 
     @GuardedBy("Itself")
-    private final LinkedList<FlickModel> flickers = new LinkedList<>();
+    private final ArrayList<FlickModel> flickers = new ArrayList<>();
 
-    public AuthorModel(String id, String nsid, String ispro, String can_buy_pro, String iconserver, String iconfarm, String path_alias, String has_stats, String username, String realname, String location, String description, String photosurl, String profileurl, String mobileurl, String photos_firstdatetaken, String photos_firstdate, String photos_count, String buddyIcon) {
+    public AuthorModel(String id, String nsid, String ispro, String can_buy_pro, String iconserver, String iconfarm, String path_alias, String has_stats, String username, String realname, String location, String description, String photosurl, String profileurl, String mobileurl, String photos_firstdatetaken, String photos_firstdate, String photos_count, String buddyIcon, Bitmap image) {
         this.id = id;
         this.nsid = nsid;
         this.ispro = ispro;
@@ -83,6 +87,7 @@ public class AuthorModel {
         this.photos_firstdate = photos_firstdate;
         this.photos_count = photos_count;
         this.buddyIcon = buddyIcon;
+        this.buddyIconBitmap = image;
     }
 
     public String getId() {
@@ -161,12 +166,23 @@ public class AuthorModel {
         return buddyIcon;
     }
 
-    public synchronized LinkedList<FlickModel> getFlickers() {
+    public String getName() {
+        if (getRealname() == "")
+            return getUsername();
+
+        return getRealname();
+    }
+
+    public synchronized ArrayList<FlickModel> getFlickers() {
         return this.flickers;
     }
 
     public synchronized void setFlickers(FlickModel flickers) {
         this.flickers.add(flickers);
+    }
+
+    public synchronized Bitmap getBuddyIconBitmap() {
+        return this.buddyIconBitmap;
     }
 
 }

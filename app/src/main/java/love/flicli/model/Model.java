@@ -29,7 +29,7 @@ public class Model {
     private MVC mvc;
 
     @GuardedBy("Itself")
-    private final LinkedList<FlickModel> flickers = new LinkedList<>();
+    private final ArrayList<FlickModel> flickers = new ArrayList<>();
 
     @GuardedBy("Itself")
     private AuthorModel author = null;
@@ -75,7 +75,7 @@ public class Model {
         mvc.forEachView(View::onModelChanged);
     }
 
-    public LinkedList<FlickModel> getFlickers() {
+    public ArrayList<FlickModel> getFlickers() {
         synchronized (flickers) {
             return this.flickers;
         }

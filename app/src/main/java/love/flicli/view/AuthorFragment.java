@@ -14,10 +14,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.jcip.annotations.ThreadSafe;
 
@@ -53,14 +58,11 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
 
     private TextView authorName = null;
     private TextView informationAuthor = null;
+    private GridView gridview = null;
+
     private MVC mvc = null;
-    private ListView list = null;
     private ImageView author_image;
-    private String user = "";
-    private int position = 0;
-    private AuthorModel author;
-    private Bitmap mIcon_val;
-    private FlickAdapter flickAdapter = null;
+    private ImageAdapter imageAdapter = null;
 
     @Override @UiThread
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,8 +77,7 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
         authorName = (TextView) view.findViewById(R.id.authorName);
         informationAuthor = (TextView) view.findViewById(R.id.informationAuthor);
         author_image = (ImageView) view.findViewById(R.id.image_author);
-        list = (ListView) view.findViewById(R.id.listView);
-        position = ((MainActivity) getActivity()).position;
+        gridview = (GridView) view.findViewById(R.id.gridview);
 
         return view;
     }
@@ -91,58 +92,53 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
     @Override
     public void onModelChanged() {
         if (mvc.model.getAuthorModel() != null) {
-            authorName.setText(mvc.model.getAuthorModel().getRealname());
-            Log.d(TAG, "BUDDYICON -------- " + mvc.model.getAuthorModel().getBuddyIcon());
+            authorName.setText(mvc.model.getAuthorModel().getName());
+            //informationAuthor.setText(mvc.model.getAuthorModel().getDescription());
+            author_image.setImageBitmap(mvc.model.getAuthorModel().getBuddyIconBitmap());
 
-            try {
-                mIcon_val = BitmapFactory.decodeStream(new URL(mvc.model.getAuthorModel().getBuddyIcon()).openConnection().getInputStream());
-                author_image.setImageBitmap(mIcon_val);
-            } catch (Exception e) {}
-
-            //listView
-            if (flickAdapter == null) {
-                flickAdapter = new FlickAdapter(getActivity().getApplication(), mvc.model.getAuthorModel().getFlickers());
-                list.setAdapter(flickAdapter);
+            if (imageAdapter == null) {
+                imageAdapter = new ImageAdapter(getActivity().getApplication());
+                gridview.setAdapter(imageAdapter);
             } else  {
-                flickAdapter.notifyDataSetChanged();
+                imageAdapter.notifyDataSetChanged();
             }
         }
     }
 
-    private class FlickAdapter extends ArrayAdapter<FlickModel> {
-        LinkedList<FlickModel> flickers = mvc.model.getFlickers();
+    public class ImageAdapter extends BaseAdapter {
+        private Context mContext;
 
-        //DEVE RIMANERE COSì ALTRIMENTI STAMPA 50 RIGHE
-        public FlickAdapter(Context context, LinkedList<FlickModel> flickers) {
-            super(getActivity(), R.layout.layout_author, new FlickModel[10]);
+        public ImageAdapter(Context c) {
+            mContext = c;
         }
 
-        @Override
+        public int getCount() {
+            return mvc.model.getAuthorModel().getFlickers().size();
+        }
+
+        public Object getItem(int position) {
+            return null;
+        }
+
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View convertView, ViewGroup parent) {
-            View row = convertView;
-
-            if (row == null) {
-                row = getActivity().getLayoutInflater().inflate(R.layout.layout_author, parent, false);
+            ImageView imageView;
+            if (convertView == null) {
+                // if it's not recycled, initialize some attributes
+                imageView = new ImageView(mContext);
+                imageView.setLayoutParams(new GridView.LayoutParams(270, 270));
+                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                imageView.setPadding(8, 8, 8, 8);
+            } else {
+                imageView = (ImageView) convertView;
             }
 
-            if (flickers!= null) {
-                if ((position*5) < flickers.size()) {
-                    ((ImageView) row.findViewById(R.id.image1)).setImageBitmap(flickers.get(position * 5).getBitmap_url_s());
-
-                    if ((position * 5) + 1 < flickers.size())
-                        ((ImageView) row.findViewById(R.id.image2)).setImageBitmap(flickers.get((position * 5) + 1).getBitmap_url_s());
-
-                    if ((position * 5) + 2 < flickers.size())
-                        ((ImageView) row.findViewById(R.id.image3)).setImageBitmap(flickers.get((position * 5) + 2).getBitmap_url_s());
-
-                    if ((position * 5) + 3 < flickers.size())
-                        ((ImageView) row.findViewById(R.id.image4)).setImageBitmap(flickers.get((position * 5) + 3).getBitmap_url_s());
-
-                    if ((position * 5) + 4 < flickers.size())
-                        ((ImageView) row.findViewById(R.id.image5)).setImageBitmap(flickers.get((position * 5) + 4).getBitmap_url_s());
-                }
-            }
-            return row;
+            imageView.setImageBitmap(mvc.model.getAuthorModel().getFlickers().get(position).getBitmap_url_s());
+            return imageView;
         }
     }
 }

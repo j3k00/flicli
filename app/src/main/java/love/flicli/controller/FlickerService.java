@@ -329,7 +329,12 @@ public class FlickerService extends ExecutorIntentService {
                             _getLabelString(jAuthor, "iconfarm"),
                             _getLabelString(jAuthor, "iconserver"),
                             _getLabelString(jAuthor, "nsid")
-                    )
+                    ),
+                    BitmapFactory.decodeStream(new URL(FlickerAPI.buddyIcon(
+                            _getLabelString(jAuthor, "iconfarm"),
+                            _getLabelString(jAuthor, "iconserver"),
+                            _getLabelString(jAuthor, "nsid")
+                    )).openStream())
             );
 
             for (int i = 0; i < elements.length(); i++) {

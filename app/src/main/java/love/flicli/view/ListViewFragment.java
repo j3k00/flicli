@@ -1,5 +1,6 @@
 package love.flicli.view;
 import android.app.ListFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,13 +25,16 @@ import net.jcip.annotations.ThreadSafe;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
 import love.flicli.Util;
+import love.flicli.model.CommentModel;
 import love.flicli.model.FlickModel;
 import static android.support.v4.content.FileProvider.getUriForFile;
+import static love.flicli.R.id.comments;
 
 /**
  * Created by tommaso on 29/05/17.
@@ -125,18 +129,15 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
     @Override @UiThread
     public void onModelChanged() {
         if (list == null) {
-            list = new HistoryAdapter();
+            list = new HistoryAdapter(getActivity().getApplication(),  mvc.model.getFlickers());
             setListAdapter(list);
         } else
             list.notifyDataSetChanged();
     }
 
-
     private class HistoryAdapter extends ArrayAdapter<FlickModel> {
-        private final LinkedList<FlickModel> listFlick = mvc.model.getFlickers();
-
-        private HistoryAdapter() {
-            super(getActivity(), R.layout.history_fragment, mvc.model.getFlickers());
+        public HistoryAdapter(Context context, ArrayList<FlickModel> flikers) {
+            super(getActivity(), R.layout.history_fragment, flikers);
         }
 
         @Override
@@ -144,19 +145,18 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
             View row = convertView;
 
             if (row == null) {
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                row = inflater.inflate(R.layout.history_fragment, parent, false);
+                row = getActivity().getLayoutInflater().inflate(R.layout.history_fragment, parent, false);
             }
 
-                FlickModel flick = getItem(position);
+            FlickModel flick = getItem(position);
 
-                if (flick.getBitmap_url_s() == null) {
-                    ((ImageView) row.findViewById(R.id.icon)).setImageResource(R.drawable.image);
-                } else
-                    ((ImageView) row.findViewById(R.id.icon)).setImageBitmap(flick.getBitmap_url_s());
+            if (flick.getBitmap_url_s() == null) {
+                ((ImageView) row.findViewById(R.id.icon)).setImageResource(R.drawable.image);
+            } else
+                ((ImageView) row.findViewById(R.id.icon)).setImageBitmap(flick.getBitmap_url_s());
 
-                ((TextView) row.findViewById(R.id.description)).setText(flick.getTitle());
-                ((TextView) row.findViewById(R.id.url)).setText(flick.getId());
+            ((TextView) row.findViewById(R.id.description)).setText(flick.getTitle());
+            ((TextView) row.findViewById(R.id.url)).setText(flick.getId());
 
             return row;
         }
