@@ -109,7 +109,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         onModelChanged();
     }
 
-    @Override
+    @Override @UiThread
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.share_menu, menu);
@@ -127,7 +127,7 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         return false;
     }
 
-    @Override
+    @Override @UiThread
     public void onDestroy() {
         super.onDestroy();
         //Delete the temporary file for share image with other application

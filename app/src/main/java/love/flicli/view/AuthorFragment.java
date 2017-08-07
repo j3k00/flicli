@@ -81,14 +81,20 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
         return view;
     }
 
-    @Override
+    @Override @UiThread
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mvc = ((FlicliApplication) getActivity().getApplication()).getMVC();
         onModelChanged();
     }
 
-    @Override
+    @Override @UiThread
+    public void onDestroy() {
+        super.onDestroy();
+        mvc.model.freeAuthorModel();
+    }
+
+    @Override @UiThread
     public void onModelChanged() {
         if (mvc.model.getAuthorModel() != null) {
             authorName.setText(mvc.model.getAuthorModel().getName());
