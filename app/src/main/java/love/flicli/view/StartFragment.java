@@ -27,7 +27,6 @@ import love.flicli.R;
  */
 
 public class StartFragment extends Fragment implements AbstractFragment {
-    private final static String TAG = StartFragment.class.getName();
     private MVC mvc;
     private EditText text;
     private TextView errorText;

@@ -44,7 +44,6 @@ import static love.flicli.R.id.comments;
 public class ListViewFragment extends ListFragment implements AbstractFragment {
 
     private MVC mvc;
-    private final static String TAG = ListViewFragment.class.getName();
 
     private HistoryAdapter list;
     private File tempFile;

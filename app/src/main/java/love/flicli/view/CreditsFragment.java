@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import love.flicli.FlicliApplication;
+import love.flicli.MVC;
 import love.flicli.R;
 
 /**
@@ -20,9 +22,9 @@ import love.flicli.R;
  */
 
 public class CreditsFragment extends Fragment implements AbstractFragment {
-
-
+    private MVC mvc = null;
     private TextView date = null;
+
 
     @Override @UiThread
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,10 +33,11 @@ public class CreditsFragment extends Fragment implements AbstractFragment {
 
     @Override @UiThread
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mvc = ((FlicliApplication) getActivity().getApplication()).getMVC();
         View view = inflater.inflate(R.layout.author_fragment, container, false);
         date = (TextView) view.findViewById(R.id.dateApplication);
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat dateFormat = new SimpleDateFormat(mvc.model.FORMAT_DATE);
         Date currentDate = new Date();
         date.setText(dateFormat.format(currentDate));
 

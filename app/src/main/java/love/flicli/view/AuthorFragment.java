@@ -42,6 +42,7 @@ import love.flicli.FlickerAPI;
 import love.flicli.FlicliApplication;
 import love.flicli.MVC;
 import love.flicli.R;
+import love.flicli.controller.FlickerService;
 import love.flicli.model.AuthorModel;
 import love.flicli.model.CommentModel;
 import love.flicli.model.FlickModel;
@@ -50,11 +51,9 @@ import static android.content.ContentValues.TAG;
 import static love.flicli.FlickerAPI.API_KEY;
 import static love.flicli.R.drawable.user;
 
-/**
- * Created by tommaso on 23/07/17.
- */
-
 public class AuthorFragment extends Fragment implements AbstractFragment {
+    private final static int SIZE = 270;
+    private final static int PADDING = 8;
 
     private TextView authorName = null;
     private TextView informationAuthor = null;
@@ -93,7 +92,7 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
     public void onModelChanged() {
         if (mvc.model.getAuthorModel() != null) {
             authorName.setText(mvc.model.getAuthorModel().getName());
-            //informationAuthor.setText(mvc.model.getAuthorModel().getDescription());
+            informationAuthor.setText(mvc.model.getAuthorModel().getDescription());
             author_image.setImageBitmap(mvc.model.getAuthorModel().getBuddyIconBitmap());
 
             if (imageAdapter == null) {
@@ -130,9 +129,9 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
                 imageView = new ImageView(mContext);
-                imageView.setLayoutParams(new GridView.LayoutParams(270, 270));
+                imageView.setLayoutParams(new GridView.LayoutParams(SIZE, SIZE));
                 imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                imageView.setPadding(8, 8, 8, 8);
+                imageView.setPadding(PADDING, PADDING, PADDING, PADDING);
             } else {
                 imageView = (ImageView) convertView;
             }

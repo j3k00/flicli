@@ -8,7 +8,8 @@ import love.flicli.model.FlickModel;
  * Created by tommaso on 18/05/17.
  */
 
-public interface View {
+public interface View{
+
     @UiThread
     void showHistory();
 

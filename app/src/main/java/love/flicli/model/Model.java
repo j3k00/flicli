@@ -18,13 +18,10 @@ import love.flicli.view.View;
 import static android.os.Build.VERSION_CODES.M;
 import static love.flicli.R.id.comments;
 
-/**
- * Created by tommaso on 18/05/17.
- */
 
 @ThreadSafe
 public class Model {
-    public static final int FLICKERS = 50;
+    public final static String FORMAT_DATE = "yyyy/MM/dd";
 
     private MVC mvc;
 

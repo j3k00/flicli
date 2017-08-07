@@ -24,9 +24,6 @@ import static android.R.attr.tag;
 import static android.R.attr.thickness;
 import static android.R.attr.value;
 
-/**
- * Created by tommaso on 19/05/17.
- */
 
 /*
  * This class represent every single photo.
@@ -290,10 +287,13 @@ public class FlickModel {
         return url_o;
     }
 
+    public String getUrl_h() {
+        return (getUrl_h() == "") ? "" : getUrl_z().replace("_z", "_h");
+    }
+
     public Bitmap getBitmap_url_s() {
         return this.bitmap_url_s;
     }
-
 
     public synchronized void freeComment() {
         this.comments = new ArrayList<CommentModel>();

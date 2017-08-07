@@ -3,40 +3,9 @@ package love.flicli.model;
 import android.graphics.Bitmap;
 
 import net.jcip.annotations.GuardedBy;
-import net.jcip.annotations.Immutable;
 import net.jcip.annotations.ThreadSafe;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-
-/**
- * Created by jeko on 25/07/17.
- */
-
-/*{ "person": ***{
-    "id": "149382168@N02",
-    "nsid": "149382168@N02",
-     "ispro": 0,
-     "can_buy_pro": 0,
-     "iconserver": 0,
-     "iconfarm": 0,
-     "path_alias": "",
-     "has_stats": 0,
-    "username": { "_content": "andreacolato" },
-    "realname": { "_content": "Andrea Colato" },
-    "mbox_sha1sum": { "_content": "facbb07187230c4b9dd9351ab5a915d15b1366e4" },
-    "location": { "_content": "" },
-    "description": { "_content": "" },
-    "photosurl": { "_content": "https:\/\/www.flickr.com\/photos\/149382168@N02\/" },
-    "profileurl": { "_content": "https:\/\/www.flickr.com\/people\/149382168@N02\/" },
-    "mobileurl": { "_content": "https:\/\/m.flickr.com\/photostream.gne?id=149361820" },
-    "photos": {
-        "firstdatetaken": { "_content": "" },
-        "firstdate": { "_content": "" },
-        "count": { "_content": 0 },
-        "views": { "_content": 0 }
-    }
-}***, "stat": "ok" }*/
 
 @ThreadSafe
 public class AuthorModel {

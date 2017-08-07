@@ -203,7 +203,6 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     @UiThread
     private String getCalendarDate(Long date) {
         java.util.Date d = new java.util.Date(date * 1000L);
-        String itemDateStr = new SimpleDateFormat("dd-MMM HH:mm").format(d);
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
         long time = System.currentTimeMillis();

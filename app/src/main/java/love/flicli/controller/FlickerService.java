@@ -1,5 +1,4 @@
 package love.flicli.controller;
-import android.app.IntentService;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -17,11 +16,9 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -35,29 +32,20 @@ import love.flicli.model.CommentModel;
 import love.flicli.model.FlickModel;
 
 import static android.content.Intent.ACTION_SEND;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
-import static android.os.Build.VERSION_CODES.M;
 import static android.support.v4.content.FileProvider.getUriForFile;
 import static love.flicli.FlickerAPI.makeRequest;
-import static love.flicli.FlickerAPI.people_getInfo;
-import static love.flicli.R.id.icon;
-import static love.flicli.R.id.url;
-import static love.flicli.R.id.views;
 
-/**
- * Created by tommaso on 09/05/17.
- */
 
 public class FlickerService extends ExecutorIntentService {
     private final static String TAG = FlickerService.class.getName();
+
     private final static String ACTION_FLICKER = "searchFlick";
     private final static String ACTION_RECENT = "getRecentFlick";
     private final static String ACTION_POPULAR = "getPopularFlick";
     private final static String ACTION_DETAIL = "getDetailFlick";
     private final static String ACTION_AUTHOR = "getFlickByAuthor";
 
-    private final static String PARAM_ID = "paramId";
-    private static String search = "";
+    private final static String PARAM = "param";
 
     public FlickerService() {
         super("FlickerService");
@@ -66,14 +54,13 @@ public class FlickerService extends ExecutorIntentService {
     @Override
     protected ExecutorService mkExecutorService() {
         return Executors.newFixedThreadPool(10);
-        //return Executors.newSingleThreadExecutor();
     }
 
     @UiThread
     static void searchFlick(Context context, String param) {
         Intent intent = new Intent(context, FlickerService.class);
         intent.setAction(ACTION_FLICKER);
-        intent.putExtra(PARAM_ID, param);
+        intent.putExtra(PARAM, param);
 
         context.startService(intent);
     }
@@ -96,7 +83,7 @@ public class FlickerService extends ExecutorIntentService {
     static void getDetailFlick(Context context, int pos) {
         Intent intent = new Intent(context, FlickerService.class);
         intent.setAction(ACTION_DETAIL);
-        intent.putExtra(PARAM_ID, pos);
+        intent.putExtra(PARAM, pos);
 
         context.startService(intent);
     }
@@ -105,7 +92,7 @@ public class FlickerService extends ExecutorIntentService {
         Intent intent = new Intent(context, FlickerService.class);
         intent.setAction(ACTION_SEND);
         intent.setType("image/*");
-        intent.putExtra(PARAM_ID, pos);
+        intent.putExtra(PARAM, pos);
         context.startService(intent);
 
     }
@@ -114,18 +101,18 @@ public class FlickerService extends ExecutorIntentService {
     static void getFlickByAuthor(Context context, String author) {
         Intent intent = new Intent(context, FlickerService.class);
         intent.setAction(ACTION_AUTHOR);
-        intent.putExtra(PARAM_ID, author);
+        intent.putExtra(PARAM, author);
 
         context.startService(intent);
     }
 
     @WorkerThread
     protected void onHandleIntent(Intent intent) {
-        String param = "";
+        String param;
 
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
-        JSONArray jPhoto = null;
+        JSONArray jPhoto;
 
         try {
             switch (intent.getAction()) {
@@ -133,7 +120,7 @@ public class FlickerService extends ExecutorIntentService {
                     // Empty list of Flickers
                     mvc.model.freeFlickers();
 
-                    param = (String) intent.getSerializableExtra(PARAM_ID);
+                    param = (String) intent.getSerializableExtra(PARAM);
 
                     jPhoto = makeRequest(FlickerAPI.photos_search(param)).getJSONObject("photos").getJSONArray("photo");
                     _generateFlickers(jPhoto);
@@ -159,7 +146,7 @@ public class FlickerService extends ExecutorIntentService {
 
                 case ACTION_DETAIL:
 
-                    int pos = (int) intent.getSerializableExtra(PARAM_ID);
+                    int pos = (int) intent.getSerializableExtra(PARAM);
                     FlickModel flick = mvc.model.getFlickers().get(pos);
 
                     JSONObject jComment = makeRequest(FlickerAPI.photos_getComments(flick.getId())).getJSONObject("comments");
@@ -170,7 +157,7 @@ public class FlickerService extends ExecutorIntentService {
                     break;
 
                 case ACTION_AUTHOR:
-                    String author = (String) intent.getSerializableExtra(PARAM_ID);
+                    String author = (String) intent.getSerializableExtra(PARAM);
 
                     jPhoto = makeRequest(FlickerAPI.photo_getAuthor(author)).getJSONObject("photos").getJSONArray("photo");
                     JSONObject jAuthor = makeRequest(FlickerAPI.people_getInfo(author)).getJSONObject("person");
@@ -180,7 +167,7 @@ public class FlickerService extends ExecutorIntentService {
                     break;
 
                 case ACTION_SEND:
-                    pos = (int) intent.getSerializableExtra(PARAM_ID);
+                    pos = (int) intent.getSerializableExtra(PARAM);
                     flick = mvc.model.getFlickers().get(pos);
 
                     File tempFile = Util.getImageUri(getApplicationContext(), flick.getBitmap_url_hd());
@@ -205,11 +192,9 @@ public class FlickerService extends ExecutorIntentService {
 
         for (int i = 0; i < elements.length(); i++) {
             JSONObject photo = elements.getJSONObject(i);
-            Iterator<String> keys = photo.keys();
-            FlickModel flick;
-            try {
 
-                flick = new FlickModel(
+            try {
+                FlickModel flick = new FlickModel(
                         _getLabelString(photo, "id"),
                         _getLabelString(photo, "owner"),
                         _getLabelString(photo, "secret"),
@@ -249,14 +234,16 @@ public class FlickerService extends ExecutorIntentService {
                 flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
                 mvc.model.storeFlick(flick);
 
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                Log.d(TAG, e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
     private void _generateFlickDetail(FlickModel flick, JSONObject jComment, JSONArray jFavourities) throws IOException {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
 
-        // Comments
         ArrayList<CommentModel> comments = new ArrayList<CommentModel>();
 
         try {
@@ -284,16 +271,15 @@ public class FlickerService extends ExecutorIntentService {
         } catch (Exception e) {
         }
 
-        // Photos
-        String image = flick.getUrl_z().replace("_z", "_h");
         Bitmap bitmap_z;
 
-        //non riesco a capire perchè l'immagine in hd non c'è
         try {
-            bitmap_z = BitmapFactory.decodeStream((new URL(image)).openStream());
+            bitmap_z = BitmapFactory.decodeStream((new URL(flick.getUrl_h())).openStream());
         } catch (FileNotFoundException e) {
-            e.getMessage();
             bitmap_z = BitmapFactory.decodeStream((new URL(flick.getUrl_z())).openStream());
+
+            Log.d(TAG, e.getMessage());
+            e.printStackTrace();
         }
 
         mvc.model.storeDetail(flick.getId(), jFavourities.length(), comments, bitmap_z);
@@ -301,7 +287,6 @@ public class FlickerService extends ExecutorIntentService {
 
     private void _generateAuthor(JSONObject jAuthor, JSONArray elements) {
         MVC mvc = ((FlicliApplication) getApplication()).getMVC();
-        //ArrayList<FlickModel> flickers = new ArrayList<FlickModel>();
 
         try {
             JSONObject jAuthor_photos = jAuthor.getJSONObject("photos");
@@ -339,7 +324,6 @@ public class FlickerService extends ExecutorIntentService {
 
             for (int i = 0; i < elements.length(); i++) {
                 JSONObject photo = elements.getJSONObject(i);
-                Iterator<String> keys = photo.keys();
 
                 try {
                     FlickModel flick;
@@ -383,20 +367,27 @@ public class FlickerService extends ExecutorIntentService {
 
 
                     flick.setBitmap_url_s(BitmapFactory.decodeStream(new URL(flick.getUrl_sq()).openStream()));
-                    //flickers.add(flick);
 
                     author.setFlickers(flick);
-                } catch (JSONException e) {}
+                } catch (JSONException e) {
+                    Log.d(TAG, e.getMessage());
+                    e.printStackTrace();
+                }
 
                 mvc.model.setAuthorModel(author);
             }
+
         } catch(JSONException e){
-                e.printStackTrace();
+            Log.d(TAG, e.getMessage());
+            e.printStackTrace();
+
         } catch(IOException e){
+            Log.d(TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private String _getLabelString(JSONObject json, String label) throws JSONException{
+    private String _getLabelString(JSONObject json, String label) throws JSONException {
         if (json == null || label == "") {
             return "";
         }
@@ -404,7 +395,7 @@ public class FlickerService extends ExecutorIntentService {
         return (json.isNull(label)) ? "" : json.getString(label);
     }
 
-    private int _getLabelInt(JSONObject json, String label)  throws JSONException{
+    private int _getLabelInt(JSONObject json, String label)  throws JSONException {
         if (json == null || label == "") {
             return 0;
         }
@@ -413,7 +404,7 @@ public class FlickerService extends ExecutorIntentService {
 
     }
 
-    private JSONObject _getJSONObject(JSONObject json, String label)  throws JSONException{
+    private JSONObject _getJSONObject(JSONObject json, String label)  throws JSONException {
         return json.isNull(label) ? null : json.getJSONObject(label);
     }
 }

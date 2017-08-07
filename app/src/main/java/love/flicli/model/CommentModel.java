@@ -7,10 +7,6 @@ import org.json.JSONException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-/**
- * Created by jeko on 15/06/17.
- */
-
 @Immutable
 public class CommentModel {
     // Default attribues
