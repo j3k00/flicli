@@ -1,9 +1,0 @@
-Add GetFavs 
--https://www.flickr.com/services/api/flickr.photos.getFavorites.html 
-ritorna la lista delle persone che hanno messo mi piace alla photo
-
-Per le visualizzazioni invece possiamo aggiungere al campo extra il campo "views"
-
-Per le foto popolari
-//interestigess.getList
-
