@@ -4,4 +4,4 @@ Il corso di Verifica automatica di sistemi dell'Università degli studi di Veron
 Questo progetto è stato svolto con l'obiettivo di soddisfare i requisiti richiesti dal Prof.re come soglia di superamento dell'esame, è stata successivamente una nostra volontà quella di scrivere questa relazione dando particolare enfasi alla Sicurezza Informatica. 
 
 ## Relazione
-È possibile scaricare la relazione cliccando [qui](https://github.com/jekoA/flicli/doc/vas.pdf)
+È possibile scaricare la relazione cliccando [qui](https://github.com/jekoA/flicli/raw/master/doc/vas.pdf)
