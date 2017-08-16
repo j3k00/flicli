@@ -288,7 +288,7 @@ public class FlickModel {
     }
 
     public String getUrl_h() {
-        return (getUrl_h() == "") ? "" : getUrl_z().replace("_z", "_h");
+        return (getUrl_z() == "") ? "" : getUrl_z().replace("_z", "_h");
     }
 
     public Bitmap getBitmap_url_s() {
