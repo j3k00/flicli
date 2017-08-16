@@ -98,7 +98,7 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
     public void onModelChanged() {
         if (mvc.model.getAuthorModel() != null) {
             authorName.setText(mvc.model.getAuthorModel().getName());
-            informationAuthor.setText(mvc.model.getAuthorModel().getDescription());
+            //informationAuthor.setText(mvc.model.getAuthorModel().getDescription());
             author_image.setImageBitmap(mvc.model.getAuthorModel().getBuddyIconBitmap());
 
             if (imageAdapter == null) {

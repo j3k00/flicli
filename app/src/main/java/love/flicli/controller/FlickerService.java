@@ -16,6 +16,7 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -170,21 +171,36 @@ public class FlickerService extends ExecutorIntentService {
                     pos = (int) intent.getSerializableExtra(PARAM);
                     flick = mvc.model.getFlickers().get(pos);
 
-                    File tempFile = Util.getImageUri(getApplicationContext(), flick.getBitmap_url_hd());
-                    Uri r = getUriForFile(getApplicationContext(), "love.flicli.fileprovider", tempFile);
-
-                    Intent shareAction = new Intent();
-                    shareAction.setAction(Intent.ACTION_SEND);
-                    shareAction.putExtra(Intent.EXTRA_STREAM, r);
-                    shareAction.setType("image/jpeg");
-                    shareAction.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(shareAction.createChooser(shareAction, "..."));
-
+                    _shareImage(flick);
             }
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
             e.printStackTrace();
         }
+    }
+
+
+    private void _shareImage(FlickModel flickModel) throws IOException {
+
+        File tempFile;
+        Bitmap z;
+        //altrimenti non riesco a svuotare la memoria delle immagini che scarico
+        if (flickModel.getBitmap_url_hd() != null)
+            tempFile = Util.getImageUri(getApplicationContext(), flickModel.getBitmap_url_hd());
+        else {
+            z = BitmapFactory.decodeStream(new URL(flickModel.getUrl_h()).openStream());
+            tempFile = Util.getImageUri(getApplicationContext(), z);
+        }
+
+        Uri r = getUriForFile(getApplicationContext(), "love.flicli.fileprovider", tempFile);
+
+        Intent shareAction = new Intent();
+        shareAction.setAction(Intent.ACTION_SEND);
+        shareAction.putExtra(Intent.EXTRA_STREAM, r);
+        shareAction.setType("image/jpeg");
+        shareAction.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(shareAction.createChooser(shareAction, "..."));
+
     }
 
     private void _generateFlickers(JSONArray elements) throws JSONException, IOException {
@@ -271,12 +287,12 @@ public class FlickerService extends ExecutorIntentService {
         } catch (Exception e) {
         }
 
-        Bitmap bitmap_z;
+        Bitmap bitmap_z = null;
 
         try {
             bitmap_z = BitmapFactory.decodeStream((new URL(flick.getUrl_h())).openStream());
         } catch (FileNotFoundException e) {
-            bitmap_z = BitmapFactory.decodeStream((new URL(flick.getUrl_z())).openStream());
+            //bitmap_z = BitmapFactory.decodeStream((new URL(flick.getUrl_z())).openStream());
 
             Log.d(TAG, e.getMessage());
             e.printStackTrace();
