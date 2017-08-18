@@ -21,10 +21,6 @@ public class Util {
 
         File newFile = new File(imagePath, "default_image.jpg");
 
-        //previene bug sulla visualizzazione della preview delle immagini
-        //if (newFile.exists())
-        //    newFile.delete();
-
         try {
             Bitmap bmp = image;
             if (bmp != null) {
