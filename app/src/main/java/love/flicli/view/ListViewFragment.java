@@ -58,6 +58,8 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mvc.model.getFlickers().get(position).freeComment();
+                mvc.model.getFlickers().get(position).freeBitMapHD();
                 ((MainActivity) getActivity()).position = position;
                 onClickRow(position);
             }
