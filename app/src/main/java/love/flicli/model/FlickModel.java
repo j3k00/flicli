@@ -304,7 +304,7 @@ public class FlickModel {
     }
 
     public synchronized ArrayList<CommentModel> getComments() {
-            return this.comments;
+            return (ArrayList<CommentModel>) this.comments.clone();
     }
 
     public synchronized void setComments(ArrayList<CommentModel> comments) {

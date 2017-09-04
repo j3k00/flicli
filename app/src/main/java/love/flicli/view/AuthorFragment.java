@@ -12,6 +12,9 @@ import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.View;
 import android.widget.AdapterView;
@@ -77,8 +80,25 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
         informationAuthor = (TextView) view.findViewById(R.id.informationAuthor);
         author_image = (ImageView) view.findViewById(R.id.image_author);
         gridview = (GridView) view.findViewById(R.id.gridview);
+        imageAdapter = null;
 
         return view;
+    }
+
+    @Override @UiThread
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.list_menu, menu);
+    }
+
+    @Override @UiThread
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.version) {
+            mvc.controller.showVersion();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override @UiThread
@@ -98,7 +118,6 @@ public class AuthorFragment extends Fragment implements AbstractFragment {
     public void onModelChanged() {
         if (mvc.model.getAuthorModel() != null) {
             authorName.setText(mvc.model.getAuthorModel().getName());
-            //informationAuthor.setText(mvc.model.getAuthorModel().getDescription());
             author_image.setImageBitmap(mvc.model.getAuthorModel().getBuddyIconBitmap());
 
             if (imageAdapter == null) {

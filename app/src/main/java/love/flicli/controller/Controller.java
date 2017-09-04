@@ -52,7 +52,7 @@ public class Controller {
 
     @UiThread
     public void showVersion() {
-        version();
+        mvc.forEachView(View::showAuthor);
     }
 
     @UiThread
@@ -68,11 +68,6 @@ public class Controller {
     @UiThread
     public void showLastImageAuthorFragment() {
         mvc.forEachView(View::showLastImageAuthor);
-    }
-
-    @UiThread
-    public void version() {
-        mvc.forEachView(View::showAuthor);
     }
 
 }

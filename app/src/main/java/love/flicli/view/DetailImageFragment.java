@@ -83,7 +83,11 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
         favTextView = (TextView) view.findViewById(R.id.favourite);
         progress = (ProgressBar) view.findViewById(R.id.indeterminateBar);
         progress.setVisibility(View.VISIBLE);
-        pos = ((MainActivity) getActivity()).position;
+
+        if (savedInstanceState != null)
+            pos = savedInstanceState.getInt(TAG + "position");
+        else
+            pos = ((MainActivity) getActivity()).position;
 
         favorite = (ImageView) view.findViewById(R.id.favoriteImage);
         comment = (ImageView) view.findViewById(R.id.commentImage);
@@ -128,14 +132,20 @@ public class DetailImageFragment extends Fragment implements AbstractFragment {
     }
 
     @Override @UiThread
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(TAG + "position", pos);
+    }
+
+    @Override @UiThread
     public void onDestroy() {
         super.onDestroy();
         //Delete the temporary file for share image with other application
         if (tempFile != null)
             tempFile.delete();
 
-        flickModel.freeComment();
-        flickModel.freeBitMapHD();
+        //flickModel.freeComment();
+        //flickModel.freeBitMapHD();
 
     }
 
