@@ -33,6 +33,8 @@ import love.flicli.R;
 import love.flicli.Util;
 import love.flicli.model.CommentModel;
 import love.flicli.model.FlickModel;
+
+import static android.content.ContentValues.TAG;
 import static android.support.v4.content.FileProvider.getUriForFile;
 import static love.flicli.R.id.comments;
 
@@ -54,12 +56,15 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         mvc = ((FlicliApplication) getActivity().getApplication()).getMVC();
         setHasOptionsMenu(true);
 
+        if (savedInstanceState != null)
+            ((MainActivity) getActivity()).position = savedInstanceState.getInt(TAG + "position");
+
         //OnclickListener,  attacca alle liste della tabella la funzione che apre il dettaglio dell'immagine
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mvc.model.getFlickers().get(position).freeComment();
-                mvc.model.getFlickers().get(position).freeBitMapHD();
+                mvc.model.getFlickers().get(((MainActivity) getActivity()).position).freeComment();
+                mvc.model.getFlickers().get(((MainActivity) getActivity()).position).freeBitMapHD();
                 ((MainActivity) getActivity()).position = position;
                 onClickRow(position);
             }
@@ -126,6 +131,12 @@ public class ListViewFragment extends ListFragment implements AbstractFragment {
         }
 
         return false;
+    }
+
+    @Override @UiThread
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(TAG + "position", ((MainActivity) getActivity()).position);
     }
 
     @Override @UiThread
